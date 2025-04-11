@@ -1,0 +1,5 @@
+external-sources=true
+disable=SC2034 # required for when we source /etc/os-release
+enable=add-default-case
+enable=avoid-nullary-conditions
+enable=require-double-brackets

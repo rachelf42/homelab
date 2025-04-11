@@ -1,0 +1,8 @@
+/appdata/**
+/backups/**
+/secrets/**
+!README.md
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*tfplan*

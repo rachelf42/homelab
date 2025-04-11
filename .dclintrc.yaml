@@ -1,0 +1,26 @@
+rules:
+    no-unbound-port-interfaces: 0 # TODO: change this
+    services-alphabetical-order: 0 # Use logical groupings instead
+    service-dependencies-alphabetical-order: 0 # Ditto
+    service-keys-order:
+        - 1
+        - groups:
+              Core Definitions:
+                  - <<
+                  - extends
+                  - image
+                  - build
+                  - container_name
+    top-level-properties-order:
+        - 1
+        - customOrder:
+              - x-defaults
+              - x-defaults-nonet
+              - x-env # fragments first
+              - name # then stack metadata
+              - include
+              - networks
+              - services # then go the individual services
+              - volumes # and these are usually basically housekeeping so can go last so i can ignore them lol
+              - secrets
+              - configs
