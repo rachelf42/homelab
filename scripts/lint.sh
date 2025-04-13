@@ -22,7 +22,7 @@ if ! (npx dclint ./compose/*.compose.yaml &>/dev/null); then
 	npx dclint ./compose/*.compose.yaml
 fi
 
-cd "$DOCKERDIR/iac" || exit 1
+cd "$DOCKERDIR/iac/packer" || exit 1
 if (packer validate . &>/dev/null); then
 	packer fmt . &>/dev/null
 else
@@ -31,6 +31,15 @@ else
 	packer validate .
 fi
 
+cd "$DOCKERDIR/iac/cloudflare" || exit 1
+if (terraform validate . &>/dev/null); then
+	terraform fmt . &>/dev/null
+else
+	EC=$((EC + 1))
+	echo '===== TERRAFORM FAILED ====='
+	terraform validate .
+fi
+cd "$DOCKERDIR/iac/proxmox" || exit 1
 if (terraform validate . &>/dev/null); then
 	terraform fmt . &>/dev/null
 else

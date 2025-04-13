@@ -1,0 +1,44 @@
+by_os:
+    children:
+        ubuntu:
+            hosts:
+                rachel-pc:
+                    ansible_python_interpreter: /usr/bin/python3
+                    ansible_user: rachel
+                    ip_address: 10.69.1.69
+        debian:
+            hosts:
+                pve-laptop:
+                    ansible_python_interpreter: /usr/bin/python3
+                    ansible_user: rachel
+                    ip_address: 10.69.69.1
+        tos:
+            hosts:
+                nas1:
+                    ansible_python_interpreter: /usr/bin/python3
+                    ansible_user: rachel
+                    ip_address: 10.69.69.2
+by_role:
+    children:
+        docker:
+            hosts:
+                nas1:
+        pve:
+            hosts:
+                pve-laptop:
+        server:
+            hosts:
+                pve-laptop:
+                nas1:
+        client:
+            hosts:
+                rachel-pc:
+by_type:
+    children:
+        vm:
+        lxc:
+        baremetal:
+            hosts:
+                rachel-pc:
+                pve-laptop:
+                nas1:

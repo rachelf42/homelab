@@ -1,0 +1,154 @@
+# vim: set tabstop=2
+- name: update apt cache
+  hosts: [debian, ubuntu]
+  become: true
+  tasks:
+      - ansible.builtin.apt:
+            update_cache: true
+- name: user account setup
+  hosts: [vm, lxc, pve]
+  tasks:
+      - name: sudo installed
+        become: true
+        ansible.builtin.apt:
+            name: sudo
+            state: present
+      - name: user account exists
+        become: true
+        ansible.builtin.user:
+            name: rachel
+            state: present
+            password: "{{ user_password_hash }}"
+            uid: 1000
+            create_home: true
+            move_home: true
+            home: /home/rachel
+            append: true
+            groups: ["sudo"]
+            shell: /bin/bash
+      - name: authorized keys synced - regular user
+        ansible.posix.authorized_key:
+            user: rachel
+            key: https://github.com/rachelf42.keys
+            state: present
+      - name: authorized keys synced - root user
+        become: true
+        ansible.builtin.copy:
+            src: /home/rachel/.ssh/authorized_keys
+            dest: /root/.ssh/authorized_keys
+            remote_src: true
+            owner: root
+            group: root
+            mode: "0664"
+      - name: repo pulling key synced - regular user
+        ansible.builtin.copy:
+            src: /home/rachel/.ssh/id_ed25519
+            dest: /home/rachel/.ssh/id_ed25519
+            remote_src: false
+            owner: rachel
+            group: rachel
+            mode: "0600"
+      - name: repo pulling key synced - root user
+        become: true
+        ansible.builtin.copy:
+            src: /home/rachel/.ssh/id_ed25519
+            dest: /root/.ssh/id_ed25519
+            remote_src: true
+            owner: root
+            group: root
+            mode: "0600"
+      - name: sudoer declaration in place
+        become: true
+        community.general.sudoers:
+            name: rachelf42
+            state: present
+            user: rachel
+            commands: ALL
+            nopassword: true
+- name: ubuntu specific config
+  hosts: ["ubuntu"]
+  become: true
+  tasks:
+      - name: yeet motd - helptext
+        ansible.builtin.file:
+            path: /etc/update-motd.d/10-help-text
+            state: absent
+      - name: yeet motd - canonical ads
+        ansible.builtin.file:
+            path: /etc/update-motd.d/50-motd-news
+            state: absent
+      - name: yeet snapd
+        block:
+            - name: purge snapd
+              register: snapd
+              ansible.builtin.apt:
+                  name: snapd
+                  state: absent
+                  purge: true
+            - name: prevent snapd install - by system
+              when: snapd is ansible.builtin.changed
+              check_mode: false # noqa: no-changed-when no-handler
+              ansible.builtin.command: apt-mark hold snapd
+            - name: prevent snapd install - by users
+              ansible.builtin.copy:
+                  src: ./resources/fuck-snapd
+                  dest: /etc/apt/preferences.d/00-fuck-snapd
+                  remote_src: false
+                  owner: root
+                  group: root
+                  mode: "0644"
+- name: server-only config
+  hosts: ["server"]
+  tasks:
+      - name: install trash-cli
+        become: true
+        ansible.builtin.apt:
+            name: trash-cli
+            state: present
+      - name: bashrc alias for trash
+        ansible.builtin.blockinfile:
+            path: /home/rachel/.bashrc
+            marker: "# {mark} ANSIBLE SERVER BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/server') }}"
+- name: finishing up
+  hosts: [debian, ubuntu]
+  tasks:
+      - name: sshd - parallel-ssh environment variables
+        ansible.builtin.copy:
+            src: ./resources/sshd.conf
+            dest: /etc/ssh/sshd_conf.d/99-rachelf42.conf
+            remote_src: false
+            owner: root
+            group: root
+            mode: "0644"
+      - name: bashrc - reg user
+        ansible.builtin.blockinfile:
+            path: /home/rachel/.bashrc
+            marker: "# {mark} ANSIBLE GENERAL BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/reg-user') }}"
+      - name: bashrc - skeleton user
+        become: true
+        ansible.builtin.blockinfile:
+            path: /etc/skel/.bashrc
+            marker: "# {mark} ANSIBLE GENERAL BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/skel') }}"
+      - name: bashrc - root user
+        become: true
+        ansible.builtin.blockinfile:
+            path: /root/.bashrc
+            marker: "# {mark} ANSIBLE GENERAL BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/root') }}"
+      - name: set timezone
+        become: true
+        community.general.timezone:
+            name: America/Vancouver
+      - name: apt upgrade
+        become: true
+        ansible.builtin.apt:
+            upgrade: safe
+            autoremove: true
+            autoclean: true

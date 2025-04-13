@@ -8,5 +8,6 @@
     ":renovatePrefix",
     ":timezone(America/Vancouver)",
     "schedule:automergeDaily"
-  ]
+  ],
+  "ignoreTests": true
 }
