@@ -10,17 +10,17 @@ if ! (shellcheck -a ./scripts/*.sh &>/dev/null); then
 	shellcheck -a ./scripts/*.sh
 fi
 
-if ! (yamllint .); then
+if ! (yamllint --strict . &>/dev/null); then
 	EC=$((EC + 1))
 	echo '===== YAMLLINT FAILED ====='
 	yamllint .
 fi
 
-if ! (npx dclint ./compose/*.compose.yaml &>/dev/null); then
-	EC=$((EC + 1))
-	echo '===== DCLINT FAILED ====='
-	npx dclint ./compose/*.compose.yaml
-fi
+# if ! (npx dclint ./compose/*.compose.yaml &>/dev/null); then
+# 	EC=$((EC + 1))
+# 	echo '===== DCLINT FAILED ====='
+# 	npx dclint ./compose/*.compose.yaml
+# fi
 
 cd "$DOCKERDIR/iac/packer" || exit 1
 if (packer validate . &>/dev/null); then

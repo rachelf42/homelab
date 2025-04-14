@@ -1,20 +1,28 @@
 # vim: set tabstop=2
-- name: update apt cache
-  hosts: [debian, ubuntu]
-  become: true
-  tasks:
-      - ansible.builtin.apt:
-            update_cache: true
+# gedit has issues indenting top-level arrays properly
 - name: user account setup
+  become: true
   hosts: [vm, lxc, pve]
   tasks:
       - name: sudo installed
-        become: true
+        register: sudo
+        until: sudo is ansible.builtin.success
+        delay: 30
+        retries: 10
         ansible.builtin.apt:
             name: sudo
             state: present
+            update_cache: true
+      - name: acl installed # required for ansible.builtin.sudo to become non-root
+        register: acl
+        until: acl is ansible.builtin.success
+        delay: 30
+        retries: 10
+        ansible.builtin.apt:
+            name: acl
+            state: present
+            update_cache: true
       - name: user account exists
-        become: true
         ansible.builtin.user:
             name: rachel
             state: present
@@ -24,7 +32,7 @@
             move_home: true
             home: /home/rachel
             append: true
-            groups: ["sudo"]
+            groups: [sudo]
             shell: /bin/bash
       - name: authorized keys synced - regular user
         ansible.posix.authorized_key:
@@ -32,7 +40,6 @@
             key: https://github.com/rachelf42.keys
             state: present
       - name: authorized keys synced - root user
-        become: true
         ansible.builtin.copy:
             src: /home/rachel/.ssh/authorized_keys
             dest: /root/.ssh/authorized_keys
@@ -41,24 +48,21 @@
             group: root
             mode: "0664"
       - name: repo pulling key synced - regular user
+        become_user: rachel
         ansible.builtin.copy:
             src: /home/rachel/.ssh/id_ed25519
             dest: /home/rachel/.ssh/id_ed25519
             remote_src: false
-            owner: rachel
-            group: rachel
             mode: "0600"
       - name: repo pulling key synced - root user
-        become: true
         ansible.builtin.copy:
             src: /home/rachel/.ssh/id_ed25519
             dest: /root/.ssh/id_ed25519
-            remote_src: true
+            remote_src: false
             owner: root
             group: root
             mode: "0600"
       - name: sudoer declaration in place
-        become: true
         community.general.sudoers:
             name: rachelf42
             state: present
@@ -66,7 +70,7 @@
             commands: ALL
             nopassword: true
 - name: ubuntu specific config
-  hosts: ["ubuntu"]
+  hosts: [ubuntu]
   become: true
   tasks:
       - name: yeet motd - helptext
@@ -81,43 +85,84 @@
         block:
             - name: purge snapd
               register: snapd
+              until: snapd is ansible.builtin.success
+              delay: 30
+              retries: 10
               ansible.builtin.apt:
                   name: snapd
                   state: absent
                   purge: true
+                  allow_change_held_packages: true # cause a failed run might have left it installed but marked held
             - name: prevent snapd install - by system
               when: snapd is ansible.builtin.changed
               check_mode: false # noqa: no-changed-when no-handler
               ansible.builtin.command: apt-mark hold snapd
             - name: prevent snapd install - by users
               ansible.builtin.copy:
-                  src: ./resources/fuck-snapd
+                  src: ../resources/fuck-snapd
                   dest: /etc/apt/preferences.d/00-fuck-snapd
                   remote_src: false
                   owner: root
                   group: root
                   mode: "0644"
 - name: server-only config
-  hosts: ["server"]
+  become: true
+  hosts: [server]
   tasks:
       - name: install trash-cli
-        become: true
+        register: trash
+        until: trash is ansible.builtin.success
+        delay: 30
+        retries: 10
         ansible.builtin.apt:
             name: trash-cli
             state: present
+            update_cache: true
       - name: bashrc alias for trash
         ansible.builtin.blockinfile:
             path: /home/rachel/.bashrc
             marker: "# {mark} ANSIBLE SERVER BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/server') }}"
+            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/server') }}"
+- name: dev machine config
+  become: true
+  become_user: rachel
+  hosts: [rachel-pc]
+  tasks:
+      - name: bin directory exists
+        ansible.builtin.file:
+            path: /home/rachel/bin
+            state: directory
+            mode: "0775"
+      - name: git repo updated
+        ansible.builtin.git:
+            repo: ssh://git@github.com:rachelf42/homelab.git
+            dest: /home/rachel/homelab
+            clone: true
+            accept_newhostkey: true
+      - name: link deploy.sh
+        ansible.builtin.file:
+            path: /home/rachel/bin/homelab-deploy
+            src: /home/rachel/homelab/scripts/deploy.sh
+            state: link
+      - name: link update.sh
+        ansible.builtin.file:
+            path: /home/rachel/bin/homelab-update
+            src: /home/rachel/homelab/scripts/update.sh
+            state: link
+      - name: link lint.sh
+        ansible.builtin.file:
+            path: /home/rachel/bin/homelab-lint
+            src: /home/rachel/homelab/scripts/lint.sh
+            state: link
 - name: finishing up
+  become: true
   hosts: [debian, ubuntu]
   tasks:
       - name: sshd - parallel-ssh environment variables
         ansible.builtin.copy:
-            src: ./resources/sshd.conf
-            dest: /etc/ssh/sshd_conf.d/99-rachelf42.conf
+            src: ../resources/sshd.conf
+            dest: /etc/ssh/sshd_config.d/99-rachelf42.conf
             remote_src: false
             owner: root
             group: root
@@ -127,28 +172,35 @@
             path: /home/rachel/.bashrc
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/reg-user') }}"
+            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/reg-user') }}"
       - name: bashrc - skeleton user
-        become: true
         ansible.builtin.blockinfile:
             path: /etc/skel/.bashrc
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/skel') }}"
+            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/skel') }}"
       - name: bashrc - root user
-        become: true
         ansible.builtin.blockinfile:
             path: /root/.bashrc
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', './resources/bashrc/root') }}"
+            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/root') }}"
       - name: set timezone
-        become: true
         community.general.timezone:
             name: America/Vancouver
       - name: apt upgrade
-        become: true
+        register: upgrade
+        until: upgrade is ansible.builtin.success
+        delay: 30
+        retries: 10
         ansible.builtin.apt:
+            update_cache: true
             upgrade: safe
+      - name: apt autoremove
+        register: autorem
+        until: autorem is ansible.builtin.success
+        delay: 30
+        retries: 10
+        ansible.builtin.apt:
             autoremove: true
             autoclean: true
