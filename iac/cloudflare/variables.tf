@@ -8,7 +8,7 @@ variable "cf_domain" {
   type = string
 }
 variable "cf_api_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 locals {

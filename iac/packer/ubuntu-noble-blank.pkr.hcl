@@ -10,11 +10,11 @@ variable "proxmox_api_token_secret" {
   sensitive = true
 }
 variable "proxmox_storage" {
-  type = string
+  type    = string
   default = "local-lvm"
 }
 variable "proxmox_iso_storage" {
-  type = string
+  type    = string
   default = "local"
 }
 variable "proxmox_template_id" {
@@ -97,11 +97,11 @@ source "proxmox-iso" "ubuntu-server-noble" {
   boot      = "order=scsi0;ide2;net0"
   boot_wait = "10s"
 
-  communicator = "ssh"
-  ssh_username = "ansible"
+  communicator         = "ssh"
+  ssh_username         = "ansible"
   ssh_private_key_file = "./ansible_ssh_key"
-  ssh_timeout  = "60m"
-  ssh_pty      = true
+  ssh_timeout          = "60m"
+  ssh_pty              = true
 }
 
 # Build Definition to create the VM Template

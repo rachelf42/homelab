@@ -48,7 +48,7 @@ resource "proxmox_virtual_environment_vm" "mediasrv" {
     }
     user_account {
       username = "rachel"
-      password = "${var.secure_password}"
+      password = var.secure_password
     }
   }
   cpu {

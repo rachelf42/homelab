@@ -12,7 +12,9 @@ autoinstall:
     user-data:
         users:
             - name: ansible
-              uid: 999                           # TODO: \/ figure out how to get this set automatically \/
+              uid: 999
+              # TODO figure out how to get this set automatically
+              # yamllint disable-line rule:line-length
               ssh_authorized_keys: ['ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGZduwQehr95DRVVxEzOu9tn2yoJDdugmzj6elCmE5uo cloud-config']
               groups: sudo, adm
               sudo: ['ALL=(ALL) NOPASSWD:ALL']

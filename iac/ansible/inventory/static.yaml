@@ -26,6 +26,9 @@ by_role:
         pve:
             hosts:
                 pve-laptop:
+        nas:
+            hosts:
+                nas1:
         server:
             hosts:
                 pve-laptop:

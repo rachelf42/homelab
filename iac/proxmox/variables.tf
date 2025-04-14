@@ -4,7 +4,7 @@ variable "proxmox_api_token_id" {
   type = string
 }
 variable "proxmox_api_token_secret" {
-  type = string
+  type      = string
   sensitive = true
 }
 variable "proxmox_api_url" {
@@ -22,6 +22,6 @@ variable "proxmox_packer_vmid" {
   default = 9000
 }
 variable "secure_password" {
-  type = string
+  type      = string
   sensitive = true
 }
