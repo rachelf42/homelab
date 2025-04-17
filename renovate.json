@@ -9,6 +9,6 @@
     ":timezone(America/Vancouver)",
     "schedule:automergeDaily"
   ],
-  "ignoreTests": true
+  "ignoreTests": true,
   "automergeStrategy": "rebase"
 }
