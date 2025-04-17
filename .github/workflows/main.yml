@@ -49,5 +49,5 @@ jobs:
                   export ANSIBLE_VAULT_PASS=SuperSecureSecretPassword
                   export ANSIBLE_VAULT_PASSWORD_FILE="$GITHUB_WORKSPACE/iac/ansible/vault-pass-helper.sh"
                   cd iac/ansible
-                  ansible-galaxy -r requirements.yaml
+                  ansible-galaxy install -r requirements.yaml
                   ansible-lint
