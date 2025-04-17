@@ -6,7 +6,8 @@
     ":automergeStableNonMajor",
     ":renovatePrefix",
     ":timezone(America/Vancouver)",
-    "schedule:automergeDaily"
+    "schedule:automergeDaily",
+    ":reviewer(rachelf42)"
   ],
   "ignoreTests": true,
   "automergeStrategy": "rebase"
