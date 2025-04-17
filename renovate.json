@@ -10,5 +10,5 @@
     "schedule:automergeDaily"
   ],
   "ignoreTests": true
-  "automergeStrategy": rebase
+  "automergeStrategy": "rebase"
 }
