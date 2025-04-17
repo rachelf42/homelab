@@ -1,2 +1,2 @@
 plugin: cloud.terraform.terraform_provider
-project_path: ../proxmox # refers to the *terraform* project
+project_path: ../terraform/servers

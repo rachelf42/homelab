@@ -1,0 +1,97 @@
+# vim: set tabstop=2
+# gedit has issues indenting top-level arrays properly
+- name: repo setup
+  become: true
+  become_user: rachel
+  hosts: [all]
+  tasks:
+      - name: repo cloned
+        block:
+            - name: devmachine - do not pull
+              when: "'devmachine' in group_names"
+              ansible.builtin.git:
+                  repo: git@github.com:rachelf42/homelab.git
+                  version: dev
+                  dest: /home/rachel/homelab
+                  clone: true
+                  update: false
+                  accept_newhostkey: true
+            - name: not devmachine - yeeting changes
+              when: "'devmachine' not in group_names"
+              ansible.builtin.git:
+                  repo: git@github.com:rachelf42/homelab.git
+                  version: main
+                  dest: /home/rachel/homelab
+                  clone: true
+                  update: true
+                  force: true
+                  accept_newhostkey: true
+      - name: secrets synced
+        when: "'devmachine' not in group_names"
+        ansible.builtin.copy:
+            src: /home/rachel/homelab/secrets/
+            dest: /home/rachel/homelab/secrets/
+            directory_mode: preserve
+            mode: preserve
+      - name: permissions set
+        block:
+            - name: chown/chmod
+              become_user: root # needed because of next task
+              ansible.builtin.file:
+                  path: /home/rachel/homelab
+                  state: directory
+                  owner: rachel
+                  group: docker
+                  mode: u+rwX,g+rwX,o-rwx
+                  recurse: true
+            - name: ssh workaround
+              become_user: root
+              ansible.builtin.file:
+                  path: /home/rachel/homelab/secrets/ansible_ssh_key
+                  state: file
+                  owner: nobody
+                  group: docker
+                  mode: u=rw,g=rw,o-rwx
+            - name: access control list - user
+              ansible.posix.acl:
+                  path: /home/rachel/homelab
+                  default: true
+                  entity: rachel
+                  etype: user
+                  permissions: rwX
+                  state: present
+                  recursive: true
+            - name: access control list - group
+              ansible.posix.acl:
+                  path: /home/rachel/homelab
+                  default: true
+                  entity: docker
+                  etype: group
+                  permissions: rwX
+                  state: present
+                  recursive: true
+- name: docker stuff
+  become: true
+  become_user: rachel
+  hosts: [docker]
+  tasks: []
+     # - name: pull images
+     #   register: pull
+     #   until: pull is ansible.builtin.success
+     #   delay: 30
+     #   retries: 3
+     #   community.docker.docker_compose_v2_pull:
+     #       project_src: /home/rachel/homelab/docker
+     #       files: ["{{ inventory_hostname }}.compose.yaml"]
+     # - name: run compose
+     #   community.docker.docker_compose_v2:
+     #       project_src: /home/rachel/homelab/docker
+     #       files: ["{{ inventory_hostname }}.compose.yaml"]
+     #       pull: never
+     #       remove_orphans: true
+     # - name: prune orphaned images etc
+     #   community.docker.docker_prune:
+     #       containers: true # shouldnt do anything because remove_orphans above
+     #       images: true
+     #       networks: true
+     #       volumes: true

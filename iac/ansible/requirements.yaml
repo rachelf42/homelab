@@ -1,0 +1,10 @@
+# vim: set tabstop=2
+collections:
+    - name: cloud.terraform
+      version: 3.0.0
+    - name: ansible.posix
+      version: 1.6.2
+    - name: community.general
+      version: 10.5.0
+    - name: community.docker
+      version: 4.5.2

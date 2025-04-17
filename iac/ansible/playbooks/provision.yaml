@@ -95,7 +95,8 @@
                   allow_change_held_packages: true # cause a failed run might have left it installed but marked held
             - name: prevent snapd install - by system
               when: snapd is ansible.builtin.changed
-              check_mode: false # noqa: no-changed-when no-handler
+              changed_when: snapd is ansible.builtin.changed
+              check_mode: false # noqa: no-handler
               ansible.builtin.command: apt-mark hold snapd
             - name: prevent snapd install - by users
               ansible.builtin.copy:
@@ -124,36 +125,197 @@
             marker: "# {mark} ANSIBLE SERVER BLOCK"
             state: present
             block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/server') }}"
-- name: dev machine config
+- name: docker setup
+  become: true
+  hosts: [docker]
+  vars:
+      deb_arch:
+          armv6l: armhf,
+          armv7l: armhf,
+          aarch64: arm64,
+          x86_64: amd64,
+          i386: i386
+      badpkg:
+          - docker.io
+          - docker-doc
+          - docker-compose
+          - docker-compose-v2
+          - containerd
+          - runc
+      dockerpkg:
+          - acl # cause we may run this task on a device that doesn't need the user setup
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-ce
+          - docker-ce-cli
+          - docker-compose-plugin
+          - pipx # for timegaps in the backup script
+  tasks:
+      - name: unofficial packages purged
+        register: dockerpurge
+        until: dockerpurge is ansible.builtin.success
+        delay: 30
+        retries: 10
+        ansible.builtin.apt:
+            name: "{{ badpkg }}"
+            state: absent
+            purge: true
+      - name: repo dependencies installed
+        block:
+            - name: ca-certificates
+              register: cacert
+              until: cacert is ansible.builtin.success
+              delay: 30
+              retries: 10
+              ansible.builtin.apt:
+                  name: ca-certificates
+                  state: present
+            - name: curl
+              register: curl
+              until: curl is ansible.builtin.success
+              delay: 30
+              retries: 10
+              ansible.builtin.apt:
+                  name: curl
+                  state: present
+      - name: repo setup
+        block:
+            - name: directory exists
+              ansible.builtin.file:
+                  path: /etc/apt/keyrings
+                  mode: "0755"
+                  state: directory
+            - name: key downloaded
+              ansible.builtin.get_url:
+                  url: https://download.docker.com/linux/ubuntu/gpg
+                  dest: /etc/apt/keyrings/docker.asc
+                  mode: "0664"
+                  owner: root
+                  group: root
+            - name: apt source installed
+              ansible.builtin.apt_repository:
+                  filename: docker
+                  repo: >-
+                      deb [arch={{ deb_arch[ansible_architecture] }}
+                      signed-by=/etc/apt/keyrings/docker.asc]
+                      https://download.docker.com/linux/ubuntu
+                      {{ ansible_distribution_release }} stable
+                  state: present
+      - name: packages installed
+        register: dockerinst
+        until: dockerinst is ansible.builtin.success
+        delay: 30
+        retries: 10
+        ansible.builtin.apt:
+            name: "{{ dockerpkg }}"
+            state: present
+            update_cache: true
+      - name: pipx config
+        block:
+            - name: ensurepath - reg user
+              check_mode: false
+              changed_when: true
+              become_user: rachel
+              ansible.builtin.command: pipx ensurepath
+            - name: ensurepath - root
+              check_mode: false
+              changed_when: true
+              ansible.builtin.command: pipx ensurepath
+            - name: install timegaps - reg user
+              become_user: rachel
+              community.general.pipx:
+                  name: timegaps
+                  state: latest
+            - name: install timegaps - root
+              community.general.pipx:
+                  name: timegaps
+                  state: latest
+      - name: bashrc aliases
+        ansible.builtin.blockinfile:
+            path: /home/rachel/.bashrc
+            marker: "# {mark} ANSIBLE DOCKER BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/docker') }}"
+      - name: get dockers gid
+        register: getent       # gid is in getent.stdout
+        check_mode: false      # i know there is a getent module but ehhhhh
+        changed_when: false    # i dont wanna learn how to get the info out of that database return variable
+        ansible.builtin.shell: # i just need the one thing and awk can pull it easy enough
+            executable: /bin/bash
+            cmd: |
+              set -o pipefail
+              getent group docker | awk -F: '{print $3}'
+      - name: environment variables set
+        ansible.builtin.blockinfile:
+            path: /etc/environment
+            marker: "# {mark} ANSIBLE BLOCK"
+            state: present
+            block: "{{ lookup('ansible.builtin.template', '../resources/dockerenv') }}"
+      - name: add user to docker group
+        ansible.builtin.user:
+            name: rachel
+            state: present
+            append: true
+            groups: docker
+      - name: docker logged in
+        become_user: rachel
+        community.docker.docker_login:
+            username: rachelf42
+            password: "{{ lookup('ansible.builtin.file', '../resources/docker-pat') }}"
+            state: present
+      - name: systemd file present
+        ansible.builtin.copy:
+            src: ../resources/docker-compose.service
+            dest: /etc/systemd/system/docker-compose.service
+            remote_src: false
+            owner: root
+            group: root
+            mode: "0644"
+      - name: systemd file installed
+        ansible.builtin.systemd_service:
+            daemon_reload: true
+            name: docker-compose
+            enabled: true
+            no_block: true
+      - name: backup script present
+        ansible.builtin.copy:
+            src: ../resources/backup.sh
+            dest: /usr/local/bin/docker-backup
+            remote_src: false
+            owner: root
+            group: root
+            mode: "0755"
+      - name: backup cronjob present
+        ansible.builtin.cron:
+            name: docker-backup
+            state: present
+            hour: 2
+            minute: 5
+            job: /usr/local/bin/docker-backup
+- name: dev machine setup
   become: true
   become_user: rachel
-  hosts: [rachel-pc]
+  hosts: [devmachine]
   tasks:
       - name: bin directory exists
         ansible.builtin.file:
             path: /home/rachel/bin
             state: directory
             mode: "0775"
-      - name: git repo updated
-        ansible.builtin.git:
-            repo: ssh://git@github.com:rachelf42/homelab.git
-            dest: /home/rachel/homelab
-            clone: true
-            accept_newhostkey: true
-      - name: link deploy.sh
+      - name: deploy.sh linked
         ansible.builtin.file:
-            path: /home/rachel/bin/homelab-deploy
+            path: /home/rachel/bin/hldeploy
             src: /home/rachel/homelab/scripts/deploy.sh
             state: link
-      - name: link update.sh
+      - name: lint.sh linked
         ansible.builtin.file:
-            path: /home/rachel/bin/homelab-update
-            src: /home/rachel/homelab/scripts/update.sh
-            state: link
-      - name: link lint.sh
-        ansible.builtin.file:
-            path: /home/rachel/bin/homelab-lint
+            path: /home/rachel/bin/hllint
             src: /home/rachel/homelab/scripts/lint.sh
+            state: link
+      - name: beep-controller.sh linked
+        ansible.builtin.file:
+            path: /home/rachel/bin/beeps
+            src: /home/rachel/homelab/scripts/beep-controller.sh
             state: link
 - name: finishing up
   become: true

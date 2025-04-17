@@ -5,17 +5,16 @@
 # note that it does not prune the remote side, just local. it also relies on /etc/environment to configure compose for it
 # cause it just calls the raw up/down command without any arguments other than --detach
 
-#TODO: test then uncomment timegaps
-#TODO: move from mediaserver to an actual NFS
-#TODO: figure out what we wanna do for remote side pruning
+#TODO test then uncomment timegaps
+#TODO figure out what we wanna do for remote side pruning
 
 if [[ "$EUID" -ne 0 ]]
 	then echo 'Please run as root'
 	exit 1
 fi
 
-RSYNC_HOST=${RSYNC_HOST:-rachel-pc.local.rachelf42.ca}
-RSYNC_DEST="$RSYNC_HOST:/home/rachel/homelab/backups"
+RSYNC_HOST=${RSYNC_HOST:-nas1.local.rachelf42.ca}
+RSYNC_DEST="$RSYNC_HOST:/home/rachel/homelab-backups"
 
 # INTERNAL VARIABLES
 CHOWN="$DOCKER_USER:$DOCKER_USER"
@@ -26,7 +25,7 @@ cd "$DOCKERDIR" || exit 1
 docker compose --progress quiet down
 tar --create --auto-compress --file="./backups/$FILENAME" "./appdata"
 chown "$CHOWN" "./backups/$FILENAME"
-bash "./scripts/update.sh"
+docker compose --progress quiet up -d
 rsync \
 	--rsh='ssh' \
 	--archive \

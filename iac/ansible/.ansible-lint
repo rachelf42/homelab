@@ -1,3 +1,5 @@
+# vim: filetype=yaml
 skip_list:
     - name[casing]
     - name[missing]
+    - latest

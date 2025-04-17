@@ -1,5 +1,6 @@
+# vim: filetype=yaml
 # adapted from https://ansible.readthedocs.io/projects/lint/rules/yaml/#yamllint-configuration
-extends: ../../.yamllint.yaml
+extends: ../../.yamllint
 rules:
     comments:
         min-spaces-from-content: 1
