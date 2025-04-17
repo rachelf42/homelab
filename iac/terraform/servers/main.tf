@@ -5,7 +5,7 @@ terraform {
   required_providers {
     proxmox = {
       source  = "bpg/proxmox"
-      version = "0.75.0"
+      version = "0.76.0"
     }
     ansible = { # found it easier to keep PM config and inventory entries together
       source  = "ansible/ansible"
