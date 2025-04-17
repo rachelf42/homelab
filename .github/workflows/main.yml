@@ -16,7 +16,7 @@ jobs:
             - name: Install YAMLlint
               run: pip install yamllint
             - name: Fake Ansible Vault
-              run: touch secrets/ansible_vault.yaml
+              run: mv iac/ansible/civault.yaml secrets/ansible_vault.yaml
             - name: Run YAMLlint
               run: yamllint .
            # - name: Run DClint - Errors
@@ -46,6 +46,8 @@ jobs:
               run: terraform -chdir=iac/terraform/servers validate
             - name: Run Ansible-Lint
               uses: ansible/ansible-lint@v25.2.1
+              env:
+                  ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
               with:
                   working_directory: iac/ansible
                   requirements_file: requirements.yaml
