@@ -29,7 +29,7 @@ jobs:
               run: |
                 echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret"' > iac/packer/secret.auto.pkrvars.hcl
             - name: Placeholder SSH Key
-              run: ssh-keygen -f secrets/ansible_ssh_key
+              run: ssh-keygen -f ansible_ssh_key
             - name: Initialize Packer
               run: packer init iac/packer
             - name: Run Packer Validate
