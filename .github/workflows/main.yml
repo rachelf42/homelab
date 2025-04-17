@@ -45,9 +45,9 @@ jobs:
             - name: Run Terraform Validate - Servers
               run: terraform -chdir=iac/terraform/servers validate
             - name: Run Ansible-Lint
-              uses: ansible/ansible-lint@v25.2.1
-              env:
-                  ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
-              with:
-                  working_directory: iac/ansible
-                  requirements_file: requirements.yaml
+              run: |
+                  export ANSIBLE_VAULT_PASS=SuperSecureSecretPassword
+                  export ANSIBLE_VAULT_PASSWORD_FILE="$GITHUB_WORKSPACE/iac/ansible/vault-pass-helper.sh"
+                  cd iac/ansible
+                  ansible-galaxy -r requirements.yaml
+                  ansible-lint
