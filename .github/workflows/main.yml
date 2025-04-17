@@ -37,13 +37,13 @@ jobs:
             - name: HashiCorp - Setup Terraform
               uses: hashicorp/setup-terraform@v3.1.2
             - name: Initialize Terraform - Network
-              run: terraform -chdir iac/terraform/network init
+              run: terraform -chdir=iac/terraform/network init
             - name: Run Terraform Validate - Network
-              run: terraform -chdir iac/terraform/network validate
+              run: terraform -chdir=iac/terraform/network validate
             - name: Initialize Terraform - Servers
-              run: terraform -chdir iac/terraform/servers init
+              run: terraform -chdir=iac/terraform/servers init
             - name: Run Terraform Validate - Servers
-              run: terraform -chdir iac/terraform/servers validate
+              run: terraform -chdir=iac/terraform/servers validate
             - name: Run Ansible-Lint
               uses: ansible/ansible-lint@v25.2.1
               with:
