@@ -31,21 +31,13 @@ else
 	packer validate .
 fi
 
-cd "$DOCKERDIR/iac/cloudflare" || exit 1
-if (terraform validate . &>/dev/null); then
-	terraform fmt . &>/dev/null
+cd "$DOCKERDIR/iac/terraform" || exit 1
+if (terraform validate &>/dev/null); then
+	terraform fmt ./* &>/dev/null
 else
 	EC=$((EC + 1))
 	echo '===== TERRAFORM FAILED ====='
-	terraform validate .
-fi
-cd "$DOCKERDIR/iac/proxmox" || exit 1
-if (terraform validate . &>/dev/null); then
-	terraform fmt . &>/dev/null
-else
-	EC=$((EC + 1))
-	echo '===== TERRAFORM FAILED ====='
-	terraform validate .
+	terraform validate
 fi
 
 cd "$DOCKERDIR/iac/ansible" || exit 1
@@ -55,5 +47,5 @@ if ! (ansible-lint &>/dev/null); then
 	ansible-lint
 fi
 
-if [[ $EC == 0 ]]; then echo 'All Lint Checks Succeeded!'; fi
+if [[ $EC == 0 ]]; then cowsay -f hellokitty 'All Lint Checks Succeeded!'; fi
 exit $EC

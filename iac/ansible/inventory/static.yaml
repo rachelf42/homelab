@@ -29,6 +29,9 @@ by_role:
         nas:
             hosts:
                 nas1:
+        devmachine:
+            hosts:
+                rachel-pc:
         server:
             hosts:
                 pve-laptop:
