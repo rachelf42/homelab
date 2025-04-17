@@ -44,14 +44,10 @@ jobs:
               run: terraform -chdir=iac/terraform/servers init
             - name: Run Terraform Validate - Servers
               run: terraform -chdir=iac/terraform/servers validate
-            - name: Install Ansible-Lint
-              run: |
-                  sudo apt-get update
-                  sudo apt-get -y install ansible-lint
             - name: Run Ansible-Lint
-              run: |
-                  export ANSIBLE_VAULT_PASS=SuperSecureSecretPassword
-                  export ANSIBLE_VAULT_PASSWORD_FILE="$GITHUB_WORKSPACE/iac/ansible/vault-pass-helper.sh"
-                  cd iac/ansible
-                  ansible-galaxy install -r requirements.yaml
-                  ansible-lint
+              uses: ansible/ansible-lint@v25.2.1
+              env:
+                  ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
+              with:
+                  working_directory: iac/ansible
+                  requirements_file: requirements.yaml
