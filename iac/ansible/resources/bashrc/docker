@@ -1,3 +1,0 @@
-alias dc='docker compose'
-alias dclean='docker system prune --volumes'
-alias dcup='docker compose up -d --remove-orphans'

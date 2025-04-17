@@ -24,24 +24,24 @@
             update_cache: true
       - name: user account exists
         ansible.builtin.user:
-            name: rachel
+            name: "{{ user_name }}"
             state: present
             password: "{{ user_password_hash }}"
             uid: 1000
             create_home: true
             move_home: true
-            home: /home/rachel
+            home: "{{ homedir }}"
             append: true
             groups: [sudo]
             shell: /bin/bash
       - name: authorized keys synced - regular user
         ansible.posix.authorized_key:
             user: rachel
-            key: https://github.com/rachelf42.keys
+            key: https://github.com/{{ account_name }}.keys
             state: present
       - name: authorized keys synced - root user
         ansible.builtin.copy:
-            src: /home/rachel/.ssh/authorized_keys
+            src: "{{ homedir }}/.ssh/authorized_keys"
             dest: /root/.ssh/authorized_keys
             remote_src: true
             owner: root
@@ -50,13 +50,13 @@
       - name: repo pulling key synced - regular user
         become_user: rachel
         ansible.builtin.copy:
-            src: /home/rachel/.ssh/id_ed25519
-            dest: /home/rachel/.ssh/id_ed25519
+            src: "{{ homedir }}/.ssh/id_ed25519"
+            dest: "{{ homedir }}/.ssh/id_ed25519"
             remote_src: false
             mode: "0600"
       - name: repo pulling key synced - root user
         ansible.builtin.copy:
-            src: /home/rachel/.ssh/id_ed25519
+            src: "{{ homedir }}/.ssh/id_ed25519"
             dest: /root/.ssh/id_ed25519
             remote_src: false
             owner: root
@@ -64,9 +64,9 @@
             mode: "0600"
       - name: sudoer declaration in place
         community.general.sudoers:
-            name: rachelf42
+            name: "{{ account_name }}"
             state: present
-            user: rachel
+            user: "{{ user_name }}"
             commands: ALL
             nopassword: true
 - name: ubuntu specific config
@@ -100,9 +100,11 @@
               ansible.builtin.command: apt-mark hold snapd
             - name: prevent snapd install - by users
               ansible.builtin.copy:
-                  src: ../resources/fuck-snapd
                   dest: /etc/apt/preferences.d/00-fuck-snapd
-                  remote_src: false
+                  content: |
+                    Package: snapd
+                    Pin: release *
+                    Pin-Priority: -1
                   owner: root
                   group: root
                   mode: "0644"
@@ -121,10 +123,10 @@
             update_cache: true
       - name: bashrc alias for trash
         ansible.builtin.blockinfile:
-            path: /home/rachel/.bashrc
+            path: "{{ homedir }}/.bashrc"
             marker: "# {mark} ANSIBLE SERVER BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/server') }}"
+            block: alias rm='echo "use trash, dummy"; tput bel; false'
 - name: docker setup
   become: true
   hosts: [docker]
@@ -215,14 +217,14 @@
             - name: ensurepath - reg user
               check_mode: false
               changed_when: true
-              become_user: rachel
+              become_user: "{{ user_name }}"
               ansible.builtin.command: pipx ensurepath
             - name: ensurepath - root
               check_mode: false
               changed_when: true
               ansible.builtin.command: pipx ensurepath
             - name: install timegaps - reg user
-              become_user: rachel
+              become_user: "{{ user_name }}"
               community.general.pipx:
                   name: timegaps
                   state: latest
@@ -232,10 +234,13 @@
                   state: latest
       - name: bashrc aliases
         ansible.builtin.blockinfile:
-            path: /home/rachel/.bashrc
+            path: "{{ homedir }}/.bashrc"
             marker: "# {mark} ANSIBLE DOCKER BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/docker') }}"
+            block: |
+                alias dc='docker compose'
+                alias dclean='docker system prune --volumes'
+                alias dcup='docker compose up -d --remove-orphans'
       - name: get dockers gid
         register: getent       # gid is in getent.stdout
         check_mode: false      # i know there is a getent module but ehhhhh
@@ -250,24 +255,40 @@
             path: /etc/environment
             marker: "# {mark} ANSIBLE BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.template', '../resources/dockerenv') }}"
+            block: |
+                TZ="America/Vancouver"
+                HL_REPO="{{ repodir }}"
+                DOCKERDIR="{{ repodir }}"
+                DOCKER_GID={{ getent.stdout }}
+                DOCKER_USER="{{ user_name }}"
+                COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml"
       - name: add user to docker group
         ansible.builtin.user:
-            name: rachel
+            name: "{{ user_name }}"
             state: present
             append: true
             groups: docker
       - name: docker logged in
-        become_user: rachel
+        become_user: "{{ user_name }}"
         community.docker.docker_login:
-            username: rachelf42
+            username: "{{ account_name }}"
             password: "{{ lookup('ansible.builtin.file', '../resources/docker-pat') }}"
             state: present
       - name: systemd file present
         ansible.builtin.copy:
-            src: ../resources/docker-compose.service
             dest: /etc/systemd/system/docker-compose.service
-            remote_src: false
+            content: |
+                [Unit]
+                Description=Start Docker On Boot
+
+                [Service]
+                EnvironmentFile=/etc/environment
+                ExecStart=/usr/bin/docker compose up -d
+                Type=oneshot
+                RemainAfterExit=yes
+
+                [Install]
+                WantedBy=multi-user.target
             owner: root
             group: root
             mode: "0644"
@@ -294,28 +315,28 @@
             job: /usr/local/bin/docker-backup
 - name: dev machine setup
   become: true
-  become_user: rachel
+  become_user: "{{ user_name }}"
   hosts: [devmachine]
   tasks:
       - name: bin directory exists
         ansible.builtin.file:
-            path: /home/rachel/bin
+            path: "{{ homedir }}/bin"
             state: directory
             mode: "0775"
       - name: deploy.sh linked
         ansible.builtin.file:
-            path: /home/rachel/bin/hldeploy
-            src: /home/rachel/homelab/scripts/deploy.sh
+            path: "{{ homedir }}/bin/hldeploy"
+            src: "{{ repodir }}/scripts/deploy.sh"
             state: link
       - name: lint.sh linked
         ansible.builtin.file:
-            path: /home/rachel/bin/hllint
-            src: /home/rachel/homelab/scripts/lint.sh
+            path: "{{ homedir }}/bin/hllint"
+            src: "{{ repodir }}/scripts/lint.sh"
             state: link
       - name: beep-controller.sh linked
         ansible.builtin.file:
-            path: /home/rachel/bin/beeps
-            src: /home/rachel/homelab/scripts/beep-controller.sh
+            path: "{{ homedir }}/bin/beeps"
+            src: "{{ repodir }}/scripts/beep-controller.sh"
             state: link
 - name: finishing up
   become: true
@@ -323,30 +344,59 @@
   tasks:
       - name: sshd - parallel-ssh environment variables
         ansible.builtin.copy:
-            src: ../resources/sshd.conf
-            dest: /etc/ssh/sshd_config.d/99-rachelf42.conf
-            remote_src: false
+            dest: /etc/ssh/sshd_config.d/99-{{ account_name }}.conf
+            content: AcceptEnv PSSH_NODENUM PSSH_NUMNODES PSSH_HOST
             owner: root
             group: root
             mode: "0644"
       - name: bashrc - reg user
         ansible.builtin.blockinfile:
-            path: /home/rachel/.bashrc
+            path: "{{ homedir }}/.bashrc"
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/reg-user') }}"
+            block: |
+                force_color_prompt=yes
+                export PS1='[$?] \[\e[32m\]\u\[\e[m\]\[\e[32m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
+                export PATH="$PATH:$HOME/bin"
       - name: bashrc - skeleton user
         ansible.builtin.blockinfile:
             path: /etc/skel/.bashrc
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/skel') }}"
+            block: |
+                force_color_prompt=yes
+                export PS1='[$?] \[\e[33\]\u\[\e[m\]\[\e[33\]@\[\e[m\]\[\e[33\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
       - name: bashrc - root user
         ansible.builtin.blockinfile:
             path: /root/.bashrc
             marker: "# {mark} ANSIBLE GENERAL BLOCK"
             state: present
-            block: "{{ lookup('ansible.builtin.file', '../resources/bashrc/root') }}"
+            block: |
+                force_color_prompt=yes
+                export PS1='[$?] \[\e[31m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
+      - name: nanorc
+        ansible.builtin.blockinfile:
+            path: ["{{ homedir }}/.nanorc", /root/.nanorc, /etc/skel/.nanorc]
+            marker: "# {mark} ANSIBLE BLOCK"
+            state: present
+            # yamllint disable rule:line-length
+            block: |
+                ## adapted from https://github.com/scopatz/nanorc/blob/master/sh.nanorc
+                syntax "SH" "\.sh$" "\.ash" "\.bashrc" "bashrc" "\.bash_aliases" "bash_aliases" "\.bash_functions" "bash_functions" "\.bash_login" "\.bash_logout" "\.bash_profile" "bash_profile" "\.profile" "revise\..+$"
+                header "^#!.*/(env +)?(ba|da|a)?sh( |$)"
+                tabgives '\t'
+                comment "#"
+                color green "\<(case|do|done|elif|else|esac|fi|for|function|if|in|select|then|time|until|while)\>"
+                color green "(\{|\}|\(|\)|\;|\]|\[|`|\\|\$|<|>|!|=|&|\|)"
+                color green "-[Ldefgruwx]\>"
+                color green "-(eq|ne|gt|lt|ge|le|s|n|z)\>"
+                color brightblue "\<(alias|bg|bind|break|builtin|caller|cd|command|compgen|complete|compopt|continue|declare|dirs|disown|echo|enable|eval|exec|exit|export|false|fc|fg|getopts|hash|help|history|jobs|kill|let|local|logout|mapfile|popd|printf|pushd|pwd|read|readarray|readonly|return|set|shift|shopt|source|suspend|test|times|trap|true|type|typeset|ulimit|umask|unalias|unset|wait|cat|chmod|chown|cp|env|grep|install|ln|make|mkdir|mv|rm|sed|tar|touch)\>"
+                icolor brightgreen "^\s+[0-9A-Z_]+\s+\(\)"
+                icolor brightred "\$\{?[0-9A-Z_!@#$*?-]+\}?"
+                color brightyellow ""(\\.|[^"])*"" "'(\\.|[^'])*'"
+                color cyan "(^|[[:space:]])#.*$"
+                color ,green "[[:space:]]+$"
+            # yamllint enable rule:line-length
       - name: set timezone
         community.general.timezone:
             name: America/Vancouver

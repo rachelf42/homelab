@@ -23,7 +23,7 @@ variable "proxmox_template_id" {
 }
 # Packer Meta-Settings
 packer {
-  required_version = "~> 1.12"
+  required_version = "~> 1.12" # TODO https://github.com/renovatebot/renovate/issues/8178
   required_plugins {
     name = {
       version = "~> 1.2, >=1.2.2"

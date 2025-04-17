@@ -15,6 +15,8 @@ jobs:
                   path: "scripts"
             - name: Install YAMLlint
               run: pip install yamllint
+            - name: Fake Ansible Vault
+              run: touch secrets/ansible_vault.yaml
             - name: Run YAMLlint
               run: yamllint .
            # - name: Run DClint - Errors

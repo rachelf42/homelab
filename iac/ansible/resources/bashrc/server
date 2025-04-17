@@ -1,1 +1,0 @@
-alias rm='echo "use trash, dummy"; tput bel; false'
