@@ -26,7 +26,7 @@ jobs:
             - name: Setup HashiCorp Packer
               uses: hashicorp/setup-packer@v3.1.0
             - name: Fake Proxmox Secret
-              run: echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret" > iac/packer/secret.auto.pkrvars.hcl'
+              run: echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret"' > iac/packer/secret.auto.pkrvars.hcl
             - name: Initialize Packer
               run: packer init iac/packer
             - name: Run Packer Validate
