@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 resource "cloudflare_dns_record" "root" {
   content = "24.68.237.7"
   name    = var.cf_domain

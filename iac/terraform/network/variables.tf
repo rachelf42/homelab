@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 data "cloudflare_zones" "cf_domain" {
   name   = var.cf_domain
   status = "active"

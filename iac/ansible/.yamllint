@@ -1,4 +1,3 @@
-# vim: filetype=yaml
 # adapted from https://ansible.readthedocs.io/projects/lint/rules/yaml/#yamllint-configuration
 extends: ../../.yamllint
 rules:

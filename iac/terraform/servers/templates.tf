@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 resource "proxmox_virtual_environment_download_file" "template-lxc-ubuntu-noble" {
   content_type = "vztmpl"
   datastore_id = "local"

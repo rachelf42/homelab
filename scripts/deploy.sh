@@ -1,6 +1,4 @@
 #!/bin/bash
-# vim: set noexpandtab
-
 # TODO --assume-yes argument
 
 DOCKERDIR=${DOCKERDIR:-/home/rachel/homelab} # dev machine may not have env set

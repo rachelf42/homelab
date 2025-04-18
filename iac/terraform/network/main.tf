@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 terraform {
   required_version = "1.11.4"
   required_providers {

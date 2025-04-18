@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 variable "proxmox_api_token_id" {
   type = string
 }

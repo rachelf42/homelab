@@ -1,5 +1,4 @@
 #!/bin/bash
-# vim: set noexpandtab
 # this script will send a notification to notifiarr if theres any apt upgrades available
 # intended to be run via crontab every week or so, but can also be run manually with --single
 # that'll just just do a dry-run upgrade on the local machine and spit out the upgradeable packages

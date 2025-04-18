@@ -1,4 +1,3 @@
-# vim: filetype=yaml
 rules:
     no-unbound-port-interfaces: 0 # TODO: change this
     services-alphabetical-order: 0 # Use logical groupings instead

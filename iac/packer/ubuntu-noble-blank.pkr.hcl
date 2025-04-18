@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 # Adapted from gh:christianlempa/boilerplates
 # Variable Definitions
 variable "proxmox_default_node" { type = string }

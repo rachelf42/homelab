@@ -1,5 +1,3 @@
-#!/bin/bash
-# vim: set noexpandtab
 #!/bin/sh
 # https://blog.dhampir.no/content/fun-with-beep
 # sourced from https://github.com/ShaneMcC/beeps/blob/master/mario-victory.sh

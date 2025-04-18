@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# vim: filetype=json
 resource "ansible_host" "mediasrv" {
   name = "mediasrv"
   groups = [
