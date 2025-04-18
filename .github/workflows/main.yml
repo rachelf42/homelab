@@ -1,0 +1,53 @@
+# on: # yamllint disable-line rule:truthy
+#     push:
+#         branches: main
+#     pull_request:
+#         branches: main
+# jobs:
+#     lint:
+#         runs-on: ubuntu-latest
+#         steps:
+#             - name: Checkout code
+#               uses: actions/checkout@v4
+#             - name: Run ShellCheck
+#               uses: Azbagheri/shell-linter@latest
+#               with:
+#                   path: "scripts"
+#             - name: Install YAMLlint
+#               run: pip install yamllint
+#             - name: Fake Ansible Vault
+#               run: mv iac/ansible/civault.yaml secrets/ansible_vault.yaml
+#             - name: Run YAMLlint
+#               run: yamllint .
+#            # - name: Run DClint - Errors
+#            #   run: docker run -t --rm -v ${GITHUB_WORKSPACE}:/app zavoloklom/dclint ./docker/*.yaml
+#            # - name: Run DClint - Warnings # https://github.com/orgs/community/discussions/15452?sort=top
+#            #   run: docker run -t --rm -v ${GITHUB_WORKSPACE}:/app zavoloklom/dclint --max-warnings 0 ./docker/*.yaml
+#             - name: Setup HashiCorp Packer
+#               uses: hashicorp/setup-packer@v3.1.0
+#             - name: Fake Proxmox Secret
+#               run: |
+#                 echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret"' > iac/packer/secret.auto.pkrvars.hcl
+#             - name: Placeholder SSH Key
+#               run: ssh-keygen -f ansible_ssh_key
+#             - name: Initialize Packer
+#               run: packer init iac/packer
+#             - name: Run Packer Validate
+#               run: packer validate iac/packer
+#             - name: HashiCorp - Setup Terraform
+#               uses: hashicorp/setup-terraform@v3.1.2
+#             - name: Initialize Terraform - Network
+#               run: terraform -chdir=iac/terraform/network init
+#             - name: Run Terraform Validate - Network
+#               run: terraform -chdir=iac/terraform/network validate
+#             - name: Initialize Terraform - Servers
+#               run: terraform -chdir=iac/terraform/servers init
+#             - name: Run Terraform Validate - Servers
+#               run: terraform -chdir=iac/terraform/servers validate
+#             - name: Run Ansible-Lint
+#               uses: ansible/ansible-lint@v25.2.1
+#               env:
+#                   ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
+#               with:
+#                   working_directory: iac/ansible
+#                   requirements_file: requirements.yaml

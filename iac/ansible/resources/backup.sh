@@ -1,5 +1,4 @@
 #!/bin/bash
-# vim: set noexpandtab
 # this script will bring down the current Docker Compose project, backup the appdata folder, and bring it back up
 # it will then rsync the resulting tarball over to central storage, and lastly prune the local folder using python3-timegaps
 # note that it does not prune the remote side, just local. it also relies on /etc/environment to configure compose for it

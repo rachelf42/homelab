@@ -1,5 +1,5 @@
 #!/bin/bash
-# vim: set noexpandtab
+
 DOCKERDIR=${DOCKERDIR:-/home/rachel/homelab} # dev machine may not have env set
 EC=0
 cd "$DOCKERDIR" || exit 1

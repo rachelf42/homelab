@@ -1,5 +1,3 @@
-# vim: set tabstop=2
-# gedit has issues indenting top-level arrays properly
 - name: repo setup
   become: true
   become_user: rachel

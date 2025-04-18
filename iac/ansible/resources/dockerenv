@@ -1,5 +1,0 @@
-TZ="America/Vancouver"
-DOCKERDIR="/home/rachel/homelab" # this should prob be HOMELABDIR but eh im in too deep
-DOCKER_GID={{ getent.stdout }}
-DOCKER_USER="rachel"
-COMPOSE_FILE="$DOCKERDIR/docker/{{ inventory_hostname }}.compose.yaml"
