@@ -1,15 +1,22 @@
 terraform {
   required_version = "1.11.4"
   required_providers {
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "5.3.0"
+    }
     proxmox = {
       source  = "bpg/proxmox"
       version = "0.76.0"
     }
-    ansible = { # found it easier to keep PM config and inventory entries together
+    ansible = {
       source  = "ansible/ansible"
       version = "1.3.0"
     }
   }
+}
+provider "cloudflare" {
+  api_token = var.cf_api_token
 }
 provider "proxmox" {
   endpoint      = var.proxmox_api_url
