@@ -6,4 +6,4 @@
 *.tfstate
 *.tfstate.*
 *tfplan*
-/.gitignore
+/.github
