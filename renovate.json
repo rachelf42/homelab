@@ -13,11 +13,25 @@
   "automergeStrategy": "squash",
   "packageRules": [
     {
-      "matchDepTypes": [
-        "action"
-      ],
+      "matchDepTypes": ["action"],
       "pinDigests": true,
       "automerge": true
+    },
+    {
+      "matchPackageNames": ["ansible-lint"],
+      "automerge": false
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "(^|/)(workflow-templates|\\.(?:github|gitea|forgejo)/(?:workflows|actions))/.+\\.ya?ml$",
+        "(^|/)action\\.ya?ml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[a-zA-Z0-9-._]+?) depName=(?<depName>[^\\s]+?)(?: (?:lookupName|packageName)=(?<packageName>[^\\s]+?))?(?: versioning=(?<versioning>[^\\s]+?))?(?: extractVersion=(?<extractVersion>[^\\s]+?))?\\s+gh_action_ref\\s*:\\s*[\"']?(?<currentValue>.+?)[\"']?\\s"
+      ]
     }
   ]
 }
