@@ -10,5 +10,14 @@
     ":reviewer(rachelf42)"
   ],
   "ignoreTests": true,
-  "automergeStrategy": "rebase"
+  "automergeStrategy": "squash",
+  "packageRules": [
+    {
+      "matchDepTypes": [
+        "action"
+      ],
+      "pinDigests": true,
+      "automerge": true
+    }
+  ]
 }
