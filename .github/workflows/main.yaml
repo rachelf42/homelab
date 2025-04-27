@@ -1,0 +1,53 @@
+on: # yamllint disable-line rule:truthy
+  push:
+    branches: main
+  pull_request:
+    branches: main
+jobs:
+  lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Run ShellCheck
+        uses: Azbagheri/shell-linter@v0.8.0
+        with:
+          path: "scripts"
+
+      - name: Install YAMLlint
+        run: pip install yamllint
+      - name: Fake Ansible Vault
+        run: mv ansible/civault.yaml secrets/ansible_vault.yaml
+      - name: Run YAMLlint
+        run: yamllint .
+
+      - name: Setup HashiCorp Packer
+        uses: hashicorp/setup-packer@v3.1.0
+      - name: Fake Proxmox Secret
+        run: |
+          echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret"' > packer/secret.auto.pkrvars.hcl
+      - name: Placeholder SSH Key
+        run: ssh-keygen -f ansible_ssh_key
+      - name: Initialize Packer
+        run: packer init packer
+      - name: Run Packer Validate
+        run: packer validate packer
+
+      - name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v3.1.2
+      - name: Initialize Terraform
+        run: terraform -chdir=terraform init
+      - name: Run Terraform Validate
+        run: terraform -chdir=terraform validate
+
+      - name: Run Ansible-Lint
+        uses: ansible/ansible-lint@v25.2.1
+        env:
+          ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
+        with:
+          gh_action_ref: v25.2.1
+          working_directory: ansible
+          requirements_file: requirements.yaml

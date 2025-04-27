@@ -1,0 +1,261 @@
+# This playbook is for initial setup ONLY and should only be run once per host
+# Ideally nothing would be in here and we'd do it all in terraform
+# But bpg/proxmox doesn't have all settings so here we are
+- name: prompts
+  hosts: [all]
+  vars:
+    ansible_user: root
+  gather_facts: false
+  tasks:
+    - name: confirm LE TOS
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: letos
+      ansible.builtin.pause:
+        prompt: >-
+          CONFIRM: Do you agree to the
+          current Let's Encrypt Terms
+          Of Service? It is YOUR *LEGAL*
+          RESPONSIBILITY to find them
+          and read them in full. [Y/N]
+    - name: confirm askpass
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: askpass
+      ansible.builtin.pause:
+        prompt: >-
+          CONFIRM: have you used the --ask-pass argument?
+          This playbook is the one that copies the ansible
+          SSH key to PVE, so cannot use standard key-based
+          authentication. [Y/N]
+    - name: confirm limit
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: limited
+      ansible.builtin.pause:
+        prompt: >-
+          CONFIRM: have you used the --limit argument
+          to ensure this playbook is never run
+          against already-bootstrapped hosts? [Y/N]
+    - name: confirm predeploy
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: predeploy
+      ansible.builtin.pause:
+        # needed to create the inventory record
+        # not sure if we'd ever get to this point if there wasnt one
+        # but it cant hurt to check since future me is not to be trusted to remember things
+        prompt: >-
+          CONFIRM: new node(s) have been added to
+          ans-statics.auto.tfvars and
+          'terraform apply' has been run? [Y/N]
+    - delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      ansible.builtin.assert:
+        that: >-
+          (letos.user_input is match("y")
+          or letos.user_input is match("Y"))
+          and (askpass.user_input is match("y")
+          or askpass.user_input is match("Y"))
+          and (limited.user_input is match("y")
+          or limited.user_input is match("Y"))
+          and (predeploy.user_input is match("y")
+          or predeploy.user_input is match("Y"))
+    - name: wait for connection
+      ansible.builtin.wait_for_connection:
+        sleep: 10
+        timeout: 3600
+- name: bootstrap PVE
+  hosts: [pve]
+  vars:
+    ansible_user: root
+  tasks:
+    - name: no subscription
+      # all of these are only needed
+      # because i cant afford a subscription
+      # if you can then you need to change
+      # this block to install your key
+      # or whatever they use for auth
+      block:
+        - name: download nagbuster
+          ansible.builtin.get_url:
+            url: https://raw.githubusercontent.com/foundObjects/pve-nag-buster/master/install.sh
+            dest: /root/install-nagbuster.sh
+            mode: u+x
+            owner: root
+        - name: install nagbuster
+          ansible.builtin.command:
+            cmd: ./install-nagbuster.sh
+            creates: /usr/share/pve-nag-buster.sh
+        - name: disable enterprise ceph repo
+          ansible.builtin.apt_repository:
+            filename: ceph
+            repo: deb https://enterprise.proxmox.com/debian/ceph-quincy bookworm enterprise
+            state: absent
+            update_cache: false
+        - name: install nosub ceph repo
+          ansible.builtin.apt_repository:
+            filename: ceph
+            repo: deb http://download.proxmox.com/debian/ceph-quincy bookworm no-subscription
+            state: present
+            update_cache: false
+    - name: install dependencies
+      register: apt
+      until: apt is ansible.builtin.success
+      async: 600
+      poll: 10
+      delay: 30
+      retries: 10
+      ansible.builtin.apt:
+        update_cache: true
+        name: python3-pexpect
+        state: present
+    - name: register acme account
+      changed_when: true
+      async: 600
+      poll: 10
+      ansible.builtin.expect:
+        command: >-
+          pvenode acme account register default {{ user_email }}
+          --directory https://acme-v02.api.letsencrypt.org/directory
+        responses:
+          agree to the above terms: y # RUNNING THIS TASK CONSTITUTES LEGAL AGREEMENT TO THE DIRECTORY'S TERMS
+    - name: upload cloudflare data
+      ansible.builtin.template:
+        dest: /root/cloudflare-acme-data
+        src: ../resources/cloudflare-acme-data.jinja2
+        mode: "0600"
+        owner: root
+    - name: register cloudflare acme plugin
+      changed_when: true
+      ansible.builtin.command: >-
+        pvenode acme plugin add
+        dns cloudflare --api cf
+        --nodes {{ ansible_hostname }}
+        --data /root/cloudflare-acme-data
+    - name: set certificate domain - pve.local
+      changed_when: true
+      ansible.builtin.command: >-
+        pvenode config set
+        --acme account=default
+        --acmedomain0 domain=pve.local.rachelf42.ca,plugin=cloudflare
+    - name: set certificate domain - node.local
+      changed_when: true
+      ansible.builtin.command: >-
+        pvenode config set
+        --acme account=default
+        --acmedomain1 domain={{ ansible_hostname }}.local.rachelf42.ca,plugin=cloudflare
+    - name: order certs
+      changed_when: true
+      async: 600
+      poll: 10
+      ansible.builtin.command: pvenode acme cert order
+    - name: logind.conf.d exists
+      ansible.builtin.file:
+        path: /etc/systemd/logind.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+    - name: disable power buttons/lid switch
+      # cause PVE specifically we do NOT want unexpected shutdowns/reboots
+      ansible.builtin.blockinfile:
+        path: /etc/systemd/logind.conf.d/00-ansible.conf
+        marker: "# {mark} ANSIBLE POWER BUTTON BLOCK"
+        state: present
+        owner: root
+        group: root
+        create: true
+        mode: "0644"
+        append_newline: true
+        block: |
+          [Login]
+          HandlePowerKey=ignore
+          HandlePowerKeyLongPress=ignore
+          HandleRebootKey=ignore
+          HandleRebootKeyLongPress=ignore
+          HandleSuspendKey=ignore
+          HandleSuspendKeyLongPress=ignore
+          HandleHibernateKey=ignore
+          HandleHibernateKeyLongPress=ignore
+          HandleLidSwitch=ignore
+          HandleLidSwitchExternalPower=ignore
+          HandleLidSwitchDocked=ignore
+    - name: package upgrades
+      async: 600
+      poll: 10
+      delay: 30
+      retries: 10
+      register: aptupgrade
+      until: aptupgrade is ansible.builtin.success
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: full
+    - name: package autoremove
+      async: 600
+      poll: 10
+      delay: 30
+      retries: 10
+      register: aptremove
+      until: aptremove is ansible.builtin.success
+      ansible.builtin.apt:
+        update_cache: true
+        autoremove: true
+        autoclean: true
+    - name: setup nonroot user # leave most of the setup to provision.yaml
+      block: # i'd just leave the ansible_user as root, but it's been
+        - name: initial nonroot user setup # causing workers to mysteriously
+          ansible.builtin.user: # die with no log lines, so that's fun
+            name: "{{ user_name }}"
+            uid: 1000
+            home: /home/{{ user_name }}
+            move_home: true
+            shell: /bin/bash
+            state: present
+        - name: ansible ssh key
+          ansible.posix.authorized_key:
+            user: "{{ user_name }}"
+            key: "{{ lookup('ansible.builtin.file', '../sshkey.pub') }}"
+            state: present
+        - name: sudo installed
+          async: 600
+          poll: 10
+          delay: 30
+          retries: 10
+          register: sudo
+          until: sudo is ansible.builtin.success
+          ansible.builtin.apt:
+            name: sudo
+            state: present
+            update_cache: true
+        - name: sudoer declaration in place
+          community.general.sudoers:
+            name: "{{ account_name }}"
+            state: present
+            user: "{{ user_name }}"
+            commands: ALL
+            nopassword: true
+    - name: reboot # should probaly use ansible.builtin.reboot
+      # but this is the last real task and i dont want to delay
+      # the ansible command finishing just because proxmox has a lot
+      # of updates or something thats a problem for the human
+      # who inevitably had to do the OS install and run this playbook
+      changed_when: true
+      ansible.builtin.command: shutdown --reboot +10
+    - name: done message
+      delegate_to: localhost
+      run_once: true  # noqa: run-once[task]
+      ansible.builtin.pause:
+        prompt: >-
+          Done! Proxmox will reboot in the background.
+          Next Steps:
+            * Remove install media.
+            * If applicable, have the newly bootstrapped node(s) join the cluster.
+            * If no cluster: Create an api token for px-secret.auto.tfvars and px-common.auto.tfvars
+            * Run /bootstrap/bootstrap.sh to upload the autoinstall ISO, unless:
+              * It already exists on the cluster and is set to replicate.
+              * It already exists on a NAS attached to the cluster.
+            * Add the newly bootstrapped node(s) to proxmox.auto.tfvars
+            * Re-run 'terraform apply' as there is there is additional config there.
+            * Once you're confident the node(s) are set up right, run a full deploy.
+        seconds: 1

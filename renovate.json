@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":configMigration",
+    ":automergeMinor",
+    ":automergeStableNonMajor",
+    ":renovatePrefix",
+    ":timezone(America/Vancouver)",
+    "schedule:automergeDaily",
+    ":reviewer(rachelf42)"
+  ],
+  "ignoreTests": true,
+  "automergeStrategy": "rebase"
+}

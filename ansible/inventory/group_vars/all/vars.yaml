@@ -1,0 +1,10 @@
+user_password: "{{ vault_user_password }}"
+user_password_hash: "{{ vault_user_password_hash }}"
+user_email: "{{ vault_user_email }}"
+cloudflare_account: "{{ vault_cloudflare_account }}"
+cloudflare_token: "{{ vault_cloudflare_token }}"
+
+account_name: rachelf42
+user_name: rachel
+homedir: /home/rachel
+repodir: /home/rachel/homelab
