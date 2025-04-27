@@ -14,9 +14,15 @@ acl {
 
 client {
   enabled = true
+  host_volumes_dir =  "/mount/nas/appdata"
+  host_volume "media-library" {
+    # https://stackoverflow.com/questions/68833889/mounting-volumes-in-docker-via-nomad
+    path = "/mount/nas/media"
+  }
   options {
     "driver.raw_exec.enable"    = "1"
     "docker.privileged.enabled" = "true"
+    "docker.volumes.enabled" = "true"
   }
   server_join {
     retry_join = [

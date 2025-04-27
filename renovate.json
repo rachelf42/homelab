@@ -9,7 +9,7 @@
     "schedule:automergeDaily",
     ":reviewer(rachelf42)"
   ],
-  "ignoreTests": true,
+  "automergeType": "branch",
   "automergeStrategy": "squash",
   "packageRules": [
     {

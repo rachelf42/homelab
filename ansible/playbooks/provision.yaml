@@ -328,6 +328,32 @@
         username: "{{ account_name }}"
         password: "{{ lookup('ansible.builtin.file', '../resources/docker-pat') }}"
         state: present
+    - name: NAS mountpoints
+      block:
+        - name: parent dir
+          ansible.builtin.file:
+            path: /mount/nas
+            state: directory
+            owner: root
+            group: root
+            mode: "0777"
+        - name: docker bindmount dir
+          ansible.builtin.file:
+            path: /mount/nas/appdata
+            state: directory
+            owner: root
+            group: root
+            mode: "0777"
+        - name: media library dir
+          ansible.builtin.file:
+            path: /mount/nas/media
+            state: directory
+            owner: root
+            group: root
+            mode: "0777"
+    - name: NAS fstab
+      ansible.builtin.debug:
+        msg: "TODO: ansible.posix.mount here"
 - name: dev machine setup
   become: true
   become_user: "{{ user_name }}"
@@ -450,7 +476,7 @@
         daemon_reload: true
         name: nomad
         enabled: true
-        state: started
+        state: restarted
 - name: finishing up
   become: true
   hosts: [debian, ubuntu]
