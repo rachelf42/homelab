@@ -16,11 +16,11 @@ if ! (yamllint --strict . &>/dev/null); then
 	yamllint .
 fi
 
-# if ! (npx dclint ./compose/*.compose.yaml &>/dev/null); then
-# 	EC=$((EC + 1))
-# 	echo '===== DCLINT FAILED ====='
-# 	npx dclint ./compose/*.compose.yaml
-# fi
+if (npx dclint ./docker/*.compose.yaml &>/dev/null); then
+	EC=$((EC + 1))
+	echo '===== DCLINT FAILED ====='
+	npx dclint ./docker/*.compose.yaml
+fi
 
 cd "$HOMELABDIR/packer" || exit 1
 if (packer validate . &>/dev/null); then
