@@ -28,3 +28,11 @@ provider "proxmox" {
   random_vm_ids = true
   insecure      = var.proxmox_is_insecure
 }
+
+# dummy variable declarations to silence warnings about packer vars
+variable "proxmox_iso_storage" {
+  type = string
+}
+variable "proxmox_storage" {
+  type = string
+}

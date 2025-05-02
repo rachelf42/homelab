@@ -123,7 +123,7 @@
     - name: upload cloudflare data
       ansible.builtin.template:
         dest: /root/cloudflare-acme-data
-        src: ../resources/cloudflare-acme-data.jinja2
+        src: ../resources/px-cloudflare-acme-data.j2
         mode: "0600"
         owner: root
     - name: register cloudflare acme plugin

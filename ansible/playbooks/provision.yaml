@@ -1,5 +1,7 @@
 - name: waiting on SSH
+  gather_facts: false
   hosts: [all]
+  any_errors_fatal: true
   tasks:
     - ansible.builtin.wait_for_connection:
         timeout: 3600
@@ -7,6 +9,7 @@
 - name: user account setup
   become: true
   hosts: [vm, lxc, pve]
+  any_errors_fatal: true
   tasks:
     - name: sudo installed
       register: sudo
@@ -29,8 +32,6 @@
         state: present
         update_cache: true
     - name: user account exists
-      async: 600
-      poll: 10
       ansible.builtin.user:
         name: "{{ user_name }}"
         state: present
@@ -43,8 +44,6 @@
         groups: [sudo]
         shell: /bin/bash
     - name: authorized keys synced - regular user
-      async: 600
-      poll: 10
       ansible.posix.authorized_key:
         user: rachel
         key: https://github.com/{{ account_name }}.keys
@@ -74,8 +73,6 @@
         group: root
         mode: "0600"
     - name: sudoer declaration in place
-      async: 600
-      poll: 10
       community.general.sudoers:
         name: "{{ account_name }}"
         state: present
@@ -85,16 +82,13 @@
 - name: ubuntu specific config
   hosts: [ubuntu]
   become: true
+  any_errors_fatal: true
   tasks:
     - name: yeet motd - helptext
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: /etc/update-motd.d/10-help-text
         state: absent
     - name: yeet motd - canonical ads
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: /etc/update-motd.d/50-motd-news
         state: absent
@@ -112,8 +106,6 @@
             purge: true
             allow_change_held_packages: true # cause a failed run might have left it installed but marked held
         - name: prevent snapd install - by system
-          async: 600
-          poll: 10
           when: snapd is ansible.builtin.changed
           changed_when: snapd is ansible.builtin.changed
           check_mode: false # noqa: no-handler
@@ -131,6 +123,7 @@
 - name: server-only config
   become: true
   hosts: [server]
+  any_errors_fatal: true
   tasks:
     - name: install trash-cli
       register: trash
@@ -143,8 +136,6 @@
         state: present
         update_cache: true
     - name: bashrc alias for trash
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: "{{ homedir }}/.bashrc"
         marker: "# {mark} ANSIBLE SERVER BLOCK"
@@ -153,6 +144,7 @@
 - name: docker setup
   become: true
   hosts: [docker]
+  any_errors_fatal: true
   vars:
     deb_arch:
       armv6l: armhf,
@@ -174,7 +166,6 @@
       - docker-ce
       - docker-ce-cli
       - docker-compose-plugin
-      - pipx # for timegaps in the backup script
   tasks:
     - name: unofficial packages purged
       register: dockerpurge
@@ -187,37 +178,22 @@
         state: absent
         purge: true
     - name: repo dependencies installed
-      block:
-        - name: ca-certificates
-          register: cacert
-          until: cacert is ansible.builtin.success
-          async: 600
-          poll: 10
-          retries: 10
-          ansible.builtin.apt:
-            name: ca-certificates
-            state: present
-        - name: curl
-          register: curl
-          until: curl is ansible.builtin.success
-          async: 600
-          poll: 10
-          retries: 10
-          ansible.builtin.apt:
-            name: curl
-            state: present
+      register: dockerapt
+      until: dockerapt is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.apt:
+        name: [ca-certificates, curl]
+        state: present
     - name: repo setup
       block:
         - name: directory exists
-          async: 600
-          poll: 10
           ansible.builtin.file:
             path: /etc/apt/keyrings
             mode: "0755"
             state: directory
         - name: key downloaded
-          async: 600
-          poll: 10
           ansible.builtin.get_url:
             url: https://download.docker.com/linux/ubuntu/gpg
             dest: /etc/apt/keyrings/docker.asc
@@ -225,8 +201,6 @@
             owner: root
             group: root
         - name: apt source installed
-          async: 600
-          poll: 10
           ansible.builtin.apt_repository:
             filename: docker
             repo: >-
@@ -245,39 +219,7 @@
         name: "{{ dockerpkg }}"
         state: present
         update_cache: true
-    - name: pipx config
-      block:
-        - name: ensurepath - reg user
-          check_mode: false
-          changed_when: true
-          become: true
-          become_user: "{{ user_name }}"
-          async: 600
-          poll: 10
-          ansible.builtin.command: pipx ensurepath
-        - name: ensurepath - root
-          check_mode: false
-          changed_when: true
-          async: 600
-          poll: 10
-          ansible.builtin.command: pipx ensurepath
-        - name: install timegaps - reg user
-          become: true
-          become_user: "{{ user_name }}"
-          async: 600
-          poll: 10
-          community.general.pipx:
-            name: timegaps
-            state: latest
-        - name: install timegaps - root
-          async: 600
-          poll: 10
-          community.general.pipx:
-            name: timegaps
-            state: latest
     - name: bashrc aliases
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: "{{ homedir }}/.bashrc"
         marker: "# {mark} ANSIBLE DOCKER BLOCK"
@@ -287,8 +229,6 @@
           alias dclean='docker system prune --volumes'
           alias dcup='docker compose up -d --remove-orphans'
     - name: get dockers gid
-      async: 600
-      poll: 10
       register: getent       # gid is in getent.stdout
       check_mode: false      # i know there is a getent module but ehhhhh
       changed_when: false    # i dont wanna learn how to get the info out of that database return variable
@@ -298,8 +238,6 @@
           set -o pipefail
           getent group docker | awk -F: '{print $3}'
     - name: environment variables set
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: /etc/environment
         marker: "# {mark} ANSIBLE BLOCK"
@@ -312,8 +250,6 @@
           DOCKER_USER="{{ user_name }}"
           COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml"
     - name: add user to docker group
-      async: 600
-      poll: 10
       ansible.builtin.user:
         name: "{{ user_name }}"
         state: present
@@ -322,8 +258,6 @@
     - name: docker logged in
       become: true
       become_user: "{{ user_name }}"
-      async: 600
-      poll: 10
       community.docker.docker_login:
         username: "{{ account_name }}"
         password: "{{ lookup('ansible.builtin.file', '../resources/docker-pat') }}"
@@ -360,36 +294,26 @@
   hosts: [devmachine]
   tasks:
     - name: bin directory exists
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ homedir }}/bin"
         state: directory
         mode: "0775"
     - name: deploy.sh linked
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ homedir }}/bin/homelab-deploy"
         src: "{{ repodir }}/scripts/deploy.sh"
         state: link
     - name: lint.sh linked
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ homedir }}/bin/homelab-lint"
         src: "{{ repodir }}/scripts/lint.sh"
         state: link
     - name: beep-controller.sh linked
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ homedir }}/bin/beeps"
         src: "{{ repodir }}/scripts/beep-controller.sh"
         state: link
-    - name: bash aliases
-      async: 600
-      poll: 10
+    - name: bashrc stuff
       ansible.builtin.blockinfile:
         path: "{{ homedir }}/.bashrc"
         marker: "# {mark} ANSIBLE DEVMACHINE BLOCK"
@@ -399,91 +323,18 @@
           export ANSIBLE_NOCOWS=1
           export ANSIBLE ANSIBLE_VAULT_PASSWORD_FILE="~/.ansiblepw"
           export LESS="R" # dont trim out colour control characters
-          export NOMAD_ADDR="http://nomad.local.rachelf42.ca:4646"
+          alias nomad="export NOMAD_TOKEN=$(vault read -field='secret_id' nomad/creds/mgmt) && nomad"
           alias sshagent='eval `ssh-agent -s`'
           function mkcd() {
               mkdir $1
               cd $1
           }
-          function ghpr() {
-              pushd /home/rachel/homelab
-              git switch main
-              git pull
-              git switch dev
-              gh pr create $1
-              popd
-          }
-- name: nomad setup
-  become: true
-  hosts: [nomad]
-  vars:
-    deb_arch:
-      armv6l: armhf,
-      armv7l: armhf,
-      aarch64: arm64,
-      x86_64: amd64,
-      i386: i386
-  tasks:
-    - name: repo key installed
-      async: 600
-      poll: 10
-      ansible.builtin.get_url:
-        url: http://apt.releases.hashicorp.com/gpg
-        dest: /usr/share/keyrings/hashicorp.asc
-        owner: root
-        group: root
-        mode: "0644"
-    - name: repo declaration installed
-      async: 600
-      poll: 10
-      ansible.builtin.apt_repository:
-        filename: hashicorp
-        repo: >-
-          deb [arch={{ deb_arch[ansible_architecture] }}
-          signed-by=/usr/share/keyrings/hashicorp.asc]
-          https://apt.releases.hashicorp.com
-          noble main
-    - name: nomad installed
-      register: aptnomad
-      until: aptnomad is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      ansible.builtin.apt:
-        update_cache: true
-        name: nomad
-        state: present
-    - name: server config
-      when: "'nomad_server' in group_names"
-      ansible.builtin.template:
-        dest: /etc/nomad.d/nomad.hcl
-        src: ../resources/nomad_server.hcl.jinja2
-        owner: nomad
-        group: nomad
-        mode: "0644"
-    - name: client config
-      when: "'nomad_client' in group_names"
-      ansible.builtin.template:
-        dest: /etc/nomad.d/nomad.hcl
-        src: ../resources/nomad_client.hcl.jinja2
-        owner: nomad
-        group: nomad
-        mode: "0644"
-    - name: start nomad
-      async: 600
-      poll: 10
-      ansible.builtin.systemd_service:
-        daemon_reload: true
-        name: nomad
-        enabled: true
-        state: restarted
 - name: finishing up
   become: true
   hosts: [debian, ubuntu]
+  any_errors_fatal: true
   tasks:
     - name: bashrc - reg user
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: "{{ homedir }}/.bashrc"
         marker: "# {mark} ANSIBLE GENERAL BLOCK"
@@ -493,8 +344,6 @@
           export PS1='[$?] \[\e[32m\]\u\[\e[m\]\[\e[32m\]@\[\e[m\]\[\e[32m\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
           export PATH="$PATH:$HOME/bin"
     - name: bashrc - skeleton user
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: /etc/skel/.bashrc
         marker: "# {mark} ANSIBLE GENERAL BLOCK"
@@ -503,8 +352,6 @@
           force_color_prompt=yes
           export PS1='[$?] \[\e[33\]\u\[\e[m\]\[\e[33\]@\[\e[m\]\[\e[33\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
     - name: bashrc - root user
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: /root/.bashrc
         marker: "# {mark} ANSIBLE GENERAL BLOCK"
@@ -514,8 +361,6 @@
           export PS1='[$?] \[\e[31m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
     - name: nanorc file
       loop: ["{{ homedir }}/.nanorc", /root/.nanorc, /etc/skel/.nanorc]
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ item }}"
         state: touch
@@ -523,8 +368,6 @@
         group: root
         mode: "0644"
     - name: nanorc permissions
-      async: 600
-      poll: 10
       ansible.builtin.file:
         path: "{{ homedir }}/.nanorc"
         state: file
@@ -533,8 +376,6 @@
         mode: "0644"
     - name: nanorc content
       loop: ["{{ homedir }}/.nanorc", /root/.nanorc, /etc/skel/.nanorc]
-      async: 600
-      poll: 10
       ansible.builtin.blockinfile:
         path: "{{ item }}"
         marker: "# {mark} ANSIBLE BLOCK"
@@ -561,8 +402,6 @@
           color ,green "[[:space:]]+$"
         # yamllint enable rule:line-length
     - name: set timezone
-      async: 600
-      poll: 10
       community.general.timezone:
         name: America/Vancouver
     - name: apt upgrade
