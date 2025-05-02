@@ -1,0 +1,15 @@
+- name: docker stacks
+  hosts: [docker]
+  become: true
+  become_user: "{{ user_name }}"
+  any_errors_fatal: true
+  tasks:
+    - name: update repo
+      ansible.builtin.git:
+        repo: git@github.com:{{ account_name }}/homelab.git
+        dest: "{{ repodir }}"
+        version: start-compose  # TODO: set to main on the merge commit, ensure this never changes on the main branch
+        force: true             # we can set it to whatever our current branch is when we're working on stuff, but
+        accept_newhostkey: true # if someone pulls from main they should always get "version: main"
+        clone: true
+        update: true
