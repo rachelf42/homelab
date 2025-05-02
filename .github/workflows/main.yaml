@@ -1,8 +1,8 @@
 on: # yamllint disable-line rule:truthy
   push:
-    branches: main
+    branches: [main]
   pull_request:
-    branches: main
+    branches: [main]
 jobs:
   lint:
     permissions:
@@ -48,6 +48,9 @@ jobs:
         env:
           ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
         with:
-          gh_action_ref: v25.2.1
+          gh_action_ref: v25.4.0
           working_directory: ansible
           requirements_file: requirements.yaml
+
+      - name: Run Docker-Compose-Lint
+        run: npx dclint docker/*.compose.yaml --max-warnings 0
