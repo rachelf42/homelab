@@ -49,7 +49,7 @@ done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
 header "PRE-DEPLOY CHECKS"
-if !$AUTOAPPROVE && !(tty -s); then
+if ! $AUTOAPPROVE && ! (tty -s); then
 	echo "FATAL: no attached terminal and auto-approve not set, cannot get approval"
 	die 1
 fi
