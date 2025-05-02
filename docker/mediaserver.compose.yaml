@@ -1,6 +1,6 @@
 services:
   dozzle:
-    image: amir20/dozzle:latest@sha256:3d18f7f82cf5d6bb9f8d7ff01ee213dc81c2a7da3e66297c3af560b77e92daf2
+    image: amir20/dozzle:v8.12.14@sha256:3d18f7f82cf5d6bb9f8d7ff01ee213dc81c2a7da3e66297c3af560b77e92daf2
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
