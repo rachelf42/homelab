@@ -102,4 +102,5 @@ rm "$TMPFILE"
 rm -rf "$TMPDIR"
 if [[ $RESULT == 'success' ]]; then exit 0; else exit 1; fi
 # TODO: i should probably have some kind of solution for if this fails?
+# Issue URL: https://github.com/rachelf42/homelab/issues/21
 # 🤷‍♀️ whatever just set the exit code and figure it out later

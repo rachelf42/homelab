@@ -26,6 +26,7 @@ variable "proxmox_is_insecure" {
 # Packer Meta-Settings
 packer {
   required_version = "~> 1.12" # TODO https://github.com/renovatebot/renovate/issues/8178
+                               # Issue URL: https://github.com/rachelf42/homelab/issues/20
   required_plugins {
     name = {
       version = "~> 1.2, >=1.2.2"

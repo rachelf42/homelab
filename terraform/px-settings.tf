@@ -4,6 +4,7 @@ resource "proxmox_virtual_environment_cluster_options" "opts" {
 }
 data "proxmox_virtual_environment_acme_accounts" "acme" {}
 # TODO: feature request for `pvenode config set --acme` so i can move that into here and uncomment this
+# Issue URL: https://github.com/rachelf42/homelab/issues/26
 # resource "proxmox_virtual_environment_acme_dns_plugin" "cloudflare" {
 #   lifecycle {
 #     precondition {

@@ -2,6 +2,7 @@
 # creates an iso with an autoinstall yaml baked in
 # and uploads it to proxmox
 # TODO: deprecate and setup a PXE server
+# Issue URL: https://github.com/rachelf42/homelab/issues/18
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
 	case $1 in
@@ -27,6 +28,7 @@ if [[ $PVE == "" ]]; then read -t 10 -p "Target Node IP Address: " PVE || die $?
 
 function header(){
 	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
+	                                        # Issue URL: https://github.com/rachelf42/homelab/issues/17
 }
 function die(){
 	header FINISHED
@@ -57,6 +59,7 @@ header "$MSG - CALLING AUTOINSTALL GENERATOR"
 	--source ./ubuntu-noble-original.iso \
 	--destination ./ubuntu-noble-autoinstall.iso || die $?
 header "COPYING ISO FILE" # TODO copy to NAS instead
+                          # Issue URL: https://github.com/rachelf42/homelab/issues/16
 scp -o StrictHostKeyChecking=accept-new -i ./ansible_ssh_key \
 	./ubuntu-noble-autoinstall.iso "$PVE:~/ubuntu-noble-autoinstall.iso" || die $?
 ssh "$PVE" "sudo chown root:root ~/ubuntu-noble-autoinstall.iso" || die $?

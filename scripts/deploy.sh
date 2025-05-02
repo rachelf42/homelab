@@ -1,9 +1,11 @@
 #!/bin/bash
 # TODO --assume-yes argument
+# Issue URL: https://github.com/rachelf42/homelab/issues/24
 
 HOMELABDIR=${HOMELABDIR:-/home/rachel/homelab} # dev machine may not have env set
 function header(){
 	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
+	                                        # Issue URL: https://github.com/rachelf42/homelab/issues/23
 }
 
 function die(){
@@ -45,6 +47,7 @@ header "PRE-DEPLOY LINT CHECK"
 "$HOMELABDIR/scripts/lint.sh" || die $?
 
 case $PACKER in # TODO do a proper CI and run packer daily not just on demand when we anticipate a new install
+                # Issue URL: https://github.com/rachelf42/homelab/issues/22
 	true|yes|y|1)
 		header "STARTED PACKER"
 		cd "$HOMELABDIR/packer" || die $?
