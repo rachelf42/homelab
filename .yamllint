@@ -3,6 +3,7 @@ ignore-from-file: .gitignore
 rules:
   comments:
     min-spaces-from-content: 1
+  comments-indentation: disable # cause todo-to-issue will set it off otherwise
   document-start:
     present: false
   document-end:
