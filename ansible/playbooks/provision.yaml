@@ -244,7 +244,6 @@
         state: present
         block: |
           TZ="America/Vancouver"
-          HL_REPO="{{ repodir }}"
           HOMELABDIR="{{ repodir }}"
           DOCKER_GID={{ getent.stdout }}
           DOCKER_USER="{{ user_name }}"
@@ -323,7 +322,6 @@
           export ANSIBLE_NOCOWS=1
           export ANSIBLE ANSIBLE_VAULT_PASSWORD_FILE="~/.ansiblepw"
           export LESS="R" # dont trim out colour control characters
-          alias nomad="export NOMAD_TOKEN=$(vault read -field='secret_id' nomad/creds/mgmt) && nomad"
           alias sshagent='eval `ssh-agent -s`'
           function mkcd() {
               mkdir $1
