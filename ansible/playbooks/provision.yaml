@@ -247,7 +247,7 @@
           HOMELABDIR="{{ repodir }}"
           DOCKER_GID={{ getent.stdout }}
           DOCKER_USER="{{ user_name }}"
-          COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml"
+          COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml" # for manual compose use
     - name: add user to docker group
       ansible.builtin.user:
         name: "{{ user_name }}"

@@ -13,3 +13,21 @@
         accept_newhostkey: true # if someone pulls from main they should always get "version: main"
         clone: true
         update: true
+    - name: pull images
+      async: 600
+      poll: 10
+      retries: 3
+      community.docker.docker_compose_v2_pull:
+        project_src: "{{ repodir }}/docker"
+        files: "{{ inventory_hostname }}.compose.yaml"
+        policy: always
+    - name: bring stack up
+      async: 600
+      poll: 10
+      community.docker.docker_compose_v2:
+        project_src: "{{ repodir }}/docker"
+        files: "{{ inventory_hostname }}.compose.yaml"
+        pull: never # because pull is a seperate task
+        remove_orphans: true
+        state: present
+        wait: true
