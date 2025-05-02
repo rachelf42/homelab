@@ -101,5 +101,5 @@ RESULT=$(echo "${RESULT//$'\n'}" | jq --raw-output '.result')
 rm "$TMPFILE"
 rm -rf "$TMPDIR"
 if [[ $RESULT == 'success' ]]; then exit 0; else exit 1; fi
-# TODO: i should probably have some kind of solution for if this fails?
+# ODOT: i should probably have some kind of solution for if this fails?
 # 🤷‍♀️ whatever just set the exit code and figure it out later

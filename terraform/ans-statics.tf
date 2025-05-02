@@ -1,6 +1,6 @@
 ### NETWORK INFRASTRUCTURE
 resource "cloudflare_dns_record" "pve" {
-  content = "10.69.69.1" # TODO: setup some kinda loadbalancer for future expansion
+  content = "10.69.69.1" # ODOT: setup some kinda loadbalancer for future expansion
   name    = "pve.local.${var.cf_domain}"
   proxied = false
   ttl     = 1

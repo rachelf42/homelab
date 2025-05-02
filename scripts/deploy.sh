@@ -1,9 +1,9 @@
 #!/bin/bash
-# TODO --assume-yes argument
+# ODOT --assume-yes argument
 
 HOMELABDIR=${HOMELABDIR:-/home/rachel/homelab} # dev machine may not have env set
 function header(){
-	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
+	cowsay -f hellokitty "$* @ $(date +%T)" # ODOT test tty and do a single line instead
 }
 
 function die(){
@@ -44,7 +44,7 @@ header "PRE-DEPLOY LINT CHECK"
 (cd "$HOMELABDIR/ansible" && ansible-galaxy install -r requirements.yaml) || die $?
 "$HOMELABDIR/scripts/lint.sh" || die $?
 
-case $PACKER in # TODO do a proper CI and run packer daily not just on demand when we anticipate a new install
+case $PACKER in # ODOT do a proper CI and run packer daily not just on demand when we anticipate a new install
 	true|yes|y|1)
 		header "STARTED PACKER"
 		cd "$HOMELABDIR/packer" || die $?

@@ -6,7 +6,7 @@ terraform {
   }
 }
 data "proxmox_virtual_environment_vm" "template-vm-ubuntu-noble" {
-  node_name = var.proxmox_default_node # TODO: can we deduplicate this
+  node_name = var.proxmox_default_node # ODOT: can we deduplicate this
   vm_id     = var.proxmox_packer_vmid
 }
 module "cf_and_ans" {
