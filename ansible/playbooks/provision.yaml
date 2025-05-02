@@ -286,7 +286,7 @@
             mode: "0777"
     - name: NAS fstab
       ansible.builtin.debug:
-        msg: "ODOT: ansible.posix.mount here"
+        msg: "TODO: ansible.posix.mount here"
 - name: dev machine setup
   become: true
   become_user: "{{ user_name }}"

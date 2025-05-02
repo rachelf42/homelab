@@ -8,7 +8,7 @@
       ansible.builtin.git:
         repo: git@github.com:{{ account_name }}/homelab.git
         dest: "{{ repodir }}"
-        version: main           # ODOT: ensure this never changes on the main branch
+        version: main           # TODO: ensure this never changes on the main branch
         force: true             # we can set it to whatever our current branch is when we're working on stuff, but
         accept_newhostkey: true # if someone pulls from main they should always get "version: main"
         clone: true

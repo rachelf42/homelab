@@ -1,7 +1,7 @@
 #!/bin/bash
 # creates an iso with an autoinstall yaml baked in
 # and uploads it to proxmox
-# ODOT: deprecate and setup a PXE server
+# TODO: deprecate and setup a PXE server
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
 	case $1 in
@@ -26,7 +26,7 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 if [[ $PVE == "" ]]; then read -t 10 -p "Target Node IP Address: " PVE || die $?; fi
 
 function header(){
-	cowsay -f hellokitty "$* @ $(date +%T)" # ODOT test tty and do a single line instead
+	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
 }
 function die(){
 	header FINISHED
@@ -56,7 +56,7 @@ header "$MSG - CALLING AUTOINSTALL GENERATOR"
 	--user-data ubuntu-autoinstall.yaml \
 	--source ./ubuntu-noble-original.iso \
 	--destination ./ubuntu-noble-autoinstall.iso || die $?
-header "COPYING ISO FILE" # ODOT copy to NAS instead
+header "COPYING ISO FILE" # TODO copy to NAS instead
 scp -o StrictHostKeyChecking=accept-new -i ./ansible_ssh_key \
 	./ubuntu-noble-autoinstall.iso "$PVE:~/ubuntu-noble-autoinstall.iso" || die $?
 ssh "$PVE" "sudo chown root:root ~/ubuntu-noble-autoinstall.iso" || die $?

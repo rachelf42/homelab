@@ -1,5 +1,5 @@
 rules:
-    no-unbound-port-interfaces: 0 # ODOT: change this
+    no-unbound-port-interfaces: 0 # TODO: change this
     services-alphabetical-order: 0 # Use logical groupings instead
     service-dependencies-alphabetical-order: 0 # Ditto
     service-keys-order:
