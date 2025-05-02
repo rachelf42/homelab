@@ -1,10 +1,12 @@
-user_password: "{{ vault_user_password }}"
-user_password_hash: "{{ vault_user_password_hash }}"
-user_email: "{{ vault_user_email }}"
-cloudflare_account: "{{ vault_cloudflare_account }}"
-cloudflare_token: "{{ vault_cloudflare_token }}"
+user_password: "{{ ansivault_user_password }}"
+user_password_hash: "{{ ansivault_user_password_hash }}"
+user_email: "{{ ansivault_user_email }}"
+cloudflare_account: "{{ ansivault_cloudflare_account }}"
+px_cloudflare_token: "{{ ansivault_px_cloudflare_token }}"
+hcv_cloudflare_token: "{{ ansivault_hcv_cloudflare_token }}"
 
 account_name: rachelf42
+domain: rachelf42.ca
 user_name: rachel
 homedir: /home/rachel
 repodir: /home/rachel/homelab

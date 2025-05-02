@@ -1,5 +1,6 @@
 {
     "[yaml]": {
         "editor.tabSize": 2
-    }
+    },
+    "ansible.python.interpreterPath": "/bin/python3"
 }
