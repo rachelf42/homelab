@@ -54,3 +54,8 @@ jobs:
 
       - name: Run Docker-Compose-Lint
         run: npx dclint docker/*.compose.yaml --max-warnings 0
+
+      - name: TODO to Issue
+        uses: alstr/todo-to-issue-action@v5.1.12
+        with:
+          INSERT_ISSUE_URLS: true
