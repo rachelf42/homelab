@@ -1,11 +1,12 @@
 #!/bin/bash
-# TODO --assume-yes argument
-# Issue URL: https://github.com/rachelf42/homelab/issues/24
 
 HOMELABDIR=${HOMELABDIR:-/home/rachel/homelab} # dev machine may not have env set
 function header(){
-	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
-	                                        # Issue URL: https://github.com/rachelf42/homelab/issues/23
+	if tty -s; then
+		cowsay -f hellokitty "$* @ $(date +%T)"
+	else
+		echo "===== $* @ $(date +%T) ====="
+	fi
 }
 
 function die(){
@@ -15,9 +16,10 @@ function die(){
 
 POSITIONAL_ARGS=()
 PACKER=false
+AUTOAPPROVE=false
 while [[ $# -gt 0 ]]; do
 	case $1 in
-		--packer) # only one arg for now but doing it this way is both future-proof and makes subsequent arguments override previous ones
+		--packer)
 			case $2 in
 				-*|"")
 					PACKER=true
@@ -29,6 +31,10 @@ while [[ $# -gt 0 ]]; do
 					shift # past value
 					;;
 			esac
+			;;
+		-y|--yes|--assume-yes|-auto-approve|--force)
+			AUTOAPPROVE=true
+			shift # past argument
 			;;
 		-*)
 			echo "Unknown option $1"
@@ -42,7 +48,11 @@ while [[ $# -gt 0 ]]; do
 done
 set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 
-header "PRE-DEPLOY LINT CHECK"
+header "PRE-DEPLOY CHECKS"
+if !$AUTOAPPROVE && !(tty -s); then
+	echo "FATAL: no attached terminal and auto-approve not set, cannot get approval"
+	die 1
+fi
 (cd "$HOMELABDIR/ansible" && ansible-galaxy install -r requirements.yaml) || die $?
 "$HOMELABDIR/scripts/lint.sh" || die $?
 
@@ -60,7 +70,11 @@ esac
 
 header "STARTED TERRAFORM"
 cd "$HOMELABDIR" || die $?
-terraform -chdir=terraform apply || die $?
+if $AUTOAPPROVE; then
+	terraform -chdir=terraform -auto-approve apply || die $?
+else
+	terraform -chdir=terraform apply || die $?
+fi
 
 header "STARTED ANSIBLE"
 export ANSIBLE_NOCOWS=1

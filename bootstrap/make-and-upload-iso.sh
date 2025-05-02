@@ -27,8 +27,11 @@ set -- "${POSITIONAL_ARGS[@]}" # restore positional parameters
 if [[ $PVE == "" ]]; then read -t 10 -p "Target Node IP Address: " PVE || die $?; fi
 
 function header(){
-	cowsay -f hellokitty "$* @ $(date +%T)" # TODO test tty and do a single line instead
-	                                        # Issue URL: https://github.com/rachelf42/homelab/issues/17
+	if tty -s; then
+		cowsay -f hellokitty "$* @ $(date +%T)"
+	else
+		echo "===== $* @ $(date +%T) ====="
+	fi
 }
 function die(){
 	header FINISHED
