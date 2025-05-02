@@ -1,0 +1,33 @@
+- name: docker stacks
+  hosts: [docker]
+  become: true
+  become_user: "{{ user_name }}"
+  any_errors_fatal: true
+  tasks:
+    - name: update repo
+      ansible.builtin.git:
+        repo: git@github.com:{{ account_name }}/homelab.git
+        dest: "{{ repodir }}"
+        version: main           # TODO: ensure this never changes on the main branch
+        force: true             # we can set it to whatever our current branch is when we're working on stuff, but
+        accept_newhostkey: true # if someone pulls from main they should always get "version: main"
+        clone: true
+        update: true
+    - name: pull images
+      async: 600
+      poll: 10
+      retries: 3
+      community.docker.docker_compose_v2_pull:
+        project_src: "{{ repodir }}/docker"
+        files: "{{ inventory_hostname }}.compose.yaml"
+        policy: always
+    - name: bring stack up
+      async: 600
+      poll: 10
+      community.docker.docker_compose_v2:
+        project_src: "{{ repodir }}/docker"
+        files: "{{ inventory_hostname }}.compose.yaml"
+        pull: never # because pull is a seperate task
+        remove_orphans: true
+        state: present
+        wait: true

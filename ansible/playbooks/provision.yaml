@@ -244,11 +244,10 @@
         state: present
         block: |
           TZ="America/Vancouver"
-          HL_REPO="{{ repodir }}"
           HOMELABDIR="{{ repodir }}"
           DOCKER_GID={{ getent.stdout }}
           DOCKER_USER="{{ user_name }}"
-          COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml"
+          COMPOSE_FILE="{{ repodir }}/docker/{{ inventory_hostname }}.compose.yaml" # for manual compose use
     - name: add user to docker group
       ansible.builtin.user:
         name: "{{ user_name }}"
@@ -323,7 +322,6 @@
           export ANSIBLE_NOCOWS=1
           export ANSIBLE ANSIBLE_VAULT_PASSWORD_FILE="~/.ansiblepw"
           export LESS="R" # dont trim out colour control characters
-          alias nomad="export NOMAD_TOKEN=$(vault read -field='secret_id' nomad/creds/mgmt) && nomad"
           alias sshagent='eval `ssh-agent -s`'
           function mkcd() {
               mkdir $1
@@ -359,15 +357,15 @@
         block: |
           force_color_prompt=yes
           export PS1='[$?] \[\e[31m\]\u\[\e[m\]\[\e[31m\]@\[\e[m\]\[\e[31m\]\h\[\e[m\]:\[\e[35m\]\w\[\e[m\] \\$> '
-    - name: nanorc file
-      loop: ["{{ homedir }}/.nanorc", /root/.nanorc, /etc/skel/.nanorc]
+    - name: nanorc file - root n skel
+      loop: [/root/.nanorc, /etc/skel/.nanorc]
       ansible.builtin.file:
         path: "{{ item }}"
-        state: touch
+        state: file
         owner: root
         group: root
         mode: "0644"
-    - name: nanorc permissions
+    - name: nanorc file - reg user
       ansible.builtin.file:
         path: "{{ homedir }}/.nanorc"
         state: file
