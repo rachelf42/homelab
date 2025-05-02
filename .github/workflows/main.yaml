@@ -53,4 +53,4 @@ jobs:
           requirements_file: requirements.yaml
 
       - name: Run Docker-Compose-Lint
-        run: npx dclint docker/*.compose.yaml
+        run: npx dclint docker/*.compose.yaml --max-warnings 0

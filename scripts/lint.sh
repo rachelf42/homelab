@@ -16,7 +16,7 @@ if ! (yamllint --strict . &>/dev/null); then
 	yamllint .
 fi
 
-if (npx dclint ./docker/*.compose.yaml &>/dev/null); then
+if ! (npx dclint ./docker/*.compose.yaml --max-warnings 0 &>/dev/null); then
 	EC=$((EC + 1))
 	echo '===== DCLINT FAILED ====='
 	npx dclint ./docker/*.compose.yaml
