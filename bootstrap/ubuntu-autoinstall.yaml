@@ -8,15 +8,13 @@ autoinstall:
   identity:
     hostname: template
     username: ansible
-    password: '$y$j9T$5CvjbPtZh6.nAFZSNiFlD/$k.Tsz3ejl4/wmlVCP/991taRWg.BURZmTyerCbSJTI.' # hash of "ansible" by mkpasswd
+    password: '$PASSHASH'
   user-data:
     users:
       - name: ansible
         uid: 999
-        # TODO figure out how to get this set automatically
-        # Issue URL: https://github.com/rachelf42/homelab/issues/19
         # yamllint disable-line rule:line-length
-        ssh_authorized_keys: ['ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGZduwQehr95DRVVxEzOu9tn2yoJDdugmzj6elCmE5uo cloud-config']
+        ssh_authorized_keys: ['$SSH_PUBKEY']
         groups: sudo, adm
         sudo: ['ALL=(ALL) NOPASSWD:ALL']
         shell: /bin/bash

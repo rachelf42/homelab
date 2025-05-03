@@ -39,9 +39,14 @@ function die(){
 }
 
 HOMELABDIR=${HOMELABDIR:-/home/rachel/homelab} # dev machine may not have env set
-cd "$HOMELABDIR/bootstrap" || exit 1
+cd "$HOMELABDIR/bootstrap" || die 1
 
-header "STARTING BOOTSTRAP"
+header "STARTING UP - RENDERING TEMPLATE"
+TMPFILE=$(mktmp)
+export SSH_PUBKEY=$(cat ./ansible_ssh_key.pub)
+export PASSHASH=$(mkpasswd ansible -m sha512crypt)
+envsubst < ubuntu-autoinstall.yaml > "$TMPFILE" || die $?
+
 if [[ ! -f ./ubuntu-noble-original.iso ]]; then
 	if [[ -e ./ubuntu-24.04.2-live-server-amd64.iso ]]; then rm -rf ./ubuntu-24.04.2-live-server-amd64.iso; fi
 	header "DOWNLOADING ISO FILE"
@@ -67,7 +72,5 @@ scp -o StrictHostKeyChecking=accept-new -i ./ansible_ssh_key \
 	./ubuntu-noble-autoinstall.iso "$PVE:~/ubuntu-noble-autoinstall.iso" || die $?
 ssh "$PVE" "sudo chown root:root ~/ubuntu-noble-autoinstall.iso" || die $?
 ssh "$PVE" "sudo mv ~/ubuntu-noble-autoinstall.iso /var/lib/vz/template/iso/" || die $?
-header "STARTING PACKER"
-cd "$HOMELABDIR/packer" || die $?
-packer build --force . || die $?
-header "BOOTSTRAP COMPLETED SUCCESSFULLY"
+rm "$TMPFILE"
+die 0
