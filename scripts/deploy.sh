@@ -71,7 +71,7 @@ esac
 header "STARTED TERRAFORM"
 cd "$HOMELABDIR" || die $?
 if $AUTOAPPROVE; then
-	terraform -chdir=terraform -auto-approve apply || die $?
+	terraform -chdir=terraform apply -auto-approve || die $?
 else
 	terraform -chdir=terraform apply || die $?
 fi

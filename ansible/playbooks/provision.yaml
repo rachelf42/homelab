@@ -361,14 +361,16 @@
       loop: [/root/.nanorc, /etc/skel/.nanorc]
       ansible.builtin.file:
         path: "{{ item }}"
-        state: file
+        state: touch
+        modification_time: preserve
         owner: root
         group: root
         mode: "0644"
     - name: nanorc file - reg user
       ansible.builtin.file:
         path: "{{ homedir }}/.nanorc"
-        state: file
+        state: touch
+        modification_time: preserve
         owner: "{{ user_name }}"
         group: "{{ user_name }}"
         mode: "0644"

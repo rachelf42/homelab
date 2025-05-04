@@ -2,5 +2,8 @@
     "[yaml]": {
         "editor.tabSize": 2
     },
-    "ansible.python.interpreterPath": "/bin/python3"
+    "ansible.python.interpreterPath": "/bin/python3",
+    "files.associations": {
+        "*.compose.yaml": "dockercompose"
+    }
 }

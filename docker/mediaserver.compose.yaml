@@ -1,6 +1,35 @@
+########## FRAGMENTS
+x-defaults-nonet: &defaults-nonet
+  restart: on-failure:5
+  healthcheck:
+    interval: 3s
+    timeout: 30s
+    retries: 5
+    start_period: 300s
+  logging:
+    driver: json-file
+    options:
+      max-size: 10m
+      max-file: 3
+  dns:
+    - $DNS_HOST_ONE
+    - $DNS_HOST_TWO
+  security_opt:
+    - no-new-privileges:true
+  stop_grace_period: 1m30s
+x-defaults: &defaults
+  <<: *defaults-nonet
+  networks:
+    - main
+x-env: &env
+  PUID: $UID
+  PGID: $GID
+  TZ: $TZ
 name: media
+########## SERVICES
 services:
   dozzle:
+    <<: *defaults
     image: amir20/dozzle:v8.12.14@sha256:3d18f7f82cf5d6bb9f8d7ff01ee213dc81c2a7da3e66297c3af560b77e92daf2
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

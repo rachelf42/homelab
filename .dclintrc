@@ -14,8 +14,8 @@ rules:
     top-level-properties-order:
         - 1
         - customOrder:
-              - x-defaults
               - x-defaults-nonet
+              - x-defaults
               - x-env # fragments first
               - name # then stack metadata
               - include
