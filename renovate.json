@@ -6,7 +6,7 @@
     ":automergeStableNonMajor",
     ":renovatePrefix",
     ":timezone(America/Vancouver)",
-    "schedule:automergeDaily",
+    
     ":reviewer(rachelf42)"
   ],
   "automergeType": "branch",
