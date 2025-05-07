@@ -12,18 +12,22 @@
   "automergeType": "branch",
   "automergeStrategy": "squash",
   "docker-compose": {
-    "fileMatch": [
-      "^docker/[a-zA-Z0-9-]*\\.compose.yaml"
+    "managerFilePatterns": [
+      "/^docker/[a-zA-Z0-9-]*\\.compose.yaml/"
     ]
   },
   "packageRules": [
     {
-      "matchDepTypes": ["action"],
+      "matchDepTypes": [
+        "action"
+      ],
       "pinDigests": true,
       "automerge": true
     },
     {
-      "matchPackageNames": ["ansible-lint"],
+      "matchPackageNames": [
+        "ansible-lint"
+      ],
       "automerge": false
     }
   ]
