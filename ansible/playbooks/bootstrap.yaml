@@ -7,27 +7,6 @@
     ansible_user: root
   gather_facts: false
   tasks:
-    - name: confirm LE TOS
-      delegate_to: localhost
-      run_once: true # noqa: run-once[task]
-      register: letos
-      ansible.builtin.pause:
-        prompt: >-
-          CONFIRM: Do you agree to the
-          current Let's Encrypt Terms
-          Of Service? It is YOUR *LEGAL*
-          RESPONSIBILITY to find them
-          and read them in full. [Y/N]
-    - name: confirm askpass
-      delegate_to: localhost
-      run_once: true # noqa: run-once[task]
-      register: askpass
-      ansible.builtin.pause:
-        prompt: >-
-          CONFIRM: have you used the --ask-pass argument?
-          This playbook is the one that copies the ansible
-          SSH key to PVE, so cannot use standard key-based
-          authentication. [Y/N]
     - name: confirm limit
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
@@ -37,6 +16,29 @@
           CONFIRM: have you used the --limit argument
           to ensure this playbook is never run
           against already-bootstrapped hosts? [Y/N]
+    - name: confirm LE TOS
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: letos
+      ansible.builtin.pause:
+        prompt: >-
+          PVE: Do you agree to the
+          current Let's Encrypt Terms
+          Of Service? It is YOUR *LEGAL*
+          RESPONSIBILITY to find them
+          and read them in full.
+          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
+    - name: confirm askpass
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: askpass
+      ansible.builtin.pause:
+        prompt: >-
+          PVE: have you used the --ask-pass argument?
+          This playbook is the one that copies the ansible
+          SSH key to PVE, so cannot use standard key-based
+          authentication.
+          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
     - name: confirm predeploy
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
