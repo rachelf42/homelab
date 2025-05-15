@@ -1,5 +1,5 @@
 name: Auto Approved
-on: pull_request_target # yamllint disable-line rule:truthy
+on: [pull_request_target, pull_request_review] # yamllint disable-line rule:truthy
 
 jobs:
   autoapprove:
@@ -11,6 +11,9 @@ jobs:
       - uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.BOT_PAT }}
+  automerge:
+    runs-on: ubuntu-latest
+    steps:
       - uses: reitermarkus/automerge@v2.8.0
         with:
           token: ${{ secrets.BOT_PAT }}
