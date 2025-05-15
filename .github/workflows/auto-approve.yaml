@@ -2,7 +2,7 @@ name: Auto Approved
 on: pull_request_target # yamllint disable-line rule:truthy
 
 jobs:
-  build:
+  autoapprove:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
@@ -11,3 +11,7 @@ jobs:
       - uses: hmarr/auto-approve-action@v4
         with:
           github-token: ${{ secrets.BOT_PAT }}
+      - uses: reitermarkus/automerge@v2.8.0
+        with:
+          token: ${{ secrets.BOT_PAT }}
+          merge-method: squash
