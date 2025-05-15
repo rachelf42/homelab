@@ -39,9 +39,6 @@ resource "ansible_group" "by_role" {
     "nas",
     "devmachine",
     "server",
-    "nomad",
-    "nomad_server",
-    "nomad_client",
-    "vault"
+    "jenk"
   ]
 }

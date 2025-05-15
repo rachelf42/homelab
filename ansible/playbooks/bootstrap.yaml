@@ -46,25 +46,43 @@
         # not sure if we'd ever get to this point if there wasnt one
         # but it cant hurt to check since future me is not to be trusted to remember things
         prompt: >-
-          CONFIRM: new node(s) have been added to
+          PVE: new node(s) have been added to
           ans-statics.auto.tfvars and
-          'terraform apply' has been run? [Y/N]
+          'terraform apply' has been run?
+          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
+    - name: confirm bootstrap terraform is run
+      delegate_to: localhost
+      run_once: true # noqa: run-once[task]
+      register: terrastrap
+      ansible.builtin.pause:
+        prompt: >-
+          NON-PVE: has the /bootstrap terraform project been applied?
+          If only Proxmox nodes are in the --limit, can safely respond Y [Y/N]
     - delegate_to: localhost
       run_once: true # noqa: run-once[task]
       ansible.builtin.assert:
         that: >-
-          (letos.user_input is match("y")
-          or letos.user_input is match("Y"))
-          and (askpass.user_input is match("y")
-          or askpass.user_input is match("Y"))
-          and (limited.user_input is match("y")
-          or limited.user_input is match("Y"))
-          and (predeploy.user_input is match("y")
-          or predeploy.user_input is match("Y"))
+          (
+            letos.user_input is match("y")
+            or letos.user_input is match("Y")
+          ) and (
+            askpass.user_input is match("y")
+            or askpass.user_input is match("Y")
+          ) and (
+            limited.user_input is match("y")
+            or limited.user_input is match("Y")
+          ) and (
+            predeploy.user_input is match("y")
+            or predeploy.user_input is match("Y")
+          ) and (
+            terrastrap.user_input is match("y")
+            or terrastrap.user_input is match("Y")
+          )
     - name: wait for connection
       ansible.builtin.wait_for_connection:
         sleep: 10
         timeout: 3600
+
 - name: bootstrap PVE
   hosts: [pve]
   vars:
@@ -259,3 +277,68 @@
             * Re-run 'terraform apply' as there is there is additional config there.
             * Once you're confident the node(s) are set up right, run a full deploy.
         seconds: 1
+
+- name: jenkins setup
+  become: true
+  hosts: [jenk]
+  any_errors_fatal: true
+  vars:
+    deb_arch:
+      armv6l: armhf,
+      armv7l: armhf,
+      aarch64: arm64,
+      x86_64: amd64,
+      i386: i386
+    jenkinspkg:
+      - fontconfig
+      - openjdk-21-jre
+  tasks:
+    - name: repo setup
+      block:
+        - name: directory exists
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            mode: "0755"
+            state: directory
+        - name: key downloaded
+          ansible.builtin.get_url:
+            url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+            dest: /etc/apt/keyrings/jenkins.asc
+            mode: "0664"
+            owner: root
+            group: root
+        - name: apt source installed
+          async: 600
+          poll: 10
+          retries: 10
+          ansible.builtin.apt_repository:
+            filename: jenkins
+            repo: >-
+              deb [arch={{ deb_arch[ansible_architecture] }}
+              signed-by=/etc/apt/keyrings/jenkins.asc]
+              https://pkg.jenkins.io/debian-stable binary/
+            state: present
+    - name: dependencies installed
+      register: jenkdepinst
+      until: jenkdepinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.apt:
+        name: "{{ jenkinspkg }}"
+        state: present
+        update_cache: true
+    - name: jenkins installed
+      register: jenkinst
+      until: jenkinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      notify: reboot
+      ansible.builtin.apt:
+        name: jenkins
+        state: present
+        update_cache: true
+  handlers:
+    - name: reboot
+      ansible.builtin.reboot:

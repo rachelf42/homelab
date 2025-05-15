@@ -8,8 +8,8 @@ ansible_statics = {
     "groups" = ["baremetal", "debian", "pve", "server"],
     "ipaddr" = "10.69.69.1"
   },
-  # "nas1" = {
-  #   "groups" = ["baremetal", "unraid", "nas", "server"],
-  #   "ipaddr" = "10.69.69.2"
-  # }
+  "jenkins" = {
+    "groups" = ["vm", "ubuntu", "jenk", "server"],
+    "ipaddr" = "10.69.69.254"
+  }
 }
