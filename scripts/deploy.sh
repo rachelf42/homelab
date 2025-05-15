@@ -54,6 +54,7 @@ if ! $AUTOAPPROVE && ! (tty -s); then
 	die 1
 fi
 (cd "$HOMELABDIR/ansible" && ansible-galaxy install -r requirements.yaml) || die $?
+(cd "$HOMELABDIR/terraform" && terraform init) || die $?
 "$HOMELABDIR/scripts/lint.sh" || die $?
 
 case $PACKER in # TODO do a proper CI and run packer daily not just on demand when we anticipate a new install
