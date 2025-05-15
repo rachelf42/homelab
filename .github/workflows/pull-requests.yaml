@@ -8,7 +8,7 @@ jobs:
       pull-requests: write
     if: github.actor == 'rachelf42'
     steps:
-      - uses: hmarr/auto-approve-action@v4
+      - uses: hmarr/auto-approve-action@v4.0.0
         with:
           github-token: ${{ secrets.BOT_PAT }}
   automerge:
