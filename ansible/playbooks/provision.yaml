@@ -404,21 +404,3 @@
     - name: set timezone
       community.general.timezone:
         name: America/Vancouver
-    - name: apt upgrade
-      register: upgrade
-      until: upgrade is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      ansible.builtin.apt:
-        update_cache: true
-        upgrade: safe
-    - name: apt autoremove
-      register: autorem
-      until: autorem is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      ansible.builtin.apt:
-        autoremove: true
-        autoclean: true

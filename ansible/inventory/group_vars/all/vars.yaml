@@ -3,10 +3,12 @@ user_password_hash: "{{ ansivault_user_password_hash }}"
 user_email: "{{ ansivault_user_email }}"
 cloudflare_account: "{{ ansivault_cloudflare_account }}"
 px_cloudflare_token: "{{ ansivault_px_cloudflare_token }}"
-hcv_cloudflare_token: "{{ ansivault_hcv_cloudflare_token }}"
+pushover_api_key: "{{ ansivault_pushover_api_key }}"
+pushover_user_key: "{{ ansivault_pushover_user_key }}"
 
 account_name: rachelf42
 domain: rachelf42.ca
 user_name: rachel
 homedir: /home/rachel
 repodir: /home/rachel/homelab
+pushover_devices: Rachel-Opera,Rachel-A13
