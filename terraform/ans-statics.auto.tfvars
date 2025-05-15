@@ -5,6 +5,7 @@ ansible_statics = {
     "ipaddr"          = "10.69.1.69"
   },
   "pve-laptop" = {
+    "ansible_user" = "root",
     "groups" = ["baremetal", "debian", "pve", "server"],
     "ipaddr" = "10.69.69.1"
   },

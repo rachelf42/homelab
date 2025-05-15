@@ -3,8 +3,6 @@
 # But bpg/proxmox doesn't have all settings so here we are
 - name: prompts
   hosts: [all]
-  vars:
-    ansible_user: root
   gather_facts: false
   tasks:
     - name: confirm limit
@@ -87,8 +85,6 @@
 
 - name: bootstrap PVE
   hosts: [pve]
-  vars:
-    ansible_user: root
   tasks:
     - name: no subscription
       # all of these are only needed
