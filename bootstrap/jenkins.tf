@@ -1,4 +1,4 @@
-resource "proxmox_virtual_environment_vm" "vm" {
+resource "proxmox_virtual_environment_vm" "jenkins" {
   name          = "jenkins"
   node_name     = "pve-laptop"
   description   = "MANAGED BY TERRAFORM"

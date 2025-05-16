@@ -82,7 +82,6 @@
       ansible.builtin.wait_for_connection:
         sleep: 10
         timeout: 3600
-
 - name: bootstrap PVE
   hosts: [pve]
   tasks:
@@ -275,7 +274,6 @@
             * Re-run 'terraform apply' as there is there is additional config there.
             * Once you're confident the node(s) are set up right, run a full deploy.
         seconds: 1
-
 - name: jenkins setup
   become: true
   hosts: [jenk]
@@ -332,11 +330,37 @@
       async: 600
       poll: 10
       retries: 10
-      notify: reboot
       ansible.builtin.apt:
         name: jenkins
         state: present
         update_cache: true
+    - name: systemd overrides
+      notify: reboot # apt task above needs a reboot but we want systemd configured first
+      ansible.builtin.blockinfile:
+        path: /etc/systemd/system/jenkins.service.d/override.conf
+        create: true
+        state: present
+        block: |
+          [Service]
+          Environment="CASC_JENKINS_CONFIG=/jenkins/casc"
+        owner: root
+        group: root
+        mode: "0644"
+    - name: retrieve bootstrap pass
+      register: slurp
+      ansible.builtin.slurp:
+        src: /var/lib/jenkins/secrets/initialAdminPassword
+    - name: have user complete setup
+      ansible.builtin.pause:
+        prompt: |
+          Please open the Jenkins UI and complete setup.
+          When asked, ensure the Configuration as Code plugin is selected for install.
+          Your initial admin password is:
+
+          {{ slurp['content'] | b64decode }}
+          Press any key to continue...
+    - name: fart
+      ansible.builtin.debug:
   handlers:
     - name: reboot
       ansible.builtin.reboot:

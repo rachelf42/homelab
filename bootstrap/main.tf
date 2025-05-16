@@ -26,7 +26,7 @@ provider "proxmox" {
   insecure      = var.proxmox_is_insecure
 }
 
-# dummy variable declarations to silence warnings about packer vars
+# dummy variable declarations to silence warnings about unused vars
 variable "px_cftoken" {}
 variable "pve-nodes" {}
 variable "cf_account_id" {}
