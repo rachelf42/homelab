@@ -14,6 +14,12 @@ terraform {
       version = "1.3.0"
     }
   }
+  cloud {
+    organization = "rachelf42"
+    workspaces {
+      name = "bootstrap"
+    }
+  }
 }
 
 provider "cloudflare" {

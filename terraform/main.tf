@@ -18,7 +18,14 @@ terraform {
       version = "0.0.9"
     }
   }
+  cloud {
+    organization = "rachelf42"
+    workspaces {
+      name = "homelab"
+    }
+  }
 }
+
 
 provider "cloudflare" {
   api_token = var.cf_api_token
