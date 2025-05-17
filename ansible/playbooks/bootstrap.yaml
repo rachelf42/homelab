@@ -335,17 +335,23 @@
         state: present
         update_cache: true
     - name: systemd overrides
-      notify: reboot # apt task above needs a reboot but we want systemd configured first
       ansible.builtin.blockinfile:
         path: /etc/systemd/system/jenkins.service.d/override.conf
         create: true
         state: present
         block: |
           [Service]
-          Environment="CASC_JENKINS_CONFIG=/jenkins/casc"
+          Environment="CASC_JENKINS_CONFIG=https://github.com/rachelf42/homelab/blob/main/jenkins/config.yaml"
         owner: root
         group: root
         mode: "0644"
+    - name: add jenkins to shadow # needed for PAM auth
+      ansible.builtin.user:
+        name: jenkins
+        groups: shadow
+        append: true
+    - name: reboot
+      ansible.builtin.reboot:
     - name: retrieve bootstrap pass
       register: slurp
       ansible.builtin.slurp:
@@ -361,6 +367,3 @@
           Press any key to continue...
     - name: fart
       ansible.builtin.debug:
-  handlers:
-    - name: reboot
-      ansible.builtin.reboot:
