@@ -369,3 +369,10 @@
           Press any key to continue...
     - name: fart
       ansible.builtin.debug:
+    - name: copy secrets file
+      ansible.builtin.copy:
+        src: jenksecrets.json
+        dest: /var/lib/jenkins/userContent/secrets.json # jenkins enforces login before read
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
