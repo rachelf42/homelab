@@ -56,3 +56,25 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
     up_delay   = 300
   }
 }
+resource "ansible_host" "jenkins" {
+  name   = "jenkins"
+  groups = ["vm", "ubuntu", "jenk", "server"]
+  variables = {
+    homedir    = "/home/rachel"
+    repodir    = "/home/rachel/homelab"
+    ip_address = "10.69.69.254"
+    user_name  = "rachel"
+
+    ansible_python_interpreter = "/usr/bin/python3"
+    ansible_private_key_file   = "./sshkey"
+    ansible_user               = "ansible"
+  }
+}
+resource "cloudflare_dns_record" "jenkins" {
+  name    = "jenkins.local.${var.cf_domain}"
+  content = "10.69.69.254"
+  proxied = false
+  ttl     = 1
+  type    = "A"
+  zone_id = local.cf_zone_id
+}

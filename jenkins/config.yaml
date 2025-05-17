@@ -18,21 +18,21 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-      - id: "rachel"
-        name: "Rachel Falder"
-        password: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
-        properties:
-        - "consoleUrlProvider"
-        - "myView"
-        - preferredProvider:
-            providerId: "default"
-        - theme:
-            theme: "dark"
-        - "timezone"
-        - "experimentalFlags"
-        - mailer:
-            emailAddress: ${json:email:${readFile:/var/lib/jenkins/userContent/secrets.json}}
-        - "apiToken"
+        - id: "rachel"
+          name: "Rachel Falder"
+          password: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
+          properties:
+            - "consoleUrlProvider"
+            - "myView"
+            - preferredProvider:
+                providerId: "default"
+            - theme:
+                theme: "dark"
+            - "timezone"
+            - "experimentalFlags"
+            - mailer:
+                emailAddress: ${json:email:${readFile:/var/lib/jenkins/userContent/secrets.json}}
+            - "apiToken"
 tool:
   git:
     installations:

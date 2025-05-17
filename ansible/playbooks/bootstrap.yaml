@@ -345,6 +345,13 @@
         owner: root
         group: root
         mode: "0644"
+    - name: copy secrets file
+      ansible.builtin.copy:
+        src: jenksecrets.json
+        dest: /var/lib/jenkins/userContent/secrets.json # jenkins enforces login before read
+        owner: jenkins                                  # yes, this means any logged in user can read my password
+        group: jenkins                                  # im the only user, its fine
+        mode: "0600"
     - name: reboot
       ansible.builtin.reboot:
     - name: retrieve bootstrap pass
@@ -364,10 +371,3 @@
           Press any key to continue...
     - name: fart
       ansible.builtin.debug:
-    - name: copy secrets file
-      ansible.builtin.copy:
-        src: jenksecrets.json
-        dest: /var/lib/jenkins/userContent/secrets.json # jenkins enforces login before read
-        owner: jenkins
-        group: jenkins
-        mode: "0600"

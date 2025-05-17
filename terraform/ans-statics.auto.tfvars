@@ -8,10 +8,5 @@ ansible_statics = {
     "ansible_user" = "root",
     "groups"       = ["baremetal", "debian", "pve", "server"],
     "ipaddr"       = "10.69.69.1"
-  },
-  "jenkins" = {
-    "ansible_user" = "ansible",
-    "groups"       = ["vm", "ubuntu", "jenk", "server"],
-    "ipaddr"       = "10.69.69.254"
   }
 }
