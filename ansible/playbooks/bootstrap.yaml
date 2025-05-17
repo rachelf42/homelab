@@ -345,11 +345,6 @@
         owner: root
         group: root
         mode: "0644"
-    - name: add jenkins to shadow # needed for PAM auth
-      ansible.builtin.user:
-        name: jenkins
-        groups: shadow
-        append: true
     - name: reboot
       ansible.builtin.reboot:
     - name: retrieve bootstrap pass
