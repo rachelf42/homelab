@@ -259,7 +259,7 @@
       become_user: "{{ user_name }}"
       community.docker.docker_login:
         username: "{{ account_name }}"
-        password: "{{ lookup('ansible.builtin.file', '../resources/docker-pat') }}"
+        password: "{{ lookup('ansible.builtin.file', 'docker-pat') }}"
         state: present
     - name: NAS mountpoints
       block:
