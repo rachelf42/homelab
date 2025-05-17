@@ -17,8 +17,8 @@ jenkins:
 tool:
   git:
     installations:
-    - home: "git"
-      name: "Default"
+      - home: "git"
+        name: "Default"
 
 unclassified:
 
