@@ -341,7 +341,7 @@
         state: present
         block: |
           [Service]
-          Environment="CASC_JENKINS_CONFIG=https://github.com/rachelf42/homelab/blob/main/jenkins/config.yaml"
+          Environment="CASC_JENKINS_CONFIG=https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/config.yaml"
         owner: root
         group: root
         mode: "0644"
@@ -353,10 +353,12 @@
     - name: reboot
       ansible.builtin.reboot:
     - name: retrieve bootstrap pass
+      ignore_errors: true # will be missing on subsequent runs
       register: slurp
       ansible.builtin.slurp:
         src: /var/lib/jenkins/secrets/initialAdminPassword
     - name: have user complete setup
+      when: slurp is ansible.builtin.success
       ansible.builtin.pause:
         prompt: |
           Please open the Jenkins UI and complete setup.
