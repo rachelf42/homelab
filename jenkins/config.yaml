@@ -1,31 +1,28 @@
 jenkins:
-  systemMessage: "Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n"
+  systemMessage: Jenkins configured automatically by Jenkins Configuration as Code plugin\n\n
   numExecutors: 5
   scmCheckoutRetryCount: 2
   mode: NORMAL
-
   globalNodeProperties:
     - envVars:
         env:
           - key: FOO
             value: BAR
-
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
-
+  securityRealm:
+    pam:
+      serviceName: sshd
 tool:
   git:
     installations:
-      - home: "git"
-        name: "Default"
-
+      - home: git
+        name: Default
 unclassified:
-
   location:
-    adminAddress: "address not configured yet <nobody@nowhere>"
-    url: "http://jenkins.local.rachelf42.ca:8080/"
-
+    adminAddress: address not configured yet <nobody@nowhere>
+    url: http://jenkins.local.rachelf42.ca:8080/
   mailer:
     replyToAddress: do-not-reply@acme.org
     smtpHost: smtp.acme.org
