@@ -3,6 +3,7 @@
         "hashicorp.terraform",
         "hashicorp.hcl",
         "wholroyd.jinja",
-        "shardulm94.trailing-spaces"
+        "shardulm94.trailing-spaces",
+        "maarti.jenkins-doc"
     ]
 }

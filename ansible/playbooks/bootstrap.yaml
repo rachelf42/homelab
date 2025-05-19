@@ -1,6 +1,7 @@
 # This playbook is for initial setup ONLY and should only be run once per host
 # Ideally nothing would be in here and we'd do it all in terraform
-# But bpg/proxmox doesn't have all settings so here we are
+# But bpg/proxmox doesn't have all settings,
+# and i dont want to give jenkins agents access to the controller so here we are
 - name: prompts
   hosts: [all]
   gather_facts: false
@@ -15,29 +16,30 @@
           to ensure this playbook is never run
           against already-bootstrapped hosts? [Y/N]
     - name: confirm LE TOS
+      when: "'pve' in group_names"
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
       register: letos
       ansible.builtin.pause:
         prompt: >-
-          PVE: Do you agree to the
+          CONFIRM: Do you agree to the
           current Let's Encrypt Terms
           Of Service? It is YOUR *LEGAL*
           RESPONSIBILITY to find them
-          and read them in full.
-          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
+          and read them in full. [Y/N]
     - name: confirm askpass
+      when: "'pve' in group_names"
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
       register: askpass
       ansible.builtin.pause:
         prompt: >-
-          PVE: have you used the --ask-pass argument?
+          CONFIRM: have you used the --ask-pass argument?
           This playbook is the one that copies the ansible
           SSH key to PVE, so cannot use standard key-based
-          authentication.
-          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
+          authentication. [Y/N]
     - name: confirm predeploy
+      when: "'pve' in group_names"
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
       register: predeploy
@@ -46,38 +48,31 @@
         # not sure if we'd ever get to this point if there wasnt one
         # but it cant hurt to check since future me is not to be trusted to remember things
         prompt: >-
-          PVE: new node(s) have been added to
+          CONFIRM: new node(s) have been added to
           ans-statics.auto.tfvars and
-          'terraform apply' has been run?
-          If no Proxmox nodes are in the --limit, can safely respond Y [Y/N]
+          'terraform apply' has been run? [Y/N]
     - name: confirm bootstrap terraform is run
       delegate_to: localhost
+      when: "'pve' not in group_names"
       run_once: true # noqa: run-once[task]
       register: terrastrap
       ansible.builtin.pause:
-        prompt: >-
-          NON-PVE: has the /bootstrap terraform project been applied?
-          If only Proxmox nodes are in the --limit, can safely respond Y [Y/N]
-    - delegate_to: localhost
+        prompt: "CONFIRM: has the /bootstrap terraform project been applied? [Y/N]"
+    - name: assertions
+      delegate_to: localhost
       run_once: true # noqa: run-once[task]
+      loop:
+        - letos
+        - askpass
+        - limited
+        - predeploy
+        - terrastrap
       ansible.builtin.assert:
+        quiet: true
         that: >-
-          (
-            letos.user_input is match("y")
-            or letos.user_input is match("Y")
-          ) and (
-            askpass.user_input is match("y")
-            or askpass.user_input is match("Y")
-          ) and (
-            limited.user_input is match("y")
-            or limited.user_input is match("Y")
-          ) and (
-            predeploy.user_input is match("y")
-            or predeploy.user_input is match("Y")
-          ) and (
-            terrastrap.user_input is match("y")
-            or terrastrap.user_input is match("Y")
-          )
+          {{ item }} is ansible.builtin.skipped
+          or {{ item }}.user_input is match("y")
+          or {{ item }}.user_input is match("Y")
     - name: wait for connection
       ansible.builtin.wait_for_connection:
         sleep: 10
@@ -335,6 +330,7 @@
         state: present
         update_cache: true
     - name: systemd overrides
+      notify: reboot
       ansible.builtin.blockinfile:
         path: /etc/systemd/system/jenkins.service.d/override.conf
         create: true
@@ -352,22 +348,88 @@
         owner: jenkins                                  # yes, this means any logged in user can read my password
         group: jenkins                                  # im the only user, its fine
         mode: "0600"
-    - name: reboot
-      ansible.builtin.reboot:
+    - name: hashicorp apt repo
+      block:
+        - name: download key
+          ansible.builtin.get_url:
+            url: https://apt.releases.hashicorp.com/gpg
+            dest: /etc/apt/keyrings/hashicorp.asc
+            owner: root
+            group: root
+            mode: "0644"
+        - name: add repo source
+          ansible.builtin.apt_repository:
+            filename: hashicorp
+            repo: >-
+              deb [arch={{ deb_arch[ansible_architecture] }}
+              signed-by=/etc/apt/keyrings/hashicorp.asc]
+              https://apt.releases.hashicorp.com
+              noble main
+            state: present
+    - name: hashicorp tools installed
+      register: hashinst
+      until: hashinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      loop:
+        - packer
+        - terraform
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+    - name: pip installed
+      register: pipinst
+      until: pipinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      loop:
+        - python3-pip
+        - pipx
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+    - name: ansible installed
+      become: true
+      become_user: jenkins
+      community.general.pipx:
+        name: ansible-core
+        state: install
+    - name: pipx ensurepath
+      become: true
+      become_user: jenkins
+      check_mode: false
+      register: ensurepath
+      changed_when: ensurepath.stdout.find('Success!') != -1
+      notify: reboot
+      ansible.builtin.command: pipx ensurepath
+    - name: wait for reboot
+      ansible.builtin.meta: flush_handlers
     - name: retrieve bootstrap pass
-      ignore_errors: true # will be missing on subsequent runs
-      register: slurp
+      ignore_errors: true # could be missing on subsequent runs
+      when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
+      register: slurp     # but not always, and using a handler messes with register
       ansible.builtin.slurp:
         src: /var/lib/jenkins/secrets/initialAdminPassword
     - name: have user complete setup
-      when: slurp is ansible.builtin.success
+      when: slurp is ansible.builtin.success and slurp is not ansible.builtin.skipped
       ansible.builtin.pause:
         prompt: |
           Please open the Jenkins UI and complete setup.
+          https://jenkins.local.rachelf42.ca:8080
           When asked, ensure the Configuration as Code plugin is selected for install.
           Your initial admin password is:
 
-          {{ slurp['content'] | b64decode }}
+          {{
+            slurp['content'] |
+            ansible.builtin.b64decode |
+            ansible.builtin.regex_replace("\n", "")
+          }}
+
           Press any key to continue...
-    - name: fart
-      ansible.builtin.debug:
+  handlers:
+    - name: reboot
+      ansible.builtin.reboot:

@@ -1,10 +1,14 @@
 pipeline {
   agent any
   stages {
-    stage('Hello') {
-      steps {
-        echo 'Hello World'
-      }
+    stage('Packer') {
+      steps {}
+    }
+    stage('Terraform'){
+      steps {}
+    }
+    stage('Ansible'){
+      steps {}
     }
   }
 }
