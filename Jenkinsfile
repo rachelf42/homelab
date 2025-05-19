@@ -25,8 +25,9 @@ pipeline {
     }
     stage('Packer') {
       steps {
-        dir(path: 'packer')
-        sh 'pwd'
+        dir(path: 'packer') {
+          sh 'pwd'
+        }
       }
     }
     stage('Terraform'){
