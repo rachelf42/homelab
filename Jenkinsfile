@@ -3,7 +3,7 @@ pipeline {
   stages {
     stage('Get Secrets') {
       steps {
-        sh 'rsync -avz rachel@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets'
+        sh 'rsync -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -avz rachel@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets'
       }
     }
     stage('Packer') {
