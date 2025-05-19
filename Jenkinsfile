@@ -3,7 +3,23 @@ pipeline {
   stages {
     stage('Get Secrets') {
       steps {
-        sh 'rsync -e "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" -avz rachel@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets'
+        withCredentials([sshUserPrivateKey(
+          credentialsId: 'homelab-pull-secrets',
+          keyFileVariable: 'HOMELAB_JENKINS_SECRETSYNC_KEY',
+          passphraseVariable: 'HOMELAB_JENKINS_SECRETSYNC_PASS',
+          usernameVariable: 'HOMELAB_JENKINS_SECRETSYNC_USER'
+        )]) {
+          sh '''
+            rsync
+              --rsh "ssh
+                -o StrictHostKeyChecking=no
+                -o UserKnownHostsFile=/dev/null
+                -i $HOMELAB_JENKINS_SECRETSYNC_KEY
+              "
+              --archive --verbose --compress
+              $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
+          '''
+        }
       }
     }
     stage('Packer') {
