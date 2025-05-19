@@ -1,7 +1,7 @@
 ### NETWORK INFRASTRUCTURE
 resource "cloudflare_dns_record" "pve" {
   content = "10.69.69.1" # TODO: setup some kinda loadbalancer for future expansion
-                         # label: waiting
+                         # labels: waiting
                          # Issue URL: https://github.com/rachelf42/homelab/issues/25
   name    = "pve.local.${var.cf_domain}"
   proxied = false
