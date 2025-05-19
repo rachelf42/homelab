@@ -26,7 +26,7 @@ pipeline {
     stage('Packer') {
       steps {
         dir(path: 'packer') {
-          sh 'pwd'
+          sh 'packer build -timestamp-ui -force .'
         }
       }
     }
