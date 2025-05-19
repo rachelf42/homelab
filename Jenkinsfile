@@ -9,16 +9,17 @@ pipeline {
           passphraseVariable: 'HOMELAB_JENKINS_SECRETSYNC_PASS',
           usernameVariable: 'HOMELAB_JENKINS_SECRETSYNC_USER'
         )]) {
-          sh '''
+          def unpretty = ~'(^|\n) +'
+          def rsync = '''
             rsync
               --rsh "ssh
                 -o StrictHostKeyChecking=no
                 -o UserKnownHostsFile=/dev/null
                 -i $HOMELAB_JENKINS_SECRETSYNC_KEY
-              "
-              --archive --verbose --compress
+              " --archive --verbose --compress
               $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
           '''
+          echo rsync.replaceAll(unpretty, ' ').tail() // tail removes leading newline
         }
       }
     }
