@@ -19,7 +19,7 @@ pipeline {
           passphraseVariable: 'HOMELAB_JENKINS_SECRETSYNC_PASS',
           usernameVariable: 'HOMELAB_JENKINS_SECRETSYNC_USER'
         )]) {
-          echo rsync.replaceAll(unpretty, ' ')
+          echo rsync.replaceAll(unpretty, ' ').trim()
         }
       }
     }
