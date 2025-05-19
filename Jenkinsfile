@@ -25,7 +25,8 @@ pipeline {
     }
     stage('Packer') {
       steps {
-        echo "TODO"
+        dir(path: 'packer')
+        sh 'pwd'
       }
     }
     stage('Terraform'){
