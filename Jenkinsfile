@@ -1,14 +1,25 @@
 pipeline {
   agent any
   stages {
+    stage('Get Secrets') {
+      steps {
+        sh 'rsync -avz rachel@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets'
+      }
+    }
     stage('Packer') {
-      steps {}
+      steps {
+        echo "TODO"
+      }
     }
     stage('Terraform'){
-      steps {}
+      steps {
+        echo "TODO"
+      }
     }
     stage('Ansible'){
-      steps {}
+      steps {
+        echo "TODO"
+      }
     }
   }
 }

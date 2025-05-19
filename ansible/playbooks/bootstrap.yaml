@@ -430,6 +430,26 @@
           }}
 
           Press any key to continue...
+    - name: fart
+      ansible.builtin.debug:
+    - name: have user install creds # TODO: change to pull from NAS
+                                    # labels: waiting
+      when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
+      ansible.builtin.pause:
+        prompt: |+
+          Please open this link and set as follows:
+          http://jenkins.local.rachelf42.ca:8080/manage/credentials/store/system/domain/_/newCredentials
+
+          Kind: SSH Username with private key
+          Scope: Global
+          ID: homelab-pull-secrets
+          Username: rachel
+          Treat username as secret: Unchecked
+          Private Key: Enter Directly (by copying and pasting this block)
+
+          {{ lookup('ansible.builtin.file', 'jenkins_ssh_key') }}
+
+          Press any key to continue...
   handlers:
     - name: reboot
       ansible.builtin.reboot:
