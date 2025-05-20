@@ -6,8 +6,7 @@ pipelineJob('main'){
     properties {
         pipelineTriggers {
             triggers {
-                // TODO: setup github push hook for jenkins
-                // labels: enhancement
+
                 githubPush()
                 periodicFolderTrigger {
                     interval('24h')
