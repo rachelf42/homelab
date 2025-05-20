@@ -48,9 +48,9 @@ pipeline {
             sh('terraform init')
             sh('terraform plan -out=jenkins.tfplan')
             input(
-              message: 'Approve Terraform Plan?'
-              ok: 'Approve'
-              cancel: 'Cancel'
+              message: 'Approve Terraform Plan?',
+              ok: 'Approve',
+              cancel: 'Cancel',
               submitter: 'rachel'
             )
             sh('terraform apply -auto-approve jenkins.tfplan')
