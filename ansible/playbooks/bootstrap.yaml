@@ -432,9 +432,7 @@
           Press any key to continue...
     - name: fart
       ansible.builtin.debug:
-    - name: have user install creds # TODO: change to pull from NAS
-                                    # Issue URL: https://github.com/rachelf42/homelab/issues/38
-                                    # labels: waiting, hideFromCodeEditor
+    - name: have user install creds
       when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
       ansible.builtin.pause:
         prompt: |+
