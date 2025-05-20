@@ -1,5 +1,6 @@
 def unpretty = ~'(^|\n) +'
 // TODO: change to pull from NAS
+// Issue URL: https://github.com/rachelf42/homelab/issues/40
 // labels: waiting, hideFromCodeEditor
 def rsync = '''
   rsync
@@ -26,6 +27,7 @@ pipeline {
       }
     }
     // TODO: move packer to its own daily pipeline
+    // Issue URL: https://github.com/rachelf42/homelab/issues/39
     stage('Packer') {
       environment {
         PACKER_NO_COLOR = true
