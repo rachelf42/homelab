@@ -7,6 +7,7 @@ pipelineJob('main'){
         pipelineTriggers {
             triggers {
                 // TODO: setup github push hook for jenkins
+                // Issue URL: https://github.com/rachelf42/homelab/issues/42
                 // labels: enhancement
                 githubPush()
                 periodicFolderTrigger {
