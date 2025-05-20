@@ -23,11 +23,16 @@ pipeline {
         }
       }
     }
-    stage('Packer') {
+    stage('Packer') { // TODO: move packer to its own daily pipeline
+      environment {   // Issue URL: https://github.com/rachelf42/homelab/issues/22
+        PACKER_NO_COLOR = true
+      }
       steps {
         dir(path: 'packer') {
-          sh 'packer init .'
-          sh 'packer build -timestamp-ui -force .'
+          timestamps {
+            sh 'packer init .'
+            sh 'packer build -force .'
+          }
         }
       }
     }
