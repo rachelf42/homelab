@@ -17,6 +17,9 @@ terraform {
       source  = "nxt-engineering/publicip"
       version = "0.0.9"
     }
+    tfe = {
+      version = "0.64.0"
+    }
   }
   cloud {
     organization = "rachelf42"
@@ -35,6 +38,9 @@ provider "proxmox" {
   api_token     = "${var.proxmox_api_token_id}=${var.proxmox_api_token_secret}"
   random_vm_ids = true
   insecure      = var.proxmox_is_insecure
+}
+provider "tfe" {
+  token = var.hcp_token == null ? file("${path.module}/hcp_token") : var.hcp_token
 }
 
 # dummy variable declarations to silence warnings about packer vars

@@ -44,10 +44,13 @@ variable "cf_api_token" {
 variable "cf_domain" {
   type = string
 }
-locals {
-  cf_zone_id = one(data.cloudflare_zones.cf_domain.result).id
-}
 data "cloudflare_zones" "cf_domain" {
   name   = var.cf_domain
   status = "active"
+}
+locals {
+  cf_zone_id = one(data.cloudflare_zones.cf_domain.result).id
+}
+output "cf_zone_id" {
+  value = local.cf_zone_id
 }
