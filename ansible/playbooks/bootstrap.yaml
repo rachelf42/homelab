@@ -433,7 +433,7 @@
     - name: fart
       ansible.builtin.debug:
     - name: have user install creds # TODO: change to pull from NAS
-                                    # labels: waiting
+                                    # labels: waiting, hideFromCodeEditor
       when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
       ansible.builtin.pause:
         prompt: |+

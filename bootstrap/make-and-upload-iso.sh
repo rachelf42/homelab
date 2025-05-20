@@ -67,6 +67,7 @@ header "$MSG - CALLING AUTOINSTALL GENERATOR"
 	--source ./ubuntu-noble-original.iso \
 	--destination ./ubuntu-noble-autoinstall.iso || die $?
 header "COPYING ISO FILE" # TODO copy to NAS instead
+                          # labels: hideFromCodeEditor
                           # Issue URL: https://github.com/rachelf42/homelab/issues/16
 scp -o StrictHostKeyChecking=accept-new -i ./ansible_ssh_key \
 	./ubuntu-noble-autoinstall.iso "$PVE:~/ubuntu-noble-autoinstall.iso" || die $?
