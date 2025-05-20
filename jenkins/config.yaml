@@ -46,3 +46,5 @@ unclassified:
     replyToAddress: do-not-reply@acme.org
     smtpHost: smtp.acme.org
     smtpPort: 4441
+jobs:
+  - url: https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/jobs/main.groovy

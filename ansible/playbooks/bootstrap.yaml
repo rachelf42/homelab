@@ -420,7 +420,7 @@
         prompt: |
           Please open the Jenkins UI and complete setup.
           https://jenkins.local.rachelf42.ca:8080
-          When asked, ensure the Configuration as Code plugin is selected for install.
+          When asked, install recommended plugins.
           Your initial admin password is:
 
           {{
@@ -430,8 +430,6 @@
           }}
 
           Press any key to continue...
-    - name: fart
-      ansible.builtin.debug:
     - name: have user install creds
       when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
       ansible.builtin.pause:
@@ -449,6 +447,37 @@
           {{ lookup('ansible.builtin.file', 'jenkins_ssh_key') }}
 
           Press any key to continue...
+    - name: fart
+      ansible.builtin.debug:
+    - name: install plugins
+      loop:
+        - job-dsl
+        - configuration-as-code
+      register: jenkplugins
+      notify: restart jenkins
+      community.general.jenkins_plugin:
+        name: "{{ item }}"
+        url_username: rachel
+        url_password: "{{ (lookup('ansible.builtin.file', 'jenksecrets.json') | ansible.builtin.from_json)['password'] }}"
+        url: http://jenkins.local.rachelf42.ca:8080
+        force_basic_auth: true
+    - name: bounce jenkins if needed
+      ansible.builtin.meta: flush_handlers
+    - name: wait for jenkins to come back
+      ansible.builtin.uri:
+        url: http://jenkins.local.rachelf42.ca:8080/login
+        status_code: 200
+        timeout: 5
+      register: jenkstatus
+      retries: 60
+      delay: 5
+      until: >-
+        'status' in jenkstatus and
+        jenkstatus['status'] == 200
   handlers:
     - name: reboot
       ansible.builtin.reboot:
+    - name: restart jenkins
+      ansible.builtin.service:
+        name: jenkins
+        state: restarted

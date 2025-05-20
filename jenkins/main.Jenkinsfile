@@ -12,13 +12,6 @@ def rsync = '''
     $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
 pipeline {
-  // TODO: automate jenkins job creation
-  // Issue URL: https://github.com/rachelf42/homelab/issues/41
-  // labels: enhancement
-  // could be ansible's community.general.jenkins_job, need XML documentation
-  // unless jenkins' config-as-code plugin can do it?
-  // last resort is just have the user do it in bootstrap.yaml, but
-  // thats prone to mistakes, plus id like to have the triggers updated from git somehow
   agent any
   stages {
     stage('Get Secrets') {
