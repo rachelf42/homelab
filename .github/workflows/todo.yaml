@@ -3,7 +3,7 @@ on: # yamllint disable-line rule:truthy
   push:
     branches: [main]
 jobs:
-  build:
+  do-todos:
     runs-on: ubuntu-latest
     permissions:
       contents: write
