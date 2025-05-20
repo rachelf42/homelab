@@ -25,7 +25,7 @@ variable "proxmox_is_insecure" {
 }
 # Packer Meta-Settings
 packer {
-  required_version = "~> 1.12" # TODO: have renovate update packer
+  required_version = "~> 1.12" # TODO: have renovate upd8 packer
                                # labels: waiting, hideFromCodeEditor
                                # Issue URL: https://github.com/rachelf42/homelab/issues/20
   required_plugins {
