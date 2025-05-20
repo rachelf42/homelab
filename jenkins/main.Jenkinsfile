@@ -13,6 +13,7 @@ def rsync = '''
 '''
 pipeline {
   // TODO: automate jenkins job creation
+  // Issue URL: https://github.com/rachelf42/homelab/issues/41
   // labels: enhancement
   // could be ansible's community.general.jenkins_job, need XML documentation
   // unless jenkins' config-as-code plugin can do it?
