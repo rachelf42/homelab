@@ -2,6 +2,7 @@
 # creates an iso with an autoinstall yaml baked in
 # and uploads it to proxmox
 # TODO: deprecate and setup a PXE server
+# labels: waiting, hideFromCodeEditor
 # Issue URL: https://github.com/rachelf42/homelab/issues/18
 POSITIONAL_ARGS=()
 while [[ $# -gt 0 ]]; do
