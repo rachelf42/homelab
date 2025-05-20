@@ -434,7 +434,6 @@
       ansible.builtin.debug:
     - name: have user install creds # TODO: change to pull from NAS
                                     # Issue URL: https://github.com/rachelf42/homelab/issues/38
-                                    # Issue URL: https://github.com/rachelf42/homelab/issues/37
                                     # labels: waiting, hideFromCodeEditor
       when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
       ansible.builtin.pause:
