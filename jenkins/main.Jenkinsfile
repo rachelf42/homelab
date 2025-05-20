@@ -1,4 +1,6 @@
 def unpretty = ~'(^|\n) +'
+// TODO: change to pull from NAS
+// labels: waiting, hideFromCodeEditor
 def rsync = '''
   rsync
     --rsh "ssh
@@ -23,6 +25,7 @@ pipeline {
         }
       }
     }
+    // TODO: move packer to its own daily pipeline
     stage('Packer') {
       environment {
         PACKER_NO_COLOR = true
