@@ -1,7 +1,8 @@
 [
   {
-    "language": "Jenkinsfile",
+    "language": "Groovy",
     "extensions": [
+      ".groovy",
       "Jenkinsfile",
       ".Jenkinsfile"
     ],
