@@ -42,6 +42,9 @@ pipeline {
       }
     }
     stage('Terraform'){
+      environment {
+        TF_IN_AUTOMATION = "jenkins"
+      }
       steps {
         dir(path: 'terraform'){
           timestamps {
