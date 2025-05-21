@@ -1,9 +1,8 @@
 pipelineJob('main'){
-    throttleConcurrentBuilds {
-        maxPerNode(1)
-        maxTotal(1)
-    }
     properties {
+        disableConcurrentBuilds {
+            abortPrevious(false)
+        }
         pipelineTriggers {
             triggers {
                 // TODO: setup github push hook for jenkins
@@ -16,9 +15,6 @@ pipelineJob('main'){
             }
         }
         githubProjectUrl('https://github.com/rachelf42/homelab')
-        ownership {
-            primaryOwnerId('rachel')
-        }
     }
     definition {
         cpsScm {

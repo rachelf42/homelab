@@ -410,7 +410,7 @@
       ansible.builtin.meta: flush_handlers
     - name: retrieve bootstrap pass
       ignore_errors: true # could be missing on subsequent runs
-      when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
+      when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
       register: slurp     # but not always, and using a handler messes with register
       ansible.builtin.slurp:
         src: /var/lib/jenkins/secrets/initialAdminPassword
@@ -431,7 +431,7 @@
 
           Press any key to continue...
     - name: have user install creds
-      when: jenkinst is defined and ansible.builtin.changed # noqa no-handler
+      when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
       ansible.builtin.pause:
         prompt: |+
           Please open this link and set as follows:
@@ -447,8 +447,6 @@
           {{ lookup('ansible.builtin.file', 'jenkins_ssh_key') }}
 
           Press any key to continue...
-    - name: fart
-      ansible.builtin.debug:
     - name: install plugins
       loop:
         - job-dsl
