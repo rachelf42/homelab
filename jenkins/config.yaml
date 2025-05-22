@@ -52,15 +52,15 @@ credentials:
   system:
     domainCredentials:
       - credentials:
-        - basicSSHUserPrivateKey:
-            id: homelab-pull-secrets
-            scope: GLOBAL
-            username: rachel
-            privateKeySource:
-              directEntry:
-                privateKey: "${readFile:/var/lib/jenkins/userContent/ssh_key}"
-        - string:
-            id: terratoken
-            description: HCP Terraform Token
-            scope: GLOBAL
-            secret: "${readFile:/var/lib/jenkins/userContent/terratoken}"
+          - basicSSHUserPrivateKey:
+              id: homelab-pull-secrets
+              scope: GLOBAL
+              username: rachel
+              privateKeySource:
+                directEntry:
+                  privateKey: "${readFile:/var/lib/jenkins/userContent/ssh_key}"
+          - string:
+              id: terratoken
+              description: HCP Terraform Token
+              scope: GLOBAL
+              secret: "${readFile:/var/lib/jenkins/userContent/terratoken}"

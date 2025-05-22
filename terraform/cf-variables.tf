@@ -15,14 +15,14 @@ variable "cf_api_token" {
 }
 
 variable "hcp_token" {
-  type = string
+  type      = string
   sensitive = true
-  nullable = true
-  default = null
+  nullable  = true
+  default   = null
 }
 data "tfe_outputs" "bootstrap" {
   organization = "rachelf42"
-  workspace = "bootstrap"
+  workspace    = "bootstrap"
 }
 locals {
   cf_zone_id = data.tfe_outputs.bootstrap.nonsensitive_values.cf_zone_id
