@@ -2,7 +2,7 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
   name          = "jenkins"
   node_name     = "pve-laptop"
   description   = "MANAGED BY TERRAFORM"
-  tags          = ["terraform","jenkins"]
+  tags          = ["terraform","jenkins","docker"]
   timeout_clone = 7200
   scsi_hardware = "virtio-scsi-single"
   boot_order    = ["scsi0", "net0"]
@@ -58,7 +58,7 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
 }
 resource "ansible_host" "jenkins" {
   name   = "jenkins"
-  groups = ["vm", "ubuntu", "jenk", "server"]
+  groups = ["vm", "ubuntu", "jenk", "docker", "server"]
   variables = {
     homedir    = "/home/rachel"
     repodir    = "/home/rachel/homelab"

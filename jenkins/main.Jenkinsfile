@@ -54,9 +54,12 @@ pipeline {
         TF_CLI_ARGS = "-no-color"
       }
       steps {
-        dir(path: 'terraform'){
-          timestamps {
-            withCredentials([string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')]) {
+        timestamps {
+          withCredentials([string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')]) {
+            dir('bootstrap') {
+              sh('terraform init') // so ansible can access state
+            }
+            dir('terraform') {
               sh('terraform init')
               sh('terraform plan -out=jenkins.tfplan')
               input(
