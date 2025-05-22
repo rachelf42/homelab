@@ -3,13 +3,19 @@ def unpretty = ~'(^|\n) +'
 // Issue URL: https://github.com/rachelf42/homelab/issues/40
 // labels: waiting, hideFromCodeEditor
 def rsync = '''
-  rsync
-    --rsh "ssh
-      -o StrictHostKeyChecking=no
-      -o UserKnownHostsFile=/dev/null
-      -i $HOMELAB_JENKINS_SECRETSYNC_KEY
-    " --archive --verbose --compress
-    $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
+rsync
+  --rsh "ssh
+    -o StrictHostKeyChecking=no
+    -o UserKnownHostsFile=/dev/null
+    -i $HOMELAB_JENKINS_SECRETSYNC_KEY
+  " --archive --verbose --compress
+  $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
+'''
+def ansible = '''
+#!/bin/sh
+export PATH=$PATH:$HOME/.local/bin # where pipx installs stuff
+ansible-galaxy collection install -r requirements.yaml
+ansible-playbook playbooks/provision.yaml
 '''
 pipeline {
   agent any
@@ -44,20 +50,22 @@ pipeline {
     stage('Terraform'){
       environment {
         TF_IN_AUTOMATION = "jenkins"
+        TF_INPUT = false
+        TF_CLI_ARGS = "-no-color"
       }
       steps {
         dir(path: 'terraform'){
           timestamps {
             withCredentials([string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')]) {
-              sh('terraform init -input=false')
-              sh('terraform plan -input=false -out=jenkins.tfplan')
+              sh('terraform init')
+              sh('terraform plan -out=jenkins.tfplan')
               input(
                 message: 'Approve Terraform Plan?',
                 ok: 'Approve',
                 cancel: 'Cancel',
                 submitter: 'rachel'
               )
-              sh('terraform apply -input=false jenkins.tfplan')
+              sh('terraform apply jenkins.tfplan')
             }
           }
         }
@@ -69,8 +77,9 @@ pipeline {
       }
       steps {
         dir(path: 'ansible') {
-          sh('ansible-galaxy install -r requirements.yaml')
-          sh('ansible --version')
+          withCredentials([string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS')]) {
+            sh(ansible.trim())
+          }
         }
       }
     }

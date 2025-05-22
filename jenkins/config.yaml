@@ -18,21 +18,21 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
-        - id: "rachel"
-          name: "Rachel Falder"
+        - id: rachel
+          name: Rachel Falder
           password: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
           properties:
-            - "consoleUrlProvider"
-            - "myView"
+            - consoleUrlProvider
+            - myView
             - preferredProvider:
-                providerId: "default"
+                providerId: default
             - theme:
-                theme: "dark"
-            - "timezone"
-            - "experimentalFlags"
+                theme: dark
+            - timezone
+            - experimentalFlags
             - mailer:
                 emailAddress: ${json:email:${readFile:/var/lib/jenkins/userContent/secrets.json}}
-            - "apiToken"
+            - apiToken
 tool:
   git:
     installations:
@@ -54,13 +54,19 @@ credentials:
       - credentials:
           - basicSSHUserPrivateKey:
               id: homelab-pull-secrets
+              description: SSH key to pull secret files used via symlink into the workspace
               scope: GLOBAL
               username: rachel
               privateKeySource:
                 directEntry:
-                  privateKey: "${readFile:/var/lib/jenkins/userContent/ssh_key}"
+                  privateKey: ${readFile:/var/lib/jenkins/userContent/ssh_key}
           - string:
               id: terratoken
               description: HCP Terraform Token
               scope: GLOBAL
-              secret: "${readFile:/var/lib/jenkins/userContent/terratoken}"
+              secret: ${readFile:/var/lib/jenkins/userContent/terratoken}
+          - string:
+              id: ansivault
+              description: Ansible Vault Password
+              scope: GLOBAL
+              secret: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
