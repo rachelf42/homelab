@@ -348,10 +348,17 @@
         owner: jenkins                                  # yes, this means any logged in user can read my password
         group: jenkins                                  # im the only user, its fine
         mode: "0600"
-    - name: copy ssh key
+    - name: copy main ssh key
       ansible.builtin.copy:
         src: jenkins_ssh_key
         dest: /var/lib/jenkins/userContent/ssh_key
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy devmachine ssh key
+      ansible.builtin.copy:
+        src: id_ed25519
+        dest: /var/lib/jenkins/.ssh/id_ed25519
         owner: jenkins
         group: jenkins
         mode: "0600"
@@ -412,6 +419,13 @@
       community.general.pipx:
         name: ansible-core
         state: install
+    - name: ansible injects
+      become: true
+      become_user: jenkins
+      community.general.pipx:
+        name: ansible-core
+        state: inject
+        inject_packages: [ansible-pylibssh]
     - name: pipx ensurepath
       become: true
       become_user: jenkins

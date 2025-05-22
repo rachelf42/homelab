@@ -70,13 +70,13 @@
       become: true
       become_user: rachel
       ansible.builtin.copy:
-        src: "{{ homedir }}/.ssh/id_ed25519"
+        src: "id_ed25519"
         dest: "{{ homedir }}/.ssh/id_ed25519"
         remote_src: false
         mode: "0600"
     - name: repo pulling key synced - root user
       ansible.builtin.copy:
-        src: "{{ homedir }}/.ssh/id_ed25519"
+        src: "id_ed25519"
         dest: /root/.ssh/id_ed25519
         remote_src: false
         owner: root
