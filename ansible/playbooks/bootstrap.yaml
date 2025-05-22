@@ -7,6 +7,7 @@
   gather_facts: false
   tasks:
     - name: confirm limit
+      when: "'pve' in group_names"
       delegate_to: localhost
       run_once: true # noqa: run-once[task]
       register: limited
@@ -366,6 +367,20 @@
       ansible.builtin.copy:
         src: jenkins_hcp_token
         dest: /var/lib/jenkins/userContent/terratoken
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy pushover token
+      ansible.builtin.copy:
+        src: jenkins_pushover_token
+        dest: /var/lib/jenkins/userContent/pushovertoken
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy pushover userkey
+      ansible.builtin.copy:
+        src: jenkins_pushover_userkey
+        dest: /var/lib/jenkins/userContent/pushoveruserkey
         owner: jenkins
         group: jenkins
         mode: "0600"

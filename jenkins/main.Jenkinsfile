@@ -19,6 +19,13 @@ rm playbooks/files/id_ed25519
 cp ~/.ssh/id_ed25519 playbooks/files/id_ed25519
 ansible-playbook playbooks/provision.yaml
 '''
+def pushover_success = '''
+curl
+  --form-string "token=$APP_TOKEN"
+  --form-string "user=$USER_KEY"
+  --form-string "message=hello world"
+  https://api.pushover.net/1/messages.json
+'''
 pipeline {
   agent any
   stages {
@@ -79,6 +86,11 @@ pipeline {
           }
         }
       }
+    }
+  }
+  post {
+    always {
+      sh(pushover_success.replaceAll(unpretty, ' ').trim())
     }
   }
 }

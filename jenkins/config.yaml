@@ -78,3 +78,13 @@ credentials:
               description: Ansible Vault Password
               scope: GLOBAL
               secret: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
+          - string:
+              id: pushovertoken
+              description: App Token for Pushover.net notifications
+              scope: GLOBAL
+              secret: ${readFile:/var/lib/jenkins/userContent/pushovertoken}
+          - string:
+              id: pushoverkey
+              description: User Key for Pushover.net notifications
+              scope: GLOBAL
+              secret: ${readFile:/var/lib/jenkins/userContent/pushoverkey}
