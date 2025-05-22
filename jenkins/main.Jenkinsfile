@@ -48,15 +48,17 @@ pipeline {
       steps {
         dir(path: 'terraform'){
           timestamps {
-            sh('terraform init')
-            sh('terraform plan -out=jenkins.tfplan')
-            input(
-              message: 'Approve Terraform Plan?',
-              ok: 'Approve',
-              cancel: 'Cancel',
-              submitter: 'rachel'
-            )
-            sh('terraform apply -auto-approve jenkins.tfplan')
+            withCredentials([string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')]) {
+              sh('terraform init -input=false')
+              sh('terraform plan -input=false -out=jenkins.tfplan')
+              input(
+                message: 'Approve Terraform Plan?',
+                ok: 'Approve',
+                cancel: 'Cancel',
+                submitter: 'rachel'
+              )
+              sh('terraform apply -input=false jenkins.tfplan')
+            }
           }
         }
       }
