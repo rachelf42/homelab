@@ -56,11 +56,11 @@ credentials:
           id: homelab-pull-secrets
           privateKeySource:
             directEntry:
-              privateKey: ""
+              privateKey: "${readFile:/var/lib/jenkins/userContent/ssh_key}"
           scope: GLOBAL
           username: rachel
       - string:
           id: terratoken
           description: HCP Terraform Token
           scope: GLOBAL
-          secret: ""
+          secret: "${readFile:/var/lib/jenkins/userContent/terratoken}"
