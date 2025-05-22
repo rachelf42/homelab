@@ -90,7 +90,9 @@ pipeline {
   }
   post {
     always {
-      sh(pushover_success.replaceAll(unpretty, ' ').trim())
+      withCredentials([string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'), string(credentialsId: 'pushoverkey', variable: 'USER_KEY')]) {
+        sh(pushover_success.replaceAll(unpretty, ' ').trim())
+      }
     }
   }
 }

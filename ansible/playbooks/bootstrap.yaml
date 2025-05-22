@@ -380,7 +380,7 @@
     - name: copy pushover userkey
       ansible.builtin.copy:
         src: jenkins_pushover_userkey
-        dest: /var/lib/jenkins/userContent/pushoveruserkey
+        dest: /var/lib/jenkins/userContent/pushoverkey
         owner: jenkins
         group: jenkins
         mode: "0600"
