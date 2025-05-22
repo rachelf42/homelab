@@ -8,8 +8,16 @@ jenkins:
   globalNodeProperties:
     - envVars:
         env:
-          - key: FOO
-            value: BAR
+          - key: PACKER_NO_COLOR
+            value: true
+          - key: TF_IN_AUTOMATION
+            value: jenkins
+          - key: TF_INPUT
+            value: false
+          - key: TF_CLI_ARGS
+            value: -no-color
+          - key: ANSIBLE_NOCOWS
+            value: 1
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false

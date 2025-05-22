@@ -35,9 +35,6 @@ pipeline {
     // TODO: move packer to its own daily pipeline
     // Issue URL: https://github.com/rachelf42/homelab/issues/39
     stage('Packer') {
-      environment {
-        PACKER_NO_COLOR = true
-      }
       steps {
         dir(path: 'packer') {
           timestamps {
@@ -48,11 +45,6 @@ pipeline {
       }
     }
     stage('Terraform'){
-      environment {
-        TF_IN_AUTOMATION = "jenkins"
-        TF_INPUT = false
-        TF_CLI_ARGS = "-no-color"
-      }
       steps {
         timestamps {
           withCredentials([string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')]) {
@@ -75,12 +67,12 @@ pipeline {
       }
     }
     stage('Ansible'){
-      environment {
-        ANSIBLE_NOCOWS=1
-      }
       steps {
         dir(path: 'ansible') {
-          withCredentials([string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS')]) {
+          withCredentials([
+            string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
+            string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
+          ]) {
             sh(ansible.trim())
           }
         }
