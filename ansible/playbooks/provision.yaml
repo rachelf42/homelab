@@ -12,6 +12,8 @@
   gather_facts: false
   hosts: [localhost]
   tasks:
+    - ansible.builtin.debug:
+        var: waitforconn
     - when: waitforconn is ansible.builtin.skipped
       # ^ assume that means the "all" group is empty, ie only implicit localhost in inventory
       ansible.builtin.fail:
