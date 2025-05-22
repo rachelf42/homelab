@@ -257,7 +257,8 @@
         append: true
         groups: docker
     - name: add jenkins to docker group
-      when: "'jenk' in  group_names"
+      notify: set reboot required
+      when: "'jenk' in group_names"
       ansible.builtin.user:
         name: jenkins
         state: present
@@ -421,3 +422,12 @@
     - name: set timezone
       community.general.timezone:
         name: America/Vancouver
+  handlers:
+    - name: set reboot required
+      become: true
+      ansible.builtin.copy:
+        dest: /run/reboot-required
+        content: "*** System restart required ***"
+        owner: root
+        group: root
+        mode: "0644"
