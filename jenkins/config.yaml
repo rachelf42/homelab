@@ -48,3 +48,19 @@ unclassified:
     smtpPort: 4441
 jobs:
   - url: https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/jobs/main.groovy
+credentials:
+  system:
+    domainCredentials:
+    - credentials:
+      - basicSSHUserPrivateKey:
+          id: homelab-pull-secrets
+          privateKeySource:
+            directEntry:
+              privateKey: ""
+          scope: GLOBAL
+          username: rachel
+      - string:
+          id: terratoken
+          description: HCP Terraform Token
+          scope: GLOBAL
+          secret: ""
