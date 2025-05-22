@@ -23,7 +23,11 @@ def pushover_success = '''
 curl
   --form-string "token=$APP_TOKEN"
   --form-string "user=$USER_KEY"
-  --form-string "message=hello world"
+  --form-string "message=✅️ Build ${env.BUILD_DISPLAY_NAME} Succeeded! ✅️"
+  --form-string "devices=Rachel-Opera,Rachel-A13"
+  --form-string "priority=-1"
+  --form-string "url=${env.BUILD_URL}"
+  --form-string "url_title=${env.BUILD_TAG}"
   https://api.pushover.net/1/messages.json
 '''
 pipeline {
