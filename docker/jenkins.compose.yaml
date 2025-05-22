@@ -1,0 +1,14 @@
+########## STACK SETTINGS
+name: jenkins
+########## SERVICES
+services:
+  terraform:
+    extends:
+      file: ./common.compose.yaml
+      service: base
+    image: hashicorp/tfc-agent:1.22.2
+    environment:
+      TFC_AGENT_NAME: jenkins
+      TFC_AGENT_AUTO_UPDATE: disabled # let renovate do it
+      TFC_AGENT_SINGLE: true
+    env_file: ./secrets/terraform_agent_token.env

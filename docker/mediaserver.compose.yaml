@@ -1,35 +1,11 @@
-########## FRAGMENTS
-x-defaults-nonet: &defaults-nonet
-  restart: on-failure:5
-  healthcheck:
-    interval: 3s
-    timeout: 30s
-    retries: 5
-    start_period: 300s
-  logging:
-    driver: json-file
-    options:
-      max-size: 10m
-      max-file: 3
-  dns:
-    - $DNS_HOST_ONE
-    - $DNS_HOST_TWO
-  security_opt:
-    - no-new-privileges:true
-  stop_grace_period: 1m30s
-x-defaults: &defaults
-  <<: *defaults-nonet
-  networks:
-    - main
-x-env: &env
-  PUID: $UID
-  PGID: $GID
-  TZ: $TZ
+########## STACK SETTINGS
 name: media
 ########## SERVICES
 services:
   dozzle:
-    <<: *defaults
+    extends:
+      file: ./common.compose.yaml
+      service: base
     image: amir20/dozzle:v8.12.15@sha256:4d4d12db0575db8a5e80641f536ab0aa4ae81003d50aea5ea55fc80ae444ca66
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro

@@ -1,0 +1,26 @@
+# dclint disable require-project-name-field
+# this file should only ever be extended, never run
+services:
+  base-nonet:
+    restart: on-failure:5
+    healthcheck:
+      interval: 3s
+      timeout: 30s
+      retries: 5
+      start_period: 300s
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: 3
+    dns:
+      - $DNS_HOST_ONE
+      - $DNS_HOST_TWO
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 1m30s
+  base:
+    extends:
+      service: base-nonet
+    networks:
+      - main
