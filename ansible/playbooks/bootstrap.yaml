@@ -348,6 +348,20 @@
         owner: jenkins                                  # yes, this means any logged in user can read my password
         group: jenkins                                  # im the only user, its fine
         mode: "0600"
+    - name: copy ssh key
+      ansible.builtin.copy:
+        src: jenkins_ssh_key
+        dest: /var/lib/jenkins/userContent/ssh_key
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy terraform token
+      ansible.builtin.copy:
+        src: jenkins_hcp_token
+        dest: /var/lib/jenkins/userContent/terratoken
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
     - name: hashicorp apt repo
       block:
         - name: download key
@@ -428,23 +442,6 @@
             ansible.builtin.b64decode |
             ansible.builtin.regex_replace("\n", "")
           }}
-
-          Press any key to continue...
-    - name: have user install creds
-      when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
-      ansible.builtin.pause:
-        prompt: |+
-          Please open this link and set as follows:
-          http://jenkins.local.rachelf42.ca:8080/manage/credentials/store/system/domain/_/newCredentials
-
-          Kind: SSH Username with private key
-          Scope: Global
-          ID: homelab-pull-secrets
-          Username: rachel
-          Treat username as secret: Unchecked
-          Private Key: Enter Directly (by copying and pasting this block)
-
-          {{ lookup('ansible.builtin.file', 'jenkins_ssh_key') }}
 
           Press any key to continue...
     - name: install plugins
