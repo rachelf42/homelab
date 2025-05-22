@@ -256,9 +256,24 @@
         state: present
         append: true
         groups: docker
+    - name: add jenkins to docker group
+      when: "'jenk' in  group_names"
+      ansible.builtin.user:
+        name: jenkins
+        state: present
+        append: true
+        groups: docker
     - name: docker logged in
       become: true
       become_user: "{{ user_name }}"
+      community.docker.docker_login:
+        username: "{{ account_name }}"
+        password: "{{ lookup('ansible.builtin.file', 'docker-pat') }}"
+        state: present
+    - name: docker logged in for jenkins
+      when: "'jenk' in group_names"
+      become: true
+      become_user: jenkins
       community.docker.docker_login:
         username: "{{ account_name }}"
         password: "{{ lookup('ansible.builtin.file', 'docker-pat') }}"
