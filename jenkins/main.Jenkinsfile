@@ -15,6 +15,8 @@ def ansible = '''
 #!/bin/sh
 export PATH=$PATH:$HOME/.local/bin # where pipx installs stuff
 ansible-galaxy collection install -r requirements.yaml
+rm playbooks/files/id_ed25519
+cp ~/.ssh/id_ed25519 playbooks/files/id_ed25519
 ansible-playbook playbooks/provision.yaml
 '''
 pipeline {
