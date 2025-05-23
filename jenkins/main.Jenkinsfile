@@ -71,14 +71,7 @@ pipeline {
             }
             dir('terraform') {
               sh('terraform init')
-              sh('terraform plan -out=jenkins.tfplan')
-              input(
-                message: 'Approve Terraform Plan?',
-                ok: 'Approve',
-                cancel: 'Cancel',
-                submitter: 'rachel'
-              )
-              sh('terraform apply jenkins.tfplan')
+              sh('terraform apply')
             }
           }
         }
