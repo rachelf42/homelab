@@ -14,5 +14,5 @@ services:
       TFC_AGENT_AUTO_UPDATE: disabled # let renovate do it
       TFC_AGENT_SINGLE: true
     env_file: ./secrets/terraform_agent_token.env
-    healthcheck: !reset {} # dont know why but dclint needs this not null
     restart: always
+    healthcheck: !reset {} # dont know why but dclint needs this not null
