@@ -14,4 +14,4 @@ services:
       TFC_AGENT_AUTO_UPDATE: disabled # let renovate do it
       TFC_AGENT_SINGLE: true
     env_file: ./secrets/terraform_agent_token.env
-    healthcheck: !override null
+    healthcheck: !reset null
