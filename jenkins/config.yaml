@@ -18,6 +18,8 @@ jenkins:
             value: -no-color
           - key: ANSIBLE_NOCOWS
             value: 1
+          - key: ANSIBLE_STDOUT_CALLBACK
+            value: ansible.builtin.default
   authorizationStrategy:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
