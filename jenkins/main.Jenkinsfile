@@ -12,7 +12,12 @@ rsync
   $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
 def sendPushover(message, priority = 0) {
-  sh('./scripts/sendPushover.sh ' + priority + ' ' + message)
+  withCredentials([
+    string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
+    string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
+  ]) {
+    sh('./scripts/sendPushover.sh ' + priority + ' ' + message)
+  }
 }
 pipeline {
   agent any
@@ -112,22 +117,12 @@ pipeline {
   post {
     success {
       timestamps {
-        withCredentials([
-          string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
-          string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
-        ]) {
-          sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
-        }
+        sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
       }
     }
     failure {
       timestamps {
-        withCredentials([
-          string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
-          string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
-        ]) {
-          sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
-        }
+        sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
       }
     }
   }
