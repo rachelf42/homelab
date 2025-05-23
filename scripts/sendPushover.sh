@@ -1,7 +1,7 @@
 #!/bin/bash
 PRIORITY="$1"
 MESSAGE="${*:2}"
-curl \
+curl --fail-with-body --silent \
 	--form-string "token=$APP_TOKEN" \
 	--form-string "user=$USER_KEY" \
 	--form-string "message=$MESSAGE" \
