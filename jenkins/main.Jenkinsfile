@@ -22,7 +22,7 @@ curl
   --form-string "url=$BUILD_URL"
   --form-string "url_title=View $BUILD_TAG"
   https://api.pushover.net/1/messages.json
-  '''.replaceAll(unpretty, ' ').trim())
+  '''.replaceAll($unpretty, ' ').trim())
 }
 pipeline {
   agent any
