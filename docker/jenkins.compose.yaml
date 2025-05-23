@@ -22,3 +22,4 @@ services:
       service: base
     image: webhookrelay/webhookrelayd:1.34.2
     env_file: ./secrets/webhookrelay_agent_token.env
+    healthcheck: !reset {}
