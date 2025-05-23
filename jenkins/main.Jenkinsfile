@@ -57,16 +57,17 @@ pipeline {
     }
     // TODO: move packer to its own daily pipeline
     // Issue URL: https://github.com/rachelf42/homelab/issues/39
-    stage('Packer') {
-      steps {
-        dir(path: 'packer') {
-          timestamps {
-            sh('packer init .')
-            sh('packer build -force .')
-          }
-        }
-      }
-    }
+    // assignees: rachelf42
+    // stage('Packer') {
+    //   steps {
+    //     dir(path: 'packer') {
+    //       timestamps {
+    //         sh('packer init .')
+    //         sh('packer build -force .')
+    //       }
+    //     }
+    //   }
+    // }
     stage('Terraform'){
       steps {
         timestamps {
