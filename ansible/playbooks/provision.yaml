@@ -34,6 +34,7 @@
         state: present
         update_cache: true
     - name: user account exists
+      when: "'jenk' not in group_names"
       ansible.builtin.user:
         name: "{{ user_name }}"
         state: present
@@ -47,7 +48,7 @@
         shell: /bin/bash
     - name: authorized keys synced - regular user
       ansible.posix.authorized_key:
-        user: rachel
+        user: "{{ user_name }}"
         key: https://github.com/{{ account_name }}.keys
         state: present
     - name: authorized keys synced - root user
@@ -60,7 +61,7 @@
         mode: "0664"
     - name: repo pulling key synced - regular user
       become: true
-      become_user: rachel
+      become_user: "{{ user_name }}"
       ansible.builtin.copy:
         src: id_ed25519
         dest: "{{ homedir }}/.ssh/id_ed25519"
