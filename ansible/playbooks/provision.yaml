@@ -10,7 +10,7 @@
         sleep: 10
 - name: user account setup
   become: true
-  hosts: [vm, lxc, pve]
+  hosts: [vm, lxc]
   any_errors_fatal: true
   tasks:
     - name: sudo installed
