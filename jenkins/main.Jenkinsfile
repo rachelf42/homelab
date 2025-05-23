@@ -12,7 +12,7 @@ rsync
   $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
 def sendPushover(message, priority = 0) {
-  sh('curl' +
+  sh('curl ' +
     '--form-string "token=$APP_TOKEN" ' +
     '--form-string "user=$USER_KEY"' +
     '--form-string "message=' + message + '" ' +
