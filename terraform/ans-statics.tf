@@ -44,3 +44,11 @@ resource "ansible_group" "by_role" {
     "jenk"
   ]
 }
+resource "cloudflare_dns_record" "test" {
+  content = "1.1.1.1"
+  name    = "test.${var.cf_domain}"
+  proxied = false
+  ttl     = 1
+  type    = "A"
+  zone_id = local.cf_zone_id
+}
