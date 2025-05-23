@@ -11,28 +11,19 @@ rsync
   " --archive --verbose --compress
   $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
-def pushover_success = '''
+def sendPushover(message, priority = 0) {
+  sh('''
 curl
   --form-string "token=$APP_TOKEN"
   --form-string "user=$USER_KEY"
-  --form-string "message=✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️"
+  --form-string "message=''' + $message + '''"
   --form-string "device=Rachel-Opera,Rachel-A13"
-  --form-string "priority=-1"
+  --form-string "priority=''' + $priority + '''"
   --form-string "url=$BUILD_URL"
   --form-string "url_title=View $BUILD_TAG in Jenkins"
   https://api.pushover.net/1/messages.json
-'''
-def pushover_fail = '''
-curl
-  --form-string "token=$APP_TOKEN"
-  --form-string "user=$USER_KEY"
-  --form-string "message=❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌"
-  --form-string "device=Rachel-Opera,Rachel-A13"
-  --form-string "priority=1"
-  --form-string "url=$BUILD_URL"
-  --form-string "url_title=View $BUILD_TAG in Jenkins"
-  https://api.pushover.net/1/messages.json
-'''
+  '''.replaceAll(unpretty, ' ').trim())
+}
 pipeline {
   agent any
   stages {
@@ -135,7 +126,7 @@ pipeline {
           string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
           string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
         ]) {
-          sh(pushover_success.replaceAll(unpretty, ' ').trim())
+          sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
         }
       }
     }
@@ -145,7 +136,7 @@ pipeline {
           string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
           string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
         ]) {
-          sh(pushover_fail.replaceAll(unpretty, ' ').trim())
+          sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
         }
       }
     }
