@@ -1,0 +1,4 @@
+*
+!terraform/
+!secrets/
+terraform/.terraform/providers/**
