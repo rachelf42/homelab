@@ -304,7 +304,12 @@
             mode: "0777"
     - name: NAS fstab
       ansible.builtin.debug:
+        # TODO: NAS mount
+        # labels: waiting, hideFromCodeEditor
         msg: "TODO: ansible.posix.mount here"
+    # TODO: systemd service file for docker compose projects
+    # labels: bug
+    # containers will not survive reboots until this is done
 - name: dev machine setup
   become: true
   become_user: "{{ user_name }}"
