@@ -1,5 +1,7 @@
 ########## STACK SETTINGS
 name: jenkins
+networks:
+  main:
 ########## SERVICES
 services:
   terraform:
