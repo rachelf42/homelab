@@ -12,16 +12,7 @@ rsync
   $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
 def sendPushover(message, priority = 0) {
-  sh('curl ' +
-    '--form-string "token=$APP_TOKEN" ' +
-    '--form-string "user=$USER_KEY"' +
-    '--form-string "message=' + message + '" ' +
-    '--form-string "device=Rachel-Opera,Rachel-A13" ' +
-    '--form-string "priority=' + priority + '" ' +
-    '--form-string "url=$BUILD_URL" ' +
-    '--form-string "url_title=View $BUILD_TAG" ' +
-    'https://api.pushover.net/1/messages.json'
-  )
+  sh('./scripts/sendPushover.sh ' + priority + ' ' + message)
 }
 pipeline {
   agent any
