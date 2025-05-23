@@ -46,7 +46,7 @@ pipeline {
         )]) {
           sh(rsync.replaceAll(unpretty, ' ').trim())
         }
-        sh('cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
+        sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
       }
     }
     // TODO: move packer to its own daily pipeline
