@@ -71,7 +71,22 @@ pipeline {
             }
             dir('terraform') {
               sh('terraform init')
-              sh('terraform apply')
+              def planStatus=sh(
+                script: 'terraform plan -input=false -detailed-exitcode -out=jenkins.tfplan'
+                returnStatus: true
+              )
+              switch(planStatus) {
+                case 0:
+                  echo("no changes, do not apply")
+                  break;
+                case 1:
+                  echo("error, fail build")
+                  break;
+                case 2:
+                  echo("acquire user confirmation, then apply")
+                  break;
+              }
+              sh('terraform apply -input=false jenkins.tfplan')
             }
           }
         }
