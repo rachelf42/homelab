@@ -26,7 +26,7 @@ curl
   --form-string "device=Rachel-Opera,Rachel-A13"
   --form-string "priority=-1"
   --form-string "url=$BUILD_URL"
-  --form-string "url_title=$BUILD_TAG"
+  --form-string "url_title=View $BUILD_TAG in Jenkins"
   https://api.pushover.net/1/messages.json
 '''
 def pushover_fail = '''
@@ -37,7 +37,7 @@ curl
   --form-string "device=Rachel-Opera,Rachel-A13"
   --form-string "priority=1"
   --form-string "url=$BUILD_URL"
-  --form-string "url_title=$BUILD_TAG"
+  --form-string "url_title=View $BUILD_TAG in Jenkins"
   https://api.pushover.net/1/messages.json
 '''
 pipeline {
