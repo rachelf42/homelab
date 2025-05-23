@@ -8,4 +8,4 @@ rsync \
 		-o UserKnownHostsFile=/dev/null \
 		-i $HOMELAB_JENKINS_SECRETSYNC_KEY" \
 	--archive --verbose --compress \
-	"$HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/" secrets
+	"$HOMELAB_JENKINS_SECRETSYNC_USER"@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
