@@ -5,7 +5,6 @@
   any_errors_fatal: true
   tasks:
     - name: update repo
-      when: "'jenk' not in group_names" # because jenkins does that itself unless explicitly told not to
       ansible.builtin.git:
         repo: git@github.com:{{ account_name }}/homelab.git
         dest: "{{ repodir }}"

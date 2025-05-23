@@ -29,17 +29,6 @@ curl
   --form-string "url_title=$BUILD_TAG"
   https://api.pushover.net/1/messages.json
 '''
-def pushover_fail = '''
-curl
-  --form-string "token=$APP_TOKEN"
-  --form-string "user=$USER_KEY"
-  --form-string "message=❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌"
-  --form-string "devices=Rachel-Opera,Rachel-A13"
-  --form-string "priority=1"
-  --form-string "url=$BUILD_URL"
-  --form-string "url_title=$BUILD_TAG"
-  https://api.pushover.net/1/messages.json
-'''
 pipeline {
   agent any
   stages {
@@ -128,16 +117,6 @@ pipeline {
           string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
         ]) {
           sh(pushover_success.replaceAll(unpretty, ' ').trim())
-        }
-      }
-    }
-    failure {
-      timestamps {
-        withCredentials([
-          string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
-          string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
-        ]) {
-          sh(pushover_fail.replaceAll(unpretty, ' ').trim())
         }
       }
     }
