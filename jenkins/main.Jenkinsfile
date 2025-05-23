@@ -78,17 +78,20 @@ pipeline {
                 )
                 switch(planStatus) {
                   case 0:
-                    echo("no changes, do not apply")
+                    // no changes, do nothing
                     break;
                   case 1:
-                    echo("error, fail build")
+                    error 'Terraform Failed'
                     break;
                   case 2:
-                    echo("acquire user confirmation, then apply")
+                    input(
+                      message: 'Proceed with above plan?',
+                      submitter: 'rachel'
+                    )
+                    sh('terraform apply -input=false jenkins.tfplan')
                     break;
                 }
               }
-              sh('terraform apply -input=false jenkins.tfplan')
             }
           }
         }
