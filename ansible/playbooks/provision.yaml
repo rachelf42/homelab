@@ -305,9 +305,11 @@
     - name: NAS fstab
       ansible.builtin.debug:
         # TODO: NAS mount
+        # Issue URL: https://github.com/rachelf42/homelab/issues/46
         # labels: waiting, hideFromCodeEditor
         msg: "TODO: ansible.posix.mount here"
     # TODO: systemd service file for docker compose projects
+    # Issue URL: https://github.com/rachelf42/homelab/issues/45
     # labels: bug
     # containers will not survive reboots until this is done
 - name: dev machine setup
