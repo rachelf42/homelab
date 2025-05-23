@@ -72,7 +72,7 @@ pipeline {
             dir('terraform') {
               sh('terraform init')
               def planStatus=sh(
-                script: 'terraform plan -input=false -detailed-exitcode -out=jenkins.tfplan'
+                script: 'terraform plan -input=false -detailed-exitcode -out=jenkins.tfplan',
                 returnStatus: true
               )
               switch(planStatus) {
