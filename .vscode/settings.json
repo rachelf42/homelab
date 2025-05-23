@@ -5,5 +5,8 @@
     "ansible.python.interpreterPath": "/bin/python3",
     "files.associations": {
         "*.compose.yaml": "dockercompose"
-    }
+    },
+    "yaml.customTags": [
+        "!reset mapping"
+    ]
 }
