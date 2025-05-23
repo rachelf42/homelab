@@ -325,8 +325,7 @@
     - name: deploy.sh linked
       ansible.builtin.file:
         path: "{{ homedir }}/bin/homelab-deploy"
-        src: "{{ repodir }}/scripts/deploy.sh"
-        state: link
+        state: absent
     - name: lint.sh linked
       ansible.builtin.file:
         path: "{{ homedir }}/bin/homelab-lint"
