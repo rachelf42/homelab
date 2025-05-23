@@ -9,9 +9,14 @@ def sendPushover(message, priority = 0) {
 }
 pipeline {
   agent any
+  options {
+    skipDefaultCheckout(true)
+  }
   stages {
     stage('Setup') {
       steps {
+        cleanWs()
+        checkout scm
         withCredentials([sshUserPrivateKey(
           credentialsId: 'homelab-pull-secrets',
           keyFileVariable: 'HOMELAB_JENKINS_SECRETSYNC_KEY',
