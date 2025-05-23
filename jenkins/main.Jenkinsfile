@@ -98,7 +98,7 @@ pipeline {
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
               sh(preansible.trim())
-              sh('ansible-playbook playbooks/provision.yaml')
+              sh('~/.local/bin/ansible-playbook playbooks/provision.yaml')
             }
           }
         }
@@ -113,7 +113,7 @@ pipeline {
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
               sh(preansible.trim())
-              sh('ansible-playbook playbooks/deploy.yaml')
+              sh('~/.local/bin/ansible-playbook playbooks/deploy.yaml')
             }
           }
         }
