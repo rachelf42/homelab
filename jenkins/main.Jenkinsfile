@@ -1,14 +1,4 @@
 def unpretty = ~'(^|\n) +'
-// TODO: change to pull from NAS
-// Issue URL: https://github.com/rachelf42/homelab/issues/40
-// labels: waiting, hideFromCodeEditor
-def rsync = "rsync " +
-  '''--rsh "ssh ''' +
-    "-o StrictHostKeyChecking=no " +
-    "-o UserKnownHostsFile=/dev/null " +
-    "-i $HOMELAB_JENKINS_SECRETSYNC_KEY " +
-  '''" --archive --verbose --compress ''' +
-  "$HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets"
 def sendPushover(message, priority = 0) {
   withCredentials([
     string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
@@ -28,7 +18,18 @@ pipeline {
           passphraseVariable: 'HOMELAB_JENKINS_SECRETSYNC_PASS',
           usernameVariable: 'HOMELAB_JENKINS_SECRETSYNC_USER'
         )]) {
-          sh(rsync.replaceAll(unpretty, ' ').trim())
+          sh(
+            // TODO: change to pull from NAS
+            // Issue URL: https://github.com/rachelf42/homelab/issues/40
+            // labels: waiting, hideFromCodeEditor
+            "rsync " +
+              '''--rsh "ssh ''' +
+                "-o StrictHostKeyChecking=no " +
+                "-o UserKnownHostsFile=/dev/null " +
+                "-i $HOMELAB_JENKINS_SECRETSYNC_KEY " +
+              '''" --archive --verbose --compress ''' +
+              "$HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets"
+          )
         }
         sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
       }
