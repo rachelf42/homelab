@@ -11,13 +11,6 @@ rsync
   " --archive --verbose --compress
   $HOMELAB_JENKINS_SECRETSYNC_USER@rachel-pc.local.rachelf42.ca:/home/rachel/homelab/secrets/ secrets
 '''
-def preansible = '''
-#!/bin/sh
-export PATH=$PATH:$HOME/.local/bin # where pipx installs stuff
-rm playbooks/files/id_ed25519
-cp ~/.ssh/id_ed25519 playbooks/files/id_ed25519
-ansible-galaxy collection install -r requirements.yaml
-'''
 def pushover_success = '''
 curl
   --form-string "token=$APP_TOKEN"
@@ -43,7 +36,7 @@ curl
 pipeline {
   agent any
   stages {
-    stage('Get Secrets') {
+    stage('Setup') {
       steps {
         withCredentials([sshUserPrivateKey(
           credentialsId: 'homelab-pull-secrets',
@@ -53,6 +46,7 @@ pipeline {
         )]) {
           sh(rsync.replaceAll(unpretty, ' ').trim())
         }
+        sh('cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
       }
     }
     // TODO: move packer to its own daily pipeline
@@ -98,7 +92,7 @@ pipeline {
               string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
-              sh(preansible.trim())
+              sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
               sh('~/.local/bin/ansible-playbook playbooks/provision.yaml')
             }
           }
@@ -113,7 +107,7 @@ pipeline {
               string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
-              sh(preansible.trim())
+              sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
               sh('~/.local/bin/ansible-playbook playbooks/deploy.yaml')
             }
           }
