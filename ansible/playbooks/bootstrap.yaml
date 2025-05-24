@@ -470,7 +470,6 @@
       ansible.builtin.slurp:
         src: /var/lib/jenkins/secrets/initialAdminPassword
     - name: have user complete setup
-      when: "'jenkcontroller' in group_names"
       when: slurp is ansible.builtin.success and slurp is not ansible.builtin.skipped
       ansible.builtin.pause:
         prompt: |
