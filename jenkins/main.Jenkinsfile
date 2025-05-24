@@ -63,6 +63,7 @@ pipeline {
                     error 'Terraform Failed'
                     break;
                   case 2:
+                    sendPushover('⚠️ Build $BUILD_DISPLAY_NAME Awaits Input ⚠️')
                     input(
                       message: 'Proceed with above plan?',
                       submitter: 'rachel'
