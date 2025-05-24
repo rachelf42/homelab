@@ -30,7 +30,7 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
       }
     }
     user_account {
-      username = "jenkins"
+      username = "rachel"
       password = var.secure_password
     }
   }
