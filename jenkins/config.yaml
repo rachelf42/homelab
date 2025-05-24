@@ -4,7 +4,21 @@ jenkins:
     Please do not change any settings manually.
   numExecutors: 5
   scmCheckoutRetryCount: 2
-  mode: NORMAL
+  labelString: "controller"
+  mode: EXCLUSIVE
+  nodes:
+    - permanent:
+        name: "doubleohseven"
+        mode: NORMAL
+        remoteFS: "/home/jenkins/agent"
+        retentionStrategy: "always"
+        labelString: "terraform ansible"
+        launcher:
+          ssh:
+            credentialsId: "homelab-connect-agent"
+            host: "jenkins-agent.local.rachelf42.ca"
+            port: 22
+            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy" # insecure, but prevents errors if agent is replaced
   globalNodeProperties:
     - envVars:
         env:
@@ -67,6 +81,14 @@ credentials:
               description: SSH key to pull secret files used via symlink into the workspace
               scope: GLOBAL
               username: rachel
+              privateKeySource:
+                directEntry:
+                  privateKey: ${readFile:/var/lib/jenkins/userContent/ssh_key}
+          - basicSSHUserPrivateKey:
+              id: homelab-connect-agent
+              description: SSH key to connect to agents
+              scope: GLOBAL
+              username: jenkins
               privateKeySource:
                 directEntry:
                   privateKey: ${readFile:/var/lib/jenkins/userContent/ssh_key}
