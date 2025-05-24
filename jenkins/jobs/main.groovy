@@ -1,5 +1,6 @@
 pipelineJob('main'){
     authenticationToken("${GITHUB_WEBHOOK_TOKEN}")
+    quietPeriod(120)
     properties {
         disableConcurrentBuilds {
             abortPrevious(false)

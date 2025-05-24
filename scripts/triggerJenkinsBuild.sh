@@ -27,7 +27,8 @@ if [[ $RESPONSE == 201 ]]; then
 	exit 0
 elif [[ $RESPONSE == 303 ]]; then
 	echo 'Build Already Scheduled'
-	exit 1
+	echo 'This commit will be picked up whenever it starts'
+	exit 0
 else
 	echo 'Unknown Error'
 	exit 255
