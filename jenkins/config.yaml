@@ -73,7 +73,7 @@ unclassified:
     smtpPort: 4441
 jobs:
   - providedEnv:
-      GITHUB_WEBHOOK_TOKEN: ${readFile:/var/lib/jenkins/userContent/gh-hook-token}
+      GITHUB_WEBHOOK_TOKEN: ${readFile:/var/lib/jenkins/userContent/gh-wh-token}
   - url: https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/jobs/main.groovy
 credentials:
   system:
