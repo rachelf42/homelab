@@ -104,6 +104,25 @@ provider "registry.terraform.io/hashicorp/tfe" {
   ]
 }
 
+provider "registry.terraform.io/koalificationio/webhookrelay" {
+  version     = "0.2.0"
+  constraints = "0.2.0"
+  hashes = [
+    "h1:49LBMXB2j9PhGovcF8ivzOtpMgGGfVHjqZopssQAe9s=",
+    "zh:00cb6fa913158d7d945085d1689fcbf34680b7234669575b3d2ade46f5ae0cfd",
+    "zh:02f678da09c953332d798aaed99b6ce007372f33472ebc054fdeb0bdeae69e11",
+    "zh:1ec1ddbfd4916d4a972ab6d8d7171b8fbc08b3c16e213cf2d56849dd5d0007d6",
+    "zh:230abe7ae3cf56ebda608a2b7cae03b6c4b3672e6c2d1e4e243549d45b4222ab",
+    "zh:24ae01753c92957104a23461ab18730361e1c2406c78099fd8cbe201adc03ac7",
+    "zh:2fffbb884f54bc4e3fc2cfa213bbf0e8b1d8ba18773e43e309773ef6644d6c74",
+    "zh:444224ec7e30f610a7e4d2c3189bd83aeb8263a63a45794e614201a80c3117a4",
+    "zh:446d05ac4fefc764b5419ecce2aa0376b3fda267e4f44e38ba4d3dbbc810f097",
+    "zh:56a57530ed2d3e7046d21ec992d6e00cbdd8ed92e8907e80b2d1f23f57f4f1de",
+    "zh:ac66fb3647bb4fdae6706341cef3cf1fda59cd3ea8c14e0d84ff9a238390b2bb",
+    "zh:c080040651bdfa22837ff81baea724ec9098e41024d4447a06b0834fdf2195ef",
+  ]
+}
+
 provider "registry.terraform.io/nxt-engineering/publicip" {
   version     = "0.0.9"
   constraints = "0.0.9"

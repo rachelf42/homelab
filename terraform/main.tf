@@ -20,6 +20,10 @@ terraform {
     tfe = {
       version = "0.64.0"
     }
+    webhookrelay = {
+      source  = "koalificationio/webhookrelay"
+      version = "0.2.0"
+    }
   }
   cloud {
     organization = "rachelf42"
@@ -28,7 +32,6 @@ terraform {
     }
   }
 }
-
 
 provider "cloudflare" {
   api_token = var.cf_api_token
@@ -41,6 +44,10 @@ provider "proxmox" {
 }
 provider "tfe" {
   token = var.hcp_token == null ? file("${path.module}/hcp_token") : var.hcp_token
+}
+provider "webhookrelay" {
+  api_key    = var.webhookrelay_key
+  api_secret = var.webhookrelay_secret
 }
 
 # dummy variable declarations to silence warnings about packer vars
