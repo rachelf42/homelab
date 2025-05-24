@@ -3,6 +3,7 @@
 # But bpg/proxmox doesn't have all settings,
 # and i dont want to give jenkins agents access to the controller so here we are
 # TODO: move jenkcontroller stuff into its own block
+# Issue URL: https://github.com/rachelf42/homelab/issues/49
 # labels: enhancement
 - name: prompts
   hosts: [all]
