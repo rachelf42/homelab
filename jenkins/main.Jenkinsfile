@@ -20,9 +20,8 @@ pipeline {
         checkout scm
         withCredentials([sshUserPrivateKey(
           credentialsId: 'homelab-pull-secrets',
-          keyFileVariable: 'HOMELAB_JENKINS_SECRETSYNC_KEY',
-          passphraseVariable: 'HOMELAB_JENKINS_SECRETSYNC_PASS',
-          usernameVariable: 'HOMELAB_JENKINS_SECRETSYNC_USER'
+          keyFileVariable: 'SYNC_KEY',
+          usernameVariable: 'SYNC_USER'
         )]) {
           sh('./scripts/pullSecrets.sh')
         }

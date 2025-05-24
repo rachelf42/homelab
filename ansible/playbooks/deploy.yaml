@@ -4,8 +4,16 @@
   become_user: "{{ user_name }}"
   any_errors_fatal: true
   tasks:
+    - name: repo dest exists
+      become: true
+      become_user: root
+      ansible.builtin.file:
+        path: "{{ repodir }}"
+        state: directory
+        owner: "{{ user_name }}"
+        group: docker
+        mode: "0777"
     - name: update repo
-      when: "'jenk' not in group_names" # because jenkins does that itself unless explicitly told not to
       ansible.builtin.git:
         repo: git@github.com:{{ account_name }}/homelab.git
         dest: "{{ repodir }}"
@@ -18,6 +26,24 @@
         accept_newhostkey: true
         clone: true
         update: true
+    - name: tempdir
+      register: tempdir
+      ansible.builtin.tempfile:
+        state: directory
+    - name: ssh key
+      ansible.builtin.copy:
+        src: jenkins_ssh_key
+        dest: "{{ tempdir.path }}/key"
+        mode: "0600"
+    - name: pull secrets # noqa command-instead-of-shell
+      changed_when: true
+      ansible.builtin.shell:
+        cmd: "SYNC_KEY={{ tempdir.path }}/key SYNC_USER=rachel ./scripts/pullSecrets.sh"
+        chdir: /homelab
+    - name: delete tempdir
+      ansible.builtin.file:
+        path: "{{ tempdir.path }}"
+        state: absent
     - name: pull images
       async: 600
       poll: 10

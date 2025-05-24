@@ -119,7 +119,7 @@ resource "ansible_host" "jenkins" {
   groups = ["vm", "ubuntu", "jenk", "docker", "server", "jenkcontroller"]
   variables = {
     homedir    = "/var/lib/jenkins"
-    repodir    = "/var/lib/jenkins/workspace/main"
+    repodir    = "/homelab"
     ip_address = "10.69.69.254"
     user_name  = "jenkins"
 
