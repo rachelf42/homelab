@@ -58,3 +58,12 @@ jobs:
 
       - name: Run Docker-Compose-Lint
         run: npx dclint docker/*.compose.yaml --max-warnings 0
+  deploy:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    needs: lint
+    if: github.event_name == push
+    steps:
+      - name: hellodeploy
+        run: echo HELLO FROM DEPLOY JOB
