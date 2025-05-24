@@ -129,7 +129,7 @@ resource "ansible_host" "jenkins" {
   }
 }
 resource "ansible_host" "jenkins-agent" {
-  name   = "jenkins"
+  name   = "jenkins-agent"
   groups = ["vm", "ubuntu", "jenk", "server", "jenkagent"]
   variables = {
     homedir    = "/home/jenkins"
