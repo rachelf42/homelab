@@ -4,7 +4,7 @@ MESSAGE="${*:2}"
 if [[ $PRIORITY -gt 0 ]]; then
 	SOUND=tugboat
 else
-	SOUND=pushover
+	SOUND=bike
 fi
 curl --fail-with-body --silent \
 	--form-string "token=$APP_TOKEN" \
