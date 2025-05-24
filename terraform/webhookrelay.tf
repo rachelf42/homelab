@@ -9,3 +9,7 @@ resource "webhookrelay_output" "github-jenkins" {
   internal    = true
   bucket_id   = webhookrelay_bucket.github-jenkins.id
 }
+resource "webhookrelay_input" "github-jenkins" {
+  name = "github-jenkins"
+  bucket_id = webhookrelay_bucket.github-jenkins.id
+}
