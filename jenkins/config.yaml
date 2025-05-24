@@ -18,7 +18,8 @@ jenkins:
             credentialsId: "homelab-connect-agent"
             host: "jenkins-agent.local.rachelf42.ca"
             port: 22
-            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy" # insecure, but prevents errors if agent is replaced
+            # insecure, but prevents errors if agent is replaced
+            sshHostKeyVerificationStrategy: "nonVerifyingKeyVerificationStrategy"
   globalNodeProperties:
     - envVars:
         env:
