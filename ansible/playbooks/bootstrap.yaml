@@ -287,6 +287,7 @@
     jenkinspkg:
       - fontconfig
       - openjdk-21-jre
+      - git
   tasks:
     - name: repo setup
       when: "'jenkcontroller' in group_names"
