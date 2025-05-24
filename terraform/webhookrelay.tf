@@ -10,7 +10,7 @@ resource "webhookrelay_output" "github-jenkins" {
   bucket_id   = webhookrelay_bucket.github-jenkins.id
 }
 resource "webhookrelay_input" "github-jenkins" {
-  name = "github-jenkins"
+  name      = "github-jenkins"
   bucket_id = webhookrelay_bucket.github-jenkins.id
 }
 output "github-jenkins-webhookurl" {
