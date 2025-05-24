@@ -273,7 +273,7 @@
             * Re-run 'terraform apply' as there is there is additional config there.
             * Once you're confident the node(s) are set up right, run a full deploy.
         seconds: 1
-- name: jenkins setup
+- name: jenkins common setup
   become: true
   hosts: [jenk]
   any_errors_fatal: true
@@ -289,32 +289,6 @@
       - openjdk-21-jre
       - git
   tasks:
-    - name: repo setup
-      when: "'jenkcontroller' in group_names"
-      block:
-        - name: directory exists
-          ansible.builtin.file:
-            path: /etc/apt/keyrings
-            mode: "0755"
-            state: directory
-        - name: key downloaded
-          ansible.builtin.get_url:
-            url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
-            dest: /etc/apt/keyrings/jenkins.asc
-            mode: "0664"
-            owner: root
-            group: root
-        - name: apt source installed
-          async: 600
-          poll: 10
-          retries: 10
-          ansible.builtin.apt_repository:
-            filename: jenkins
-            repo: >-
-              deb [arch={{ deb_arch[ansible_architecture] }}
-              signed-by=/etc/apt/keyrings/jenkins.asc]
-              https://pkg.jenkins.io/debian-stable binary/
-            state: present
     - name: dependencies installed
       register: jenkdepinst
       until: jenkdepinst is ansible.builtin.success
@@ -325,78 +299,6 @@
         name: "{{ jenkinspkg }}"
         state: present
         update_cache: true
-    - name: jenkins installed
-      when: "'jenkcontroller' in group_names"
-      register: jenkinst
-      until: jenkinst is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      ansible.builtin.apt:
-        name: jenkins
-        state: present
-        update_cache: true
-    - name: systemd overrides
-      when: "'jenkcontroller' in group_names"
-      notify: reboot
-      ansible.builtin.blockinfile:
-        path: /etc/systemd/system/jenkins.service.d/override.conf
-        create: true
-        state: present
-        block: |
-          [Service]
-          Environment="CASC_JENKINS_CONFIG=https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/config.yaml"
-        owner: root
-        group: root
-        mode: "0644"
-    - name: copy secrets file
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: jenksecrets.json
-        dest: /var/lib/jenkins/userContent/secrets.json # jenkins enforces login before read
-        owner: jenkins                                  # yes, this means any logged in user can read my password
-        group: jenkins                                  # im the only user, its fine
-        mode: "0600"
-    - name: copy main ssh key
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: jenkins_ssh_key
-        dest: /var/lib/jenkins/userContent/ssh_key
-        owner: jenkins
-        group: jenkins
-        mode: "0600"
-    - name: copy devmachine ssh key
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: id_ed25519
-        dest: /var/lib/jenkins/.ssh/id_ed25519
-        owner: jenkins
-        group: jenkins
-        mode: "0600"
-    - name: copy terraform token
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: jenkins_hcp_token
-        dest: /var/lib/jenkins/userContent/terratoken
-        owner: jenkins
-        group: jenkins
-        mode: "0600"
-    - name: copy pushover token
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: jenkins_pushover_token
-        dest: /var/lib/jenkins/userContent/pushovertoken
-        owner: jenkins
-        group: jenkins
-        mode: "0600"
-    - name: copy pushover userkey
-      when: "'jenkcontroller' in group_names"
-      ansible.builtin.copy:
-        src: jenkins_pushover_userkey
-        dest: /var/lib/jenkins/userContent/pushoverkey
-        owner: jenkins
-        group: jenkins
-        mode: "0600"
     - name: hashicorp apt repo
       block:
         - name: download key
@@ -464,6 +366,110 @@
       ansible.builtin.command: pipx ensurepath
     - name: wait for reboot
       ansible.builtin.meta: flush_handlers
+  handlers:
+    - name: reboot
+      ansible.builtin.reboot:
+- name: jenkins controller setup
+  become: true
+  hosts: [jenkcontroller]
+  any_errors_fatal: true
+  vars:
+    deb_arch:
+      armv6l: armhf,
+      armv7l: armhf,
+      aarch64: arm64,
+      x86_64: amd64,
+      i386: i386
+  tasks:
+    - name: repo setup
+      block:
+        - name: directory exists
+          ansible.builtin.file:
+            path: /etc/apt/keyrings
+            mode: "0755"
+            state: directory
+        - name: key downloaded
+          ansible.builtin.get_url:
+            url: https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+            dest: /etc/apt/keyrings/jenkins.asc
+            mode: "0664"
+            owner: root
+            group: root
+        - name: apt source installed
+          async: 600
+          poll: 10
+          retries: 10
+          ansible.builtin.apt_repository:
+            filename: jenkins
+            repo: >-
+              deb [arch={{ deb_arch[ansible_architecture] }}
+              signed-by=/etc/apt/keyrings/jenkins.asc]
+              https://pkg.jenkins.io/debian-stable binary/
+            state: present
+    - name: jenkins installed
+      register: jenkinst
+      until: jenkinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.apt:
+        name: jenkins
+        state: present
+        update_cache: true
+    - name: systemd overrides
+      notify: reboot
+      ansible.builtin.blockinfile:
+        path: /etc/systemd/system/jenkins.service.d/override.conf
+        create: true
+        state: present
+        block: |
+          [Service]
+          Environment="CASC_JENKINS_CONFIG=https://raw.githubusercontent.com/rachelf42/homelab/refs/heads/main/jenkins/config.yaml"
+        owner: root
+        group: root
+        mode: "0644"
+    - name: copy secrets file
+      ansible.builtin.copy:
+        src: jenksecrets.json
+        dest: /var/lib/jenkins/userContent/secrets.json # jenkins enforces login before read
+        owner: jenkins                                  # yes, this means any logged in user can read my password
+        group: jenkins                                  # im the only user, its fine
+        mode: "0600"
+    - name: copy main ssh key
+      ansible.builtin.copy:
+        src: jenkins_ssh_key
+        dest: /var/lib/jenkins/userContent/ssh_key
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy devmachine ssh key
+      ansible.builtin.copy:
+        src: id_ed25519
+        dest: /var/lib/jenkins/.ssh/id_ed25519
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy terraform token
+      ansible.builtin.copy:
+        src: jenkins_hcp_token
+        dest: /var/lib/jenkins/userContent/terratoken
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy pushover token
+      ansible.builtin.copy:
+        src: jenkins_pushover_token
+        dest: /var/lib/jenkins/userContent/pushovertoken
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
+    - name: copy pushover userkey
+      ansible.builtin.copy:
+        src: jenkins_pushover_userkey
+        dest: /var/lib/jenkins/userContent/pushoverkey
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
     - name: retrieve bootstrap pass
       ignore_errors: true # could be missing on subsequent runs
       when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
@@ -487,7 +493,6 @@
 
           Press any key to continue...
     - name: install plugins
-      when: "'jenkcontroller' in group_names"
       loop:
         - job-dsl
         - configuration-as-code
@@ -521,3 +526,13 @@
       ansible.builtin.service:
         name: jenkins
         state: restarted
+- name: jenkins agent setup
+  become: true
+  hosts: [jenkagent]
+  any_errors_fatal: true
+  tasks:
+    - name: authorize controller key
+      ansible.posix.authorized_key:
+        user: jenkins
+        state: present
+        key: "{{ lookup('ansible.builtin.file', 'jenkins_ssh_key.pub') }}"
