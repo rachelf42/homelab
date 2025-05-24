@@ -41,6 +41,8 @@ resource "ansible_group" "by_role" {
     "nas",
     "devmachine",
     "server",
-    "jenk"
+    "jenk",
+    "jenkagent",
+    "jenkcontroller"
   ]
 }
