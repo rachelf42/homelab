@@ -72,4 +72,5 @@ jobs:
         env:
           JENKINS_HOOK_TOKEN: ${{ secrets.JENKINS_HOOK_TOKEN }}
           JENKINS_HOOK_URL: ${{ secrets.JENKINS_HOOK_URL }}
+          TEST_SECRET: ${{ secrets.TEST_SECRET }}
         run: bash ./scripts/triggerJenkinsBuild.sh main
