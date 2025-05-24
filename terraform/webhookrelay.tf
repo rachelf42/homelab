@@ -14,5 +14,5 @@ resource "webhookrelay_input" "github-jenkins" {
   bucket_id = webhookrelay_bucket.github-jenkins.id
 }
 output "github-jenkins-webhookurl" {
-  value = "https://my.webhookrelay.com/v1/webhooks/" + webhookrelay_input.github-jenkins.id
+  value = "https://my.webhookrelay.com/v1/webhooks/${webhookrelay_input.github-jenkins.id}"
 }
