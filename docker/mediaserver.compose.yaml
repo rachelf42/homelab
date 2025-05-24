@@ -6,7 +6,7 @@ services:
     extends:
       file: ./common.compose.yaml
       service: base
-    image: amir20/dozzle:v8.12.15@sha256:4d4d12db0575db8a5e80641f536ab0aa4ae81003d50aea5ea55fc80ae444ca66
+    image: amir20/dozzle:v8.12.17@sha256:7a482fc570fa3a8cbc27afd4980e0a0c572e1489d954beb58758b1868fe4ac51
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
