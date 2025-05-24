@@ -464,7 +464,6 @@
     - name: wait for reboot
       ansible.builtin.meta: flush_handlers
     - name: retrieve bootstrap pass
-      when: "'jenkcontroller' in group_names"
       ignore_errors: true # could be missing on subsequent runs
       when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
       register: slurp     # but not always, and using a handler messes with register
