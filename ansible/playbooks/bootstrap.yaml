@@ -504,7 +504,7 @@
       ansible.builtin.meta: flush_handlers
     - name: wait for jenkins to come back
       delegate_to: localhost
-      run_once: true # noqa run-once
+      run_once: true # noqa run-once[task]
       ansible.builtin.uri:
         url: http://jenkins.local.rachelf42.ca:8080/login
         status_code: 200
