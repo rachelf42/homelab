@@ -4,8 +4,8 @@ resource "webhookrelay_bucket" "github-jenkins" {
   delete_default_input = true
 }
 resource "webhookrelay_output" "github-jenkins" {
-    name = "github-jenkins"
-    destination = "http://jenkins.local.rachelf42.ca:8080/github-webhook/"
-    internal = true
-    bucket_id = webhookrelay_bucket.github-jenkins.id
+  name        = "github-jenkins"
+  destination = "http://jenkins.local.rachelf42.ca:8080/github-webhook/"
+  internal    = true
+  bucket_id   = webhookrelay_bucket.github-jenkins.id
 }

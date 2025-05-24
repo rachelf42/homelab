@@ -38,7 +38,7 @@
     - name: pull secrets # noqa command-instead-of-shell
       changed_when: true
       ansible.builtin.shell:
-        cmd: "SYNC_KEY={{ tempdir.path }}/key SYNC_USER=rachel ./scripts/pullSecrets.sh"
+        cmd: SYNC_KEY={{ tempdir.path }}/key SYNC_USER=rachel ./scripts/pullSecrets.sh
         chdir: /homelab
     - name: delete tempdir
       ansible.builtin.file:
