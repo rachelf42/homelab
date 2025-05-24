@@ -1,7 +1,7 @@
 #!/bin/bash
 PRIORITY="$1"
 MESSAGE="${*:2}"
-if [[ $PRIORITY > 0 ]]; then
+if [[ $PRIORITY -gt 0 ]]; then
 	SOUND=tugboat
 else
 	SOUND=pushover
