@@ -5,7 +5,7 @@ resource "webhookrelay_bucket" "github-jenkins" {
 }
 resource "webhookrelay_output" "github-jenkins" {
   name        = "github-jenkins"
-  destination = "http://jenkins.local.rachelf42.ca:8080/github-webhook/"
+  destination = "http://jenkins.local.rachelf42.ca:8080/buildByToken/build"
   internal    = true
   bucket_id   = webhookrelay_bucket.github-jenkins.id
 }

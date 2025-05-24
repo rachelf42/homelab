@@ -467,6 +467,13 @@
         owner: jenkins
         group: jenkins
         mode: "0600"
+    - name: copy github webhook token
+      ansible.builtin.copy:
+        src: github_webhook_token
+        dest: /var/lib/jenkins/userContent/gh-wh-token
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
     - name: retrieve bootstrap pass
       ignore_errors: true # could be missing on subsequent runs
       when: jenkinst is defined and jenkinst is ansible.builtin.changed # noqa no-handler
@@ -493,6 +500,7 @@
       loop:
         - job-dsl
         - configuration-as-code
+        - build-token-root
       register: jenkplugins
       notify: restart jenkins
       community.general.jenkins_plugin:
