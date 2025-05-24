@@ -60,7 +60,7 @@ resource "proxmox_virtual_environment_vm" "jenkins-agent" {
   name          = "jenkins-agent"
   node_name     = "pve-laptop"
   description   = "MANAGED BY TERRAFORM"
-  tags          = ["terraform","jenkins","docker"]
+  tags          = ["terraform","jenkins"]
   timeout_clone = 7200
   scsi_hardware = "virtio-scsi-single"
   boot_order    = ["scsi0", "net0"]
@@ -88,7 +88,7 @@ resource "proxmox_virtual_environment_vm" "jenkins-agent" {
       }
     }
     user_account {
-      username = "rachel"
+      username = "jenkins"
       password = var.secure_password
     }
   }
@@ -110,13 +110,13 @@ resource "proxmox_virtual_environment_vm" "jenkins-agent" {
   }
   startup {
     down_delay = 300
-    order      = 0
+    order      = 1
     up_delay   = 300
   }
 }
 resource "ansible_host" "jenkins" {
   name   = "jenkins"
-  groups = ["vm", "ubuntu", "jenk", "docker", "server"]
+  groups = ["vm", "ubuntu", "jenk", "docker", "server", "jenkcontroller"]
   variables = {
     homedir    = "/var/lib/jenkins"
     repodir    = "/var/lib/jenkins/workspace/main"
@@ -130,7 +130,7 @@ resource "ansible_host" "jenkins" {
 }
 resource "ansible_host" "jenkins-agent" {
   name   = "jenkins"
-  groups = ["vm", "ubuntu", "jenk", "server"]
+  groups = ["vm", "ubuntu", "jenk", "server", "jenkagent"]
   variables = {
     homedir    = "/home/jenkins"
     repodir    = "/home/jenkins/homelab"
