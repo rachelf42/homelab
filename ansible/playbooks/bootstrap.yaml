@@ -270,7 +270,7 @@
             * Re-run 'terraform apply' as there is there is additional config there.
             * Once you're confident the node(s) are set up right, run a full deploy.
         seconds: 1
-- name: jenkins common setup
+- name: jenkins common setup part 1
   become: true
   hosts: [jenk]
   any_errors_fatal: true
@@ -296,76 +296,6 @@
         name: "{{ jenkinspkg }}"
         state: present
         update_cache: true
-    - name: hashicorp apt repo
-      block:
-        - name: download key
-          ansible.builtin.get_url:
-            url: https://apt.releases.hashicorp.com/gpg
-            dest: /etc/apt/keyrings/hashicorp.asc
-            owner: root
-            group: root
-            mode: "0644"
-        - name: add repo source
-          ansible.builtin.apt_repository:
-            filename: hashicorp
-            repo: >-
-              deb [arch={{ deb_arch[ansible_architecture] }}
-              signed-by=/etc/apt/keyrings/hashicorp.asc]
-              https://apt.releases.hashicorp.com
-              noble main
-            state: present
-    - name: hashicorp tools installed
-      register: hashinst
-      until: hashinst is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      loop:
-        - packer
-        - terraform
-      ansible.builtin.apt:
-        name: "{{ item }}"
-        state: present
-        update_cache: true
-    - name: pip installed
-      register: pipinst
-      until: pipinst is ansible.builtin.success
-      async: 600
-      poll: 10
-      retries: 10
-      loop:
-        - python3-pip
-        - pipx
-      ansible.builtin.apt:
-        name: "{{ item }}"
-        state: present
-        update_cache: true
-    - name: ansible installed
-      become: true
-      become_user: jenkins
-      community.general.pipx:
-        name: ansible-core
-        state: install
-    - name: ansible injects
-      become: true
-      become_user: jenkins
-      community.general.pipx:
-        name: ansible-core
-        state: inject
-        inject_packages: [ansible-pylibssh]
-    - name: pipx ensurepath
-      become: true
-      become_user: jenkins
-      check_mode: false
-      register: ensurepath
-      changed_when: ensurepath.stdout.find('Success!') != -1
-      notify: reboot
-      ansible.builtin.command: pipx ensurepath
-    - name: wait for reboot
-      ansible.builtin.meta: flush_handlers
-  handlers:
-    - name: reboot
-      ansible.builtin.reboot:
 - name: jenkins controller setup
   become: true
   hosts: [jenkcontroller]
@@ -442,10 +372,11 @@
     - name: copy devmachine ssh key
       ansible.builtin.copy:
         src: id_ed25519
-        dest: /var/lib/jenkins/.ssh/id_ed25519
+        dest: /var/lib/jenkins/.ssh/
         owner: jenkins
         group: jenkins
         mode: "0600"
+        directory_mode: "0700"
     - name: copy terraform token
       ansible.builtin.copy:
         src: jenkins_hcp_token
@@ -533,6 +464,88 @@
       ansible.builtin.service:
         name: jenkins
         state: restarted
+- name: jenkins common setup part 2
+  become: true
+  hosts: [jenk]
+  any_errors_fatal: true
+  vars:
+    deb_arch:
+      armv6l: armhf,
+      armv7l: armhf,
+      aarch64: arm64,
+      x86_64: amd64,
+      i386: i386
+  tasks:
+    - name: hashicorp apt repo
+      block:
+        - name: download key
+          ansible.builtin.get_url:
+            url: https://apt.releases.hashicorp.com/gpg
+            dest: /etc/apt/keyrings/hashicorp.asc
+            owner: root
+            group: root
+            mode: "0644"
+        - name: add repo source
+          ansible.builtin.apt_repository:
+            filename: hashicorp
+            repo: >-
+              deb [arch={{ deb_arch[ansible_architecture] }}
+              signed-by=/etc/apt/keyrings/hashicorp.asc]
+              https://apt.releases.hashicorp.com
+              noble main
+            state: present
+    - name: hashicorp tools installed
+      register: hashinst
+      until: hashinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      loop:
+        - packer
+        - terraform
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+    - name: pip installed
+      register: pipinst
+      until: pipinst is ansible.builtin.success
+      async: 600
+      poll: 10
+      retries: 10
+      loop:
+        - python3-pip
+        - pipx
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+        update_cache: true
+    - name: ansible installed
+      become: true
+      become_user: jenkins
+      community.general.pipx:
+        name: ansible-core
+        state: install
+    - name: ansible injects
+      become: true
+      become_user: jenkins
+      community.general.pipx:
+        name: ansible-core
+        state: inject
+        inject_packages: [ansible-pylibssh]
+    - name: pipx ensurepath
+      become: true
+      become_user: jenkins
+      check_mode: false
+      register: ensurepath
+      changed_when: ensurepath.stdout.find('Success!') != -1
+      notify: reboot
+      ansible.builtin.command: pipx ensurepath
+    - name: wait for reboot
+      ansible.builtin.meta: flush_handlers
+  handlers:
+    - name: reboot
+      ansible.builtin.reboot:
 - name: jenkins agent setup
   become: true
   hosts: [jenkagent]

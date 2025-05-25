@@ -118,10 +118,10 @@ resource "ansible_host" "jenkins" {
   name   = "jenkins"
   groups = ["vm", "ubuntu", "jenk", "docker", "server", "jenkcontroller"]
   variables = {
-    homedir    = "/var/lib/jenkins"
+    homedir    = "/home/rachel"
     repodir    = "/homelab"
     ip_address = "10.69.69.254"
-    user_name  = "jenkins"
+    user_name  = "rachel"
 
     ansible_python_interpreter = "/usr/bin/python3"
     ansible_private_key_file   = "./sshkey"
