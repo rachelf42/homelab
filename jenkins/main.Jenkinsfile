@@ -1,4 +1,3 @@
-def unpretty = ~'(^|\n) +'
 def sendPushover(message, priority = 0) {
   withCredentials([
     string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
