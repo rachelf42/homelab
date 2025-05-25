@@ -11,6 +11,12 @@ pipeline {
   agent any
   options {
     skipDefaultCheckout(true)
+    buildBlocker (
+      useBuildBlocker: true,
+      blockLevel: 'GLOBAL',
+      scanQueueFor: 'DISABLED',
+      blockingJobs: 'daily' # because it runs packer
+    )
   }
   stages {
     stage('Setup') {
