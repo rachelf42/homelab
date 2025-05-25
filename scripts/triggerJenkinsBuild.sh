@@ -22,7 +22,7 @@ RESPONSE=$(curl \
 EXITCODE=$?
 echo "Jenkins says: $RESPONSE"
 echo "cURL says: $EXITCODE"
-if [[ $RESPONSE == 201 ]]; then
+if [[ $RESPONSE == 201 || $RESPONSE == 200 ]]; then
 	echo 'Queued Successfully'
 	exit 0
 elif [[ $RESPONSE == 303 ]]; then
