@@ -15,7 +15,7 @@ pipeline {
       useBuildBlocker: true,
       blockLevel: 'GLOBAL',
       scanQueueFor: 'DISABLED',
-      blockingJobs: 'daily' # because it runs packer
+      blockingJobs: 'daily' // because it runs packer
     )
   }
   stages {
