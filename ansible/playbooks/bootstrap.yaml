@@ -502,6 +502,7 @@
         - configuration-as-code
         - build-token-root
         - saferestart
+        - build-blocker-plugin
       register: jenkplugins
       notify: restart jenkins
       community.general.jenkins_plugin:
