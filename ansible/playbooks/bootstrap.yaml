@@ -355,11 +355,14 @@
         owner: root
         group: root
         mode: "0644"
-    - name: set meta-login password
-      creates: /var/lib/jenkins/userContent/meta-login
+    - name: check meta-login password file
+      ansible.builtin.stat:
+        path: /var/lib/jenkins/userContent/meta-login
+    - name: set meta-login password file
+      when: not metapw.exists
       ansible.builtin.copy:
         dest: /var/lib/jenkins/userContent/meta-login
-        content: '{{ lookup('community.general.random_string', length=16) }}'
+        content: "{{ lookup('community.general.random_string', length=16) }}"
         owner: jenkins
         group: jenkins
         mode: "0600"
