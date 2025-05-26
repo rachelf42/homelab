@@ -11,8 +11,8 @@ pipeline {
   agent {label 'controller'}
   stages {
     stage('test') {
-      cleanWs()
       steps {
+        cleanWs()
         sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
         withCredentials([
           usernamePassword(
