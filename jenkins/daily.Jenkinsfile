@@ -1,14 +1,4 @@
-// TODO: deduplicate sendPushover in Jenkinsfiles
-// Issue URL: https://github.com/rachelf42/homelab/issues/52
-// labels: enhancement
-def sendPushover(message, priority = 0) {
-  withCredentials([
-    string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
-    string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
-  ]) {
-    sh('$WORKSPACE/scripts/sendPushover.sh ' + priority + ' ' + message)
-  }
-}
+def common
 pipeline {
   agent any
   options {
@@ -48,7 +38,9 @@ pipeline {
   post {
     failure {
       timestamps {
-        sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
+        script {
+          common.sendPushover('❌ DAILY $BUILD_DISPLAY_NAME FAILED! ❌', 1)
+        }
       }
     }
   }
