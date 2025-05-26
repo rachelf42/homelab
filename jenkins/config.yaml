@@ -84,7 +84,7 @@ credentials:
   system:
     domainCredentials:
       - credentials:
-          - userPassword:
+          - usernamePassword:
               id: meta-login
               description: Password to log into Jenkins from within a Jenkinsfile
               scope: GLOBAL
