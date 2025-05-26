@@ -11,6 +11,7 @@ pipeline {
   agent {label 'controller'}
   stages {
     stage('test') {
+      cleanWs()
       steps {
         sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
         withCredentials([
@@ -21,9 +22,9 @@ pipeline {
           )
         ])
         {
-          sh('java -jar "jenkins-cli.jar" login')
+          ssh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > creds'
         }
-        sh('java -jar "jenkins-cli.jar" safe-restart')
+        sh('java -jar "jenkins-cli.jar" -auth @creds safe-restart')
       }
     }
   }
