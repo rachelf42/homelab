@@ -22,7 +22,7 @@ pipeline {
           )
         ])
         {
-          ssh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > creds'
+          sh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > creds')
         }
         sh('java -jar "jenkins-cli.jar" -auth @creds safe-restart')
       }
