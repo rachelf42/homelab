@@ -44,6 +44,9 @@ jenkins:
       allowsSignup: false
       enableCaptcha: false
       users:
+        - id: meta
+          name: Jenkins Controlling Jenkins
+          password: ${readFile:/var/lib/jenkins/userContent/meta-login}
         - id: rachel
           name: Rachel Falder
           password: ${json:password:${readFile:/var/lib/jenkins/userContent/secrets.json}}
@@ -81,6 +84,12 @@ credentials:
   system:
     domainCredentials:
       - credentials:
+          - userPassword:
+              id: meta-login
+              description: Password to log into Jenkins from within a Jenkinsfile
+              scope: GLOBAL
+              username: meta
+              password: ${readFile:/var/lib/jenkins/userContent/meta-login}
           - basicSSHUserPrivateKey:
               id: homelab-pull-secrets
               description: SSH key to pull secret files used via symlink into the workspace
