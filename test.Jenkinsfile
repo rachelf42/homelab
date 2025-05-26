@@ -14,6 +14,7 @@ pipeline {
     stage('test') {
       steps {
         cleanWs()
+        checkout scm
         sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
         withCredentials([
           usernamePassword(
