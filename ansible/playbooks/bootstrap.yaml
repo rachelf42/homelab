@@ -355,6 +355,14 @@
         owner: root
         group: root
         mode: "0644"
+    - name: set meta-login password
+      creates: /var/lib/jenkins/userContent/meta-login
+      ansible.builtin.copy:
+        dest: /var/lib/jenkins/userContent/meta-login
+        content: '{{ lookup('community.general.random_string', length=16) }}'
+        owner: jenkins
+        group: jenkins
+        mode: "0600"
     - name: copy secrets file
       ansible.builtin.copy:
         src: jenksecrets.json
