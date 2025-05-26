@@ -3,10 +3,7 @@ pipeline {
   stages {
     stage('test') {
       steps {
-        script {
-          import jenkins.model.*;
-          Jenkins.instance.doSafeRestart(null);
-        }
+        sh('java -jar "$JENKINS_HOME/war/WEB-INF/jenkins-cli.jar" -s "$JENKINS_URL" safe-restart')
       }
     }
   }
