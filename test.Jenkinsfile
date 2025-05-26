@@ -12,7 +12,7 @@ pipeline {
   stages {
     stage('test') {
       steps {
-        sh('wget http://$JENKINS_URL/jnlpJars/jenkins-cli.jar')
+        sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
         sh('java -jar "jenkins-cli.jar" safe-restart')
       }
     }
