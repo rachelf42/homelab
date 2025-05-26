@@ -7,6 +7,7 @@ pipeline {
       scanQueueFor: 'ALL',
       blockingJobs: '.*'
     )
+  }
   agent {label 'controller'}
   stages {
     stage('test') {
