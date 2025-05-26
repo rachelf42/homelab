@@ -4,7 +4,7 @@ pipeline {
     stage('test') {
       steps {
         script {
-          import hudson.model.*
+          import jenkins.model.*;
           Jenkins.instance.doSafeRestart(null);
         }
       }
