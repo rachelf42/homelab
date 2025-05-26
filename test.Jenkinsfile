@@ -1,4 +1,12 @@
 pipeline {
+  options {
+    skipDefaultCheckout(true)
+    buildBlocker (
+      useBuildBlocker: true,
+      blockLevel: 'GLOBAL',
+      scanQueueFor: 'ALL',
+      blockingJobs: '.*'
+    )
   agent {label 'controller'}
   stages {
     stage('test') {
