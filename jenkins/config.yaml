@@ -2,14 +2,15 @@ jenkins:
   systemMessage: |
     Jenkins configured automatically by Jenkins Configuration as Code plugin.
     Please do not change any settings manually.
-  numExecutors: 0 # changing this is a security concern, dont do it if you dont have to
+  numExecutors: 1
   scmCheckoutRetryCount: 2
   labelString: "controller"
   mode: EXCLUSIVE
   nodes:
     - permanent:
-        name: "doubleohseven"
+        name: "Jenkins Agent"
         mode: NORMAL
+        numExecutors: 5
         remoteFS: "/home/jenkins/agent"
         retentionStrategy: "always"
         labelString: "terraform ansible"
