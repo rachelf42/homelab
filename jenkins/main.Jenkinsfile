@@ -1,12 +1,4 @@
-def sendPushover(message, priority = 0) {
-  withCredentials([
-    string(credentialsId: 'pushovertoken', variable: 'APP_TOKEN'),
-    string(credentialsId: 'pushoverkey', variable: 'USER_KEY')
-  ]) {
-    // $WORKSPACE used because we don't know what directory we'll be in when we call this
-    sh('$WORKSPACE/scripts/sendPushover.sh ' + priority + ' ' + message)
-  }
-}
+def common
 pipeline {
   agent any
   options {
@@ -31,21 +23,11 @@ pipeline {
           sh('./scripts/pullSecrets.sh')
         }
         sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
+        script {
+          common = load('jenkins/commonFunctions.groovy')
+        }
       }
     }
-    // TODO: move packer to its own daily pipeline
-    // Issue URL: https://github.com/rachelf42/homelab/issues/39
-    // assignees: rachelf42
-    // stage('Packer') {
-    //   steps {
-    //     dir(path: 'packer') {
-    //       timestamps {
-    //         sh('packer init .')
-    //         sh('packer build -force .')
-    //       }
-    //     }
-    //   }
-    // }
     stage('Terraform'){
       steps {
         timestamps {
@@ -68,7 +50,7 @@ pipeline {
                     error 'Terraform Failed'
                     break;
                   case 2:
-                    sendPushover('⚠️ Build $BUILD_DISPLAY_NAME Awaits Input ⚠️')
+                    common.sendPushover('⚠️ Build $BUILD_DISPLAY_NAME Awaits Input ⚠️')
                     input(
                       message: 'Proceed with above plan?',
                       submitter: 'rachel'
@@ -118,12 +100,16 @@ pipeline {
   post {
     success {
       timestamps {
-        sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
+        script {
+          common.sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
+        }
       }
     }
     failure {
       timestamps {
-        sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
+        script {
+          common.sendPushover('❌ BUILD $BUILD_DISPLAY_NAME FAILED! ❌', 1)
+        }
       }
     }
   }
