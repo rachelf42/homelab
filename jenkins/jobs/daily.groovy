@@ -6,7 +6,9 @@ pipelineJob('daily'){
         }
         pipelineTriggers {
             triggers {
-              // trigger go here
+              cron {
+                spec('0 4 * * *')
+              }
             }
         }
         githubProjectUrl('https://github.com/rachelf42/homelab')
