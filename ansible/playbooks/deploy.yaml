@@ -61,14 +61,14 @@
       retries: 3
       community.docker.docker_compose_v2_pull:
         project_src: "{{ repodir }}/docker"
-        files: "{{ inventory_hostname }}.compose.yaml"
+        check_files_existing: false # set via env var
         policy: always
     - name: bring stack up
       async: 600
       poll: 10
       community.docker.docker_compose_v2:
         project_src: "{{ repodir }}/docker"
-        files: "{{ inventory_hostname }}.compose.yaml"
+        check_files_existing: false # set via env var
         pull: never # because pull is a seperate task
         remove_orphans: true
         state: present
