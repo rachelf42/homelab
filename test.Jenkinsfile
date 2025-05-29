@@ -2,7 +2,7 @@ def common
 pipeline {
   options {
     skipDefaultCheckout(true)
-    buildBlocker (
+    buildBlocker(
       useBuildBlocker: true,
       blockLevel: 'GLOBAL',
       scanQueueFor: 'ALL',
@@ -11,10 +11,33 @@ pipeline {
   }
   agent {label 'controller'}
   stages {
-    stage('test') {
+    stage('Setup') {
       steps {
         cleanWs()
         checkout scm
+        sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
+        script {
+          common = load('jenkins/commonFunctions.groovy')
+        }
+      }
+    }
+    stage('Ansible - Maintenance') {
+      steps {
+        dir(path: 'ansible') {
+          timestamps {
+            withCredentials([
+              string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
+              string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
+            ]) {
+              sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
+              sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
+            }
+          }
+        }
+      }
+    }
+    stage('Restart') {
+      steps {
         sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
         withCredentials([
           usernamePassword(
@@ -27,10 +50,6 @@ pipeline {
           sh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > creds')
         }
         // sh('java -jar "jenkins-cli.jar" -auth @creds safe-restart')
-        script {
-          common = load('jenkins/commonFunctions.groovy')
-          common.sendPushover('test')
-        }
       }
     }
   }

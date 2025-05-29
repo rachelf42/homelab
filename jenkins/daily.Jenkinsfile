@@ -3,7 +3,7 @@ pipeline {
   agent any
   options {
     skipDefaultCheckout(true)
-    buildBlocker (
+    buildBlocker(
       useBuildBlocker: true,
       blockLevel: 'GLOBAL',
       scanQueueFor: 'ALL',
@@ -21,6 +21,9 @@ pipeline {
           usernameVariable: 'SYNC_USER'
         )]) {
           sh('./scripts/pullSecrets.sh')
+        }
+        script {
+          common = load('commonFunctions.groovy')
         }
       }
     }
