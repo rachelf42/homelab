@@ -13,11 +13,19 @@ pipeline {
   stages {
     stage('Setup') {
       steps {
-        cleanWs()
-        checkout scm
-        sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
-        script {
-          common = load('jenkins/commonFunctions.groovy')
+        timestamps() {
+          cleanWs()
+          checkout scm
+          sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
+          script {
+            common = load('jenkins/commonFunctions.groovy')
+          }
+          dir('bootstrap') {
+            sh('terraform init')
+          }
+          dir('terraform') {
+            sh('terraform init')
+          }
         }
       }
     }
