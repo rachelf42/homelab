@@ -21,7 +21,7 @@ pipeline {
             common = load('jenkins/commonFunctions.groovy')
           }
           withCredentials([
-            string(credentialsID: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
+            string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
           ]) {
             dir('bootstrap') {
               sh('terraform init')
