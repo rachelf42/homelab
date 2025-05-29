@@ -33,3 +33,4 @@ services:
     ports:
       - '7007:7007'
     command: agent
+    healthcheck: !reset {}
