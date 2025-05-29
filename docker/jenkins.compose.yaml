@@ -4,6 +4,10 @@ networks:
   main:
 ########## SERVICES
 services:
+  dozzle:
+    extends:
+      file: ./common.compose.yaml
+      service: dozzle-agent
   terraform:
     extends:
       file: ./common.compose.yaml
