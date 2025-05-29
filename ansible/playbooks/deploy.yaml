@@ -1,7 +1,7 @@
 - name: docker stacks
   hosts: [docker]
   become: true
-  become_user: "{{ user_name }}"
+  become_user: "{{ user_name }}" # override to root if escalation needed
   any_errors_fatal: true
   tasks:
     - name: repo dest exists
@@ -13,6 +13,17 @@
         owner: "{{ user_name }}"
         group: docker
         mode: "0777"
+    - name: acl set
+      become: true
+      become_user: root
+      ansible.posix.acl:
+        path: "{{ repodir }}"
+        entity: docker
+        etype: group
+        permissions: rwX # capital X means execute allowed IF normal x bit set OR if is directory
+        default: true
+        recursive: true
+        state: present
     - name: update repo
       ansible.builtin.git:
         repo: git@github.com:{{ account_name }}/homelab.git
