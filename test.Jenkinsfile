@@ -16,6 +16,17 @@ pipeline {
         timestamps() {
           cleanWs()
           checkout scm
+          sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
+          withCredentials([
+            usernamePassword(
+              credentialsId: 'meta-login',
+              passwordVariable: 'JENKINS_API_TOKEN',
+              usernameVariable: 'JENKINS_USER_ID'
+            )
+          ])
+          {
+            sh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > meta-creds')
+          }
           withCredentials([sshUserPrivateKey(
             credentialsId: 'homelab-pull-secrets',
             keyFileVariable: 'SYNC_KEY',
@@ -55,20 +66,14 @@ pipeline {
         }
       }
     }
-    stage('Restart') {
+    stage('Meta - Update plugins and restart') {
       steps {
-        sh('wget $JENKINS_URL/jnlpJars/jenkins-cli.jar')
-        withCredentials([
-          usernamePassword(
-            credentialsId: 'meta-login',
-            passwordVariable: 'JENKINS_API_TOKEN',
-            usernameVariable: 'JENKINS_USER_ID'
-          )
-        ])
-        {
-          sh('echo -n "$JENKINS_USER_ID:$JENKINS_API_TOKEN" > creds')
-        }
-        // sh('java -jar "jenkins-cli.jar" -auth @creds safe-restart')
+        echo(
+          'java -jar jenkins-cli.jar -auth @meta-creds -s http://jenkins.local.rachelf42.ca:8080 list-plugins ' +
+          '| awk \'{ print $1 }\' ' +
+          '| xargs java -jar jenkins-cli.jar -auth @meta-creds -s http://jenkins.local.rachelf42.ca:8080 install-plugin'
+        )
+        // sh('java -jar "jenkins-cli.jar" -auth @meta-creds safe-restart')
       }
     }
   }
