@@ -16,6 +16,13 @@ pipeline {
         timestamps() {
           cleanWs()
           checkout scm
+          withCredentials([sshUserPrivateKey(
+            credentialsId: 'homelab-pull-secrets',
+            keyFileVariable: 'SYNC_KEY',
+            usernameVariable: 'SYNC_USER'
+          )]) {
+            sh('./scripts/pullSecrets.sh')
+          }
           sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
           script {
             common = load('jenkins/commonFunctions.groovy')
