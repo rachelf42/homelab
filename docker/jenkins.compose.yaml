@@ -8,7 +8,7 @@ services:
     extends:
       file: ./common.compose.yaml
       service: base
-    image: hashicorp/tfc-agent:1.22.2@sha256:7008f045d1bbe6aff5f7369dd60b6316d6f063d15a614150b1e01b6f83964952
+    image: hashicorp/tfc-agent:1.22.3@sha256:4e9ce327224015be27b24d8798c153b00f48e1c9d9b4e79f073efdb310c74d22
     environment:
       TFC_AGENT_NAME: jenkins
       TFC_AGENT_AUTO_UPDATE: disabled # let renovate do it
