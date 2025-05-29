@@ -20,11 +20,15 @@ pipeline {
           script {
             common = load('jenkins/commonFunctions.groovy')
           }
-          dir('bootstrap') {
-            sh('terraform init')
-          }
-          dir('terraform') {
-            sh('terraform init')
+          withCredentials([
+            string(credentialsID: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
+          ]) {
+            dir('bootstrap') {
+              sh('terraform init')
+            }
+            dir('terraform') {
+              sh('terraform init')
+            }
           }
         }
       }
