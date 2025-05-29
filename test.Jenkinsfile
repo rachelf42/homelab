@@ -60,6 +60,8 @@ pipeline {
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
               sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
+              // TODO: check maint.yaml doesn't break if jenkins itself updates
+              // assignees: rachelf42
               sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
             }
           }
@@ -68,12 +70,14 @@ pipeline {
     }
     stage('Meta - Update plugins and restart') {
       steps {
-        echo(
-          'java -jar jenkins-cli.jar -auth @meta-creds -s http://jenkins.local.rachelf42.ca:8080 list-plugins ' +
+        // TODO: check test.Jenkinsfile updating plugins actually works
+        // assignees: rachelf42
+        sh(
+          'java -jar jenkins-cli.jar -auth @meta-creds -s $JENKINS_URL list-plugins ' +
           '| awk \'{ print $1 }\' ' +
-          '| xargs java -jar jenkins-cli.jar -auth @meta-creds -s http://jenkins.local.rachelf42.ca:8080 install-plugin'
+          '| xargs java -jar jenkins-cli.jar -auth @meta-creds -s $JENKINS_URL install-plugin'
         )
-        // sh('java -jar "jenkins-cli.jar" -auth @meta-creds safe-restart')
+        sh('java -jar "jenkins-cli.jar" -auth @meta-creds safe-restart')
       }
     }
   }
