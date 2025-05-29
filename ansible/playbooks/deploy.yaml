@@ -11,7 +11,7 @@
         path: "{{ repodir }}"
         state: directory
         owner: "{{ user_name }}"
-        group: docker
+        group: "{{ user_name }}"
         mode: "0777"
     - name: acl set
       become: true
