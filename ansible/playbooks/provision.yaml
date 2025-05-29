@@ -293,10 +293,6 @@
         # Issue URL: https://github.com/rachelf42/homelab/issues/46
         # labels: waiting, hideFromCodeEditor
         msg: "TODO: ansible.posix.mount here"
-    # TODO: systemd service file for docker compose projects
-    # Issue URL: https://github.com/rachelf42/homelab/issues/45
-    # labels: bug
-    # containers will not survive reboots until this is done
     - name: systemd service file
       ansible.builtin.copy:
         dest: /etc/systemd/system/{{ account_name }}-dockercompose.service
