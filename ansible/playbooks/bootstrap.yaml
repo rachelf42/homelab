@@ -356,10 +356,11 @@
         group: root
         mode: "0644"
     - name: check meta-login password file
+      register: metapw
       ansible.builtin.stat:
         path: /var/lib/jenkins/userContent/meta-login
     - name: set meta-login password file
-      when: not metapw.exists
+      when: not metapw.stat.exists
       ansible.builtin.copy:
         dest: /var/lib/jenkins/userContent/meta-login
         content: "{{ lookup('community.general.random_string', length=16) }}"
