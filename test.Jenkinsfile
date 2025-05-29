@@ -61,6 +61,7 @@ pipeline {
             ]) {
               sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
               // TODO: check maint.yaml doesn't break if jenkins itself updates
+              // Issue URL: https://github.com/rachelf42/homelab/issues/55
               // assignees: rachelf42
               sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
             }
@@ -71,6 +72,7 @@ pipeline {
     stage('Meta - Update plugins and restart') {
       steps {
         // TODO: check test.Jenkinsfile updating plugins actually works
+        // Issue URL: https://github.com/rachelf42/homelab/issues/54
         // assignees: rachelf42
         sh(
           'java -jar jenkins-cli.jar -auth @meta-creds -s $JENKINS_URL list-plugins ' +
