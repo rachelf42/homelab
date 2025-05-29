@@ -23,7 +23,7 @@ pipeline {
           sh('./scripts/pullSecrets.sh')
         }
         script {
-          common = load('commonFunctions.groovy')
+          common = load('jenkins/commonFunctions.groovy')
         }
       }
     }
