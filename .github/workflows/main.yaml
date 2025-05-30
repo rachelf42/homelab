@@ -80,6 +80,7 @@ jobs:
         id: onlySkippableFiles
         run: |
           #!/bin/bash
+          export IFS=" "
           for file in '${{ steps.changed.outputs.changed_files }}'; do
             if [[ "$file" =~ ^.github/workflows/(.*)\.yaml ]]; then
               echo "$file matches .github rule"
