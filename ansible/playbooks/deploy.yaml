@@ -50,7 +50,7 @@
       changed_when: true
       ansible.builtin.shell:
         cmd: SYNC_KEY={{ tempdir.path }}/key SYNC_USER=rachel ./scripts/pullSecrets.sh
-        chdir: /homelab
+        chdir: "{{ repodir }}"
     - name: delete tempdir
       ansible.builtin.file:
         path: "{{ tempdir.path }}"
