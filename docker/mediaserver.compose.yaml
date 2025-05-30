@@ -6,8 +6,8 @@ services:
     extends:
       file: ./common.compose.yaml
       service: dozzle-agent
+    environment:
+      DOZZLE_REMOTE_AGENT: jenkins.local.rachelf42.ca:7007
     ports: !override
       - '8080:8080'
     command: !reset null
-    environment:
-      DOZZLE_REMOTE_AGENT: jenkins.local.rachelf42.ca:7007
