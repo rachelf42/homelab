@@ -13,7 +13,7 @@ curl --fail-with-body --silent \
 	--form-string "device=Rachel-Opera,Rachel-A13" \
 	--form-string "priority=$PRIORITY" \
 	--form-string "sound=$SOUND" \
-	--form-string "url=$BUILD_URL" \
-	--form-string "url_title=View $BUILD_TAG" \
+	--form-string "url=$BUILD_URL/console" \
+	--form-string "url_title=View $BUILD_TAG Console" \
 	https://api.pushover.net/1/messages.json
 exit $?
