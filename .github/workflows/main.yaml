@@ -80,7 +80,7 @@ jobs:
         id: onlySkippableFiles
         run: |
           #!/bin/bash
-          CHANGED="${{ steps.changed.outputs.changed_files }}""
+          CHANGED="${{ steps.changed.outputs.changed_files }}"
           for file in $(echo "$CHANGED" | xargs); do
             if [[ "$file" =~ ^.github/workflows/(.*)\.yaml ]]; then
               echo "$file matches .github rule"
