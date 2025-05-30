@@ -72,19 +72,14 @@ jobs:
         id: doJenkins
         run: |
           MSG='${{ github.event.head_commit.message }}'
-          echo "COMMIT MSG: $MSG"
           if [[ $MSG == *"nojenkins"* ]]; then
             echo "result=false" >> "$GITHUB_OUTPUT"
           else
             echo "result=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: DEBUG
-        env:
-          RESULT: ${{ steps.doJenkins.outputs.result }}
-        run: 'echo "doJenkins is: $RESULT"'
-
       - name: Fire Jenkins Webhook
+        if: ${{ steps.doJenkins.outputs.result }} == true
         env:
           JENKINS_HOOK_TOKEN: ${{ secrets.JENKINS_HOOK_TOKEN }}
           JENKINS_HOOK_URL: ${{ secrets.JENKINS_HOOK_URL }}
