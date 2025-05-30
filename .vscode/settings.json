@@ -13,5 +13,7 @@
         "!override mapping",
         "!override scalar",
         "!override sequence"
-    ]
+    ],
+    "ansible.validation.lint.arguments": "--config-file ansible/.ansible-lint",
+    "ansible.validation.lint.enabled": false
 }
