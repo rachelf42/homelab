@@ -79,6 +79,7 @@ jobs:
       - name: Check if only skippable files in commit
         id: onlySkippableFiles
         run: |
+          #!/bin/bash
           for file in '${{ steps.changed.outputs.changed_files }}'; do
             if [[ "$file" =~ ^.github/workflows/(.*)\.yaml ]]; then
               echo "$file matches .github rule"
