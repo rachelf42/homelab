@@ -109,6 +109,8 @@ jobs:
             echo "result=true" >> "$GITHUB_OUTPUT"
             echo "YES!"
           fi
+      - name: DEBUG
+        run: echo '${{steps.doJenkins.outputs.result}}'
 
       - name: Fire Jenkins Webhook
         if: steps.doJenkins.outputs.result == true
