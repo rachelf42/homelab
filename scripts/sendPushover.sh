@@ -2,9 +2,9 @@
 PRIORITY="$1"
 MESSAGE="${*:2}"
 if [[ $PRIORITY -gt 0 ]]; then
-	SOUND=tugboat
+	SOUND=rachel-hiprio
 else
-	SOUND=bike
+	SOUND=rachel-loprio
 fi
 curl --fail-with-body --silent \
 	--form-string "token=$APP_TOKEN" \

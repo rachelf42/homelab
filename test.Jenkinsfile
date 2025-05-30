@@ -37,7 +37,10 @@ pipeline {
           sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
           script {
             common = load('jenkins/commonFunctions.groovy')
+            common.sendPushover('test low priority')
+            common.sendPushover('test high priority', 1)
           }
+          error(message: 'remove pushover test code to continue')
           withCredentials([
             string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
           ]) {
