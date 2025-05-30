@@ -1,6 +1,6 @@
 module "mediaserver" {
   source = "./vm-with-cf-and-ans"
-  name   = "media"
+  name   = "control"
 
   ipaddr  = "10.69.69.69"
   gateway = "10.0.0.1"
@@ -8,7 +8,7 @@ module "mediaserver" {
   dns1    = var.dns1
   dns2    = var.dns2
 
-  memory            = 4096
+  memory            = 2048
   secure_password   = var.secure_password
   additional_groups = ["docker"]
 
