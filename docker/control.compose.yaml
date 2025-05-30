@@ -1,7 +1,21 @@
+########## FRAGMENTS
+x-defaults-nonet: &defaults-nonet
+  extends:
+    file: ./common.compose.yaml
+    service: base-nonet
+x-defaults: &defaults
+  extends:
+    file: ./common.compose.yaml
+    service: base
 ########## STACK SETTINGS
 name: control
 networks:
   main:
+    name: main
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.69.0/24
 ########## SERVICES
 services:
 #################### MONITORS
@@ -15,9 +29,7 @@ services:
       - '8080:8080'
     command: !reset null
   ddclient:
-    extends:
-      file: ./common.compose.yaml
-      service: base
+    <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
     volumes:
       - ./config/ddclient.conf:/config/ddclient.conf
@@ -29,6 +41,31 @@ services:
       TZ: $TZ
       FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
+  traefik:
+    <<: *defaults-nonet
+    image: traefik:v3.4.1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/traefik/static.yaml:/etc/traefik/traefik.yaml:ro
+      - ./config/traefik/control:/dynamic:ro
+      - $APPDIR/traefik/certs/acme.json:/acme.json
+      - $APPDIR/logs/control/traefik:/logs
+    secrets:
+      - cf-token
+    environment:
+      CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    networks:
+      main:
+        ipv4_address: 192.168.69.69
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.traefik-rtr.entrypoints=dash
+      - traefik.http.routers.traefik-rtr.rule=Host(`traefik.rachelf42.ca`)
+      - traefik.http.routers.traefik-rtr.service=api@internal
 ########## HOUSEKEEPING
 secrets:
   cf-token:

@@ -1,0 +1,64 @@
+global:
+  checkNewVersion: true
+  sendAnonymousUsage: true
+entryPoints:
+  web:
+    address: :80
+  websecure:
+    address: :443
+    forwardedHeaders:
+      trustedIPs:
+        - 127.0.0.1/32
+        - 10.0.0.0/8 # physical network
+        - 192.168.69.0/24 # docker network
+    http:
+      tls:
+        certResolver: dns-cloudflare
+        options: tls-opts@file
+        domains:
+          - main: rachelf42.ca
+            sans: ['*.rachelf42.ca']
+      redirections:
+        entryPoint:
+          to: websecure
+          scheme: https
+          permanent: true
+  # TODO: secure traefik dashboard
+  # labels: bug
+  # assignees: rachelf42
+  dash:
+    address: :81
+api:
+  dashboard: true
+  insecure: true
+providers:
+  docker:
+    endpoint: unix:///var/run/docker.sock
+    exposedByDefault: false
+  file:
+    directory: /dynamic
+    watch: true
+certificatesResolvers:
+  dns-cloudflare:
+    acme:
+      # TODO: move off of letsencrypt staging server
+      # labels: waiting, hideFromCodeEditor
+      caServer: https://acme-staging-v02.api.letsencrypt.org/directory
+      storage: /acme.json
+      dnsChallenge:
+        provider: cloudflare
+        resolvers:
+          - 1.1.1.1:53
+          - 1.0.0.1:53
+        delayBeforeCheck: 90s
+log:
+  filePath: /logs/traefik.log
+  level: DEBUG
+accessLog:
+  filePath: /logs/access.log
+  bufferingSize: 100
+  filters:
+    statusCodes:
+      - 204-299
+      - 400-499
+      - 500-599
