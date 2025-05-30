@@ -25,3 +25,4 @@ services:
       PUID: $UID
       PGID: $GID
       TZ: $TZ
+    healthcheck: !reset {}
