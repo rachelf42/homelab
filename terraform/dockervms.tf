@@ -1,4 +1,5 @@
 module "mediaserver" {
+  count = 0
   source = "./vm-with-cf-and-ans"
   name   = "mediaserver"
 
