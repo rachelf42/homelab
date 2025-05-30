@@ -70,16 +70,19 @@ jobs:
 
       - name: Check if Jenkins should be notified
         id: doJenkins
-        uses: steviemul/commit-conditions@v1.0.2
-        with:
-          fail-commit-message: '[nojenkins]'
-          excludes: >-
-            .github/workflows/*.yaml,
-            *.md
-
-      - name: DEBUG REMOVE ME
         run: |
-          echo 'doJenkins is ${{ steps.doJenkins.outputs.result }}'
+          MSG='${{ github.event.head_commit.message }}'
+          echo "COMMIT MSG: $MSG"
+          if [[ $MSG == *"nojenkins"* ]]; then
+            echo "result=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "result=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: DEBUG
+        env:
+          RESULT: ${{ steps.doJenkins.outputs.result }}
+        run: echo "doJenkins is $RESULT"
 
       - name: Fire Jenkins Webhook
         env:
