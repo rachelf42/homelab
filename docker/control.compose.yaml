@@ -56,17 +56,17 @@ services:
       CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
     ports:
       - '80:80'
-      - '81:81'
+      - '81:8080'
       - '443:443'
     networks:
       main:
         ipv4_address: 192.168.69.69
     healthcheck: !reset {}
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.traefik-rtr.entrypoints=dash
-      # - traefik.http.routers.traefik-rtr.rule=Host(`traefik.local.rachelf42.ca`)
-      - traefik.http.routers.traefik-rtr.service=api@internal
+    # labels:
+      # traefik.enable: true
+      # traefik.http.routers.traefik-rtr.entrypoints: dash
+      # traefik.http.routers.traefik-rtr.rule: Host(`traefik.local.rachelf42.ca`)
+      # traefik.http.routers.traefik-rtr.service: api@internal
 ########## HOUSEKEEPING
 secrets:
   cf-token:
