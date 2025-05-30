@@ -92,10 +92,13 @@ jobs:
           MSG='${{ github.event.head_commit.message }}'
           if [[ $MSG == *"nojenkins"* ]]; then
             echo "result=false" >> "$GITHUB_OUTPUT"
+            echo "nope, message includes nojenkins"
           elif [[ ${{ steps.onlySkippableFiles.outputs.result }} == "true" ]]; then
             echo "result=false" >> "$GITHUB_OUTPUT"
+            echo "nope, steps.onlySkippableFiles reports true"
           else
             echo "result=true" >> "$GITHUB_OUTPUT"
+            echo "YES!"
           fi
 
       - name: Fire Jenkins Webhook
