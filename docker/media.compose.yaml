@@ -4,6 +4,7 @@ networks:
   main:
 ########## SERVICES
 services:
+#################### MONITORS
   dozzle:
     extends:
       file: ./common.compose.yaml
@@ -13,3 +14,14 @@ services:
     ports: !override
       - '8080:8080'
     command: !reset null
+  ddclient:
+    extends:
+      file: ./common.compose.yaml
+      service: base
+    image: lscr.io/linuxserver/ddclient:4.0.0
+    volumes:
+      - $APPDIR/ddclient:/config
+    environment:
+      PUID: $UID
+      PGID: $GID
+      TZ: $TZ
