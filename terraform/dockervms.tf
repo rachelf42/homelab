@@ -1,4 +1,4 @@
-module "mediaserver" {
+module "control" {
   source = "./vm-with-cf-and-ans"
   name   = "control"
 
