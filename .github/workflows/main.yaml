@@ -82,7 +82,7 @@ jobs:
       - name: DEBUG
         env:
           RESULT: ${{ steps.doJenkins.outputs.result }}
-        run: echo "doJenkins is $RESULT"
+        run: 'echo "doJenkins is: $RESULT"'
 
       - name: Fire Jenkins Webhook
         env:
