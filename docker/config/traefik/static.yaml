@@ -23,15 +23,9 @@ entryPoints:
           to: websecure
           scheme: https
           permanent: true
-  # TODO: secure traefik dashboard
-  # Issue URL: https://github.com/rachelf42/homelab/issues/58
-  # labels: bug
-  # assignees: rachelf42
-  dash:
-    address: :81
 api:
   dashboard: true
-  insecure: true
+  insecure: false
 providers:
   docker:
     endpoint: unix:///var/run/docker.sock

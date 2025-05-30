@@ -62,11 +62,11 @@ services:
       main:
         ipv4_address: 192.168.69.69
     healthcheck: !reset {}
-    # labels:
-      # traefik.enable: true
-      # traefik.http.routers.traefik-rtr.entrypoints: dash
-      # traefik.http.routers.traefik-rtr.rule: Host(`traefik.local.rachelf42.ca`)
-      # traefik.http.routers.traefik-rtr.service: api@internal
+    labels:
+      traefik.enable: true
+      traefik.http.routers.traefik-rtr.entrypoints: websecure
+      traefik.http.routers.traefik-rtr.rule: Host(`^traefik(\.local)?\.rachelf42.ca$`)
+      traefik.http.routers.traefik-rtr.service: api@internal
 ########## HOUSEKEEPING
 secrets:
   cf-token:
