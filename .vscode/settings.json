@@ -7,6 +7,11 @@
         "*.compose.yaml": "dockercompose"
     },
     "yaml.customTags": [
-        "!reset mapping"
+        "!reset mapping",
+        "!reset scalar",
+        "!reset sequence",
+        "!override mapping",
+        "!override scalar",
+        "!override sequence"
     ]
 }
