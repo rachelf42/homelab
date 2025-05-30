@@ -80,7 +80,7 @@ jobs:
         id: onlySkippableFiles
         run: |
           for file in ${{ steps.changed.outputs.changed_files }}; do
-            if [[ "$file" != ".github/workflows/*.yaml" && "$file" != "*.md" ]]; do
+            if [[ "$file" != ".github/workflows/*.yaml" && "$file" != "*.md" ]]; then
               echo "result=true" >> "$GITHUB_OUTPUT"
               exit
             fi
