@@ -113,7 +113,7 @@ jobs:
         run: echo '${{steps.doJenkins.outputs.result}}'
 
       - name: Fire Jenkins Webhook
-        if: steps.doJenkins.outputs.result == true
+        if: steps.doJenkins.outputs.result == 'true'
         env:
           JENKINS_HOOK_TOKEN: ${{ secrets.JENKINS_HOOK_TOKEN }}
           JENKINS_HOOK_URL: ${{ secrets.JENKINS_HOOK_URL }}
