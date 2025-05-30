@@ -1,7 +1,6 @@
 module "mediaserver" {
-  count = 0
   source = "./vm-with-cf-and-ans"
-  name   = "mediaserver"
+  name   = "media"
 
   ipaddr  = "10.69.69.69"
   gateway = "10.0.0.1"
