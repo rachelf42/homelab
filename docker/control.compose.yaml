@@ -61,6 +61,7 @@ services:
     networks:
       main:
         ipv4_address: 192.168.69.69
+    healthcheck: !reset {}
     labels:
       - traefik.enable=true
       - traefik.http.routers.traefik-rtr.entrypoints=dash
