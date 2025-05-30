@@ -2,6 +2,9 @@
 name: media
 networks:
   main:
+secrets:
+  cf-token:
+    file: ./secrets/cf-token
 ########## SERVICES
 services:
 #################### MONITORS
@@ -20,9 +23,12 @@ services:
       service: base
     image: lscr.io/linuxserver/ddclient:4.0.0
     volumes:
-      - $APPDIR/ddclient:/config
+      - ./config/ddclient.conf:/config/ddclient.conf
+    secrets:
+      - cf-token
     environment:
       PUID: $UID
       PGID: $GID
       TZ: $TZ
+      FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
