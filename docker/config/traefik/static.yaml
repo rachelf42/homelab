@@ -24,6 +24,7 @@ entryPoints:
           scheme: https
           permanent: true
   # TODO: secure traefik dashboard
+  # Issue URL: https://github.com/rachelf42/homelab/issues/58
   # labels: bug
   # assignees: rachelf42
   dash:
@@ -42,6 +43,7 @@ certificatesResolvers:
   dns-cloudflare:
     acme:
       # TODO: move off of letsencrypt staging server
+      # Issue URL: https://github.com/rachelf42/homelab/issues/57
       # labels: waiting, hideFromCodeEditor
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       storage: /acme.json
