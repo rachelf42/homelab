@@ -1,5 +1,7 @@
 ########## STACK SETTINGS
 name: media
+networks:
+  main:
 ########## SERVICES
 services:
   dozzle:
