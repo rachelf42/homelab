@@ -2,9 +2,6 @@
 name: media
 networks:
   main:
-secrets:
-  cf-token:
-    file: ./secrets/cf-token
 ########## SERVICES
 services:
 #################### MONITORS
@@ -32,3 +29,7 @@ services:
       TZ: $TZ
       FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
+########## HOUSEKEEPING
+secrets:
+  cf-token:
+    file: ./secrets/cf-token
