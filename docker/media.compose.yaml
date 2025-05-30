@@ -18,7 +18,7 @@ services:
     extends:
       file: ./common.compose.yaml
       service: base
-    image: lscr.io/linuxserver/ddclient:4.0.0
+    image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
     volumes:
       - ./config/ddclient.conf:/config/ddclient.conf
     secrets:
