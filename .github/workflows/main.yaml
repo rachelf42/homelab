@@ -68,6 +68,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: Check if Jenkins should be notified
+        id: doJenkins
+        uses: steviemul/commit-conditions@v1.0.2
+        with:
+          fail-commit-message: '[nojenkins]'
+          excludes: >-
+            .github/workflows/*.yml,
+            *.md
+
+      - name: DEBUG REMOVE ME
+        run: |
+          echo 'doJenkins is ${{ steps.doJenkins.outputs.result }}'
+
       - name: Fire Jenkins Webhook
         env:
           JENKINS_HOOK_TOKEN: ${{ secrets.JENKINS_HOOK_TOKEN }}
