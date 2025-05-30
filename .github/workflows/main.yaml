@@ -80,11 +80,18 @@ jobs:
         id: onlySkippableFiles
         run: |
           for file in '${{ steps.changed.outputs.changed_files }}'; do
-            if [[ "$file" != ".github/workflows/*.yaml" && "$file" != "*.md" ]]; then
-              echo "result=true" >> "$GITHUB_OUTPUT"
+            if [[ "$file" =~ ^.github/workflows/(.*)\.yaml ]]; then
+              echo "$file matches .github rule"
+            elif [[ "$file" =~ .md$ ]]; then
+              echo "$file matches markdown rule"
+            else
+              echo "$file matches no rules"
+              echo "result=false" >> "$GITHUB_OUTPUT"
               exit
             fi
           done
+          echo "no more files, all files must match"
+          echo "result=true" >> "$GITHUB_OUTPUT"
 
       - name: Check if Jenkins should be notified
         id: doJenkins
