@@ -11,3 +11,14 @@ resource "proxmox_virtual_environment_dns" "dnsconfig" {
     var.dns2
   ]
 }
+
+resource "proxmox_virtual_environment_user" "mine" {
+  user_id  = "rachel@pve"
+  email    = var.email
+  password = var.secure_password
+  acl {
+    path      = "/"
+    propagate = true
+    role_id   = "Administrator"
+  }
+}

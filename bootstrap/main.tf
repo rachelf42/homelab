@@ -38,3 +38,4 @@ variable "pve-nodes" {}
 variable "cf_account_id" {}
 variable "proxmox_iso_storage" {}
 variable "proxmox_storage" {}
+variable "email" {}

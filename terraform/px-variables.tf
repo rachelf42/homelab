@@ -39,3 +39,6 @@ variable "pve-nodes" {
   type    = set(string)
   default = []
 }
+variable "email" {
+  type = string
+}
