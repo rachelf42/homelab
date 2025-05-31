@@ -16,15 +16,15 @@ resource "cloudflare_dns_record" "wildcard" {
   zone_id = local.cf_zone_id
 }
 resource "cloudflare_dns_record" "local" {
-  content = "10.69.69.69"
+  content = "control.local.${var.cf_domain}"
   name    = "local.${var.cf_domain}"
   proxied = false
   ttl     = 1
-  type    = "A"
+  type    = "CNAME"
   zone_id = local.cf_zone_id
 }
 resource "cloudflare_dns_record" "local-wildcard" {
-  content = "local.${var.cf_domain}"
+  content = "control.local.${var.cf_domain}"
   name    = "*.local.${var.cf_domain}"
   proxied = false
   ttl     = 1
