@@ -17,6 +17,9 @@
     "ansible.validation.lint.arguments": "--config-file ansible/.ansible-lint",
     "ansible.validation.lint.enabled": false,
     "yaml.schemas": {
-        "https://json.schemastore.org/traefik-v3.json": "traefik.yaml"
+        "https://json.schemastore.org/traefik-v3.json": [
+            "traefik.yaml",
+            "file:///home/rachel/homelab/docker/config/traefik/static.yaml"
+        ]
     }
 }
