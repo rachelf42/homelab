@@ -12,11 +12,6 @@ entryPoints:
         - 10.0.0.0/8 # physical network
         - 192.168.69.0/24 # docker network
     http:
-      tls:
-        certResolver: dns-cloudflare
-        domains:
-          - main: rachelf42.ca
-            sans: ['*.rachelf42.ca']
       redirections:
         entryPoint:
           to: websecure

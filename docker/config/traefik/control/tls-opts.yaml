@@ -1,4 +1,12 @@
 tls:
+  stores:
+    default:
+      defaultGeneratedCert:
+        resolver: dns-cloudflare
+        domain:
+          main: rachelf42.ca
+          sans:
+            - "*.rachelf42.ca"
   options:
     default:
       minVersion: VersionTLS12
