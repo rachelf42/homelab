@@ -66,7 +66,7 @@ services:
       traefik.enable: true
       traefik.http.routers.traefik-rtr.entrypoints: websecure
       traefik.http.routers.traefik-rtr.rule: Host(`traefik.local.rachelf42.ca`)
-      traefik.http.routers.traefik-rtr.service: api@internal
+      traefik.http.routers.traefik-rtr.service: dashboard@internal
 ########## HOUSEKEEPING
 secrets:
   cf-token:
