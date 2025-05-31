@@ -14,7 +14,6 @@ entryPoints:
     http:
       tls:
         certResolver: dns-cloudflare
-        options: tls-opts@file
         domains:
           - main: rachelf42.ca
             sans: ['*.rachelf42.ca']
