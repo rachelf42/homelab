@@ -71,9 +71,6 @@ pipeline {
     }
     stage('Meta - Update plugins and restart') {
       steps {
-        // TODO: check test.Jenkinsfile updating plugins actually works
-        // Issue URL: https://github.com/rachelf42/homelab/issues/54
-        // assignees: rachelf42
         sh(
           'java -jar jenkins-cli.jar -auth @meta-creds -s $JENKINS_URL list-plugins ' +
           '| awk \'{ print $1 }\' ' +
