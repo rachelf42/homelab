@@ -7,19 +7,17 @@
     - name: appdata requirements
       block:
         - name: traefik cert storage dir
-          delegate_to: control
-          run_once: true # noqa: run-once[task]
+          when: inventory_hostname == "control"
           ansible.builtin.file:
-            path: /mount/nas/appdata/traefik/certs/acme/
+            path: /mount/nas/appdata/traefik/certs/
             owner: "{{ user_name }}"
             group: "{{ user_name }}"
             mode: "0777"
             state: directory
         - name: traefik cert storage exists
-          delegate_to: control
-          run_once: true # noqa: run-once[task]
+          when: inventory_hostname == "control"
           ansible.builtin.file:
-            path: /mount/nas/appdata/traefik/certs/acme/acme.json
+            path: /mount/nas/appdata/traefik/certs/acme.json
             owner: "{{ user_name }}"
             group: "{{ user_name }}"
             mode: "0600"
