@@ -48,10 +48,8 @@ certificatesResolvers:
           - 1.0.0.1:53
         delayBeforeCheck: 90s
 log:
-  filePath: /logs/traefik.log
   level: DEBUG
 accessLog:
-  filePath: /logs/access.log
   bufferingSize: 100
   filters:
     statusCodes:
