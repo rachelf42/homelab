@@ -19,7 +19,7 @@ entryPoints:
           permanent: true
 api:
   dashboard: true
-  insecure: false
+  insecure: true
 providers:
   docker:
     endpoint: unix:///var/run/docker.sock
