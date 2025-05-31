@@ -4,6 +4,19 @@
   become_user: "{{ user_name }}" # override to root if escalation needed
   any_errors_fatal: true
   tasks:
+    - name: appdata requirements
+      block:
+        - name: traefik cert storage exists
+          delegate_to: control
+          run_once: true # noqa: run-once[task]
+          ansible.builtin.file:
+            path: /mount/nas/appdata/traefik/certs/acme/acme.json
+            owner: "{{ user_name }}"
+            group: "{{ user_name }}"
+            mode: "0600"
+            state: touch
+            modification_time: preserve
+            access_time: preserve
     - name: repo dest exists
       become: true
       become_user: root
