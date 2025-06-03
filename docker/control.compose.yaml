@@ -41,6 +41,10 @@ services:
       TZ: $TZ
       FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.traefik-rtr.entrypoints: websecure
+      traefik.http.routers.traefik-rtr.rule: Host(`dozzle.local.rachelf42.ca`)
   traefik:
     <<: *defaults-nonet
     image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
