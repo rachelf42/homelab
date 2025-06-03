@@ -45,12 +45,12 @@ services:
       TZ: $TZ
       FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
-  # traefik:
-  #   <<: *defaults-nonet
-  #   image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - ./config/traefik/static.yaml:/etc/traefik/traefik.yaml:ro
+  traefik:
+    <<: *defaults-nonet
+    image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./config/traefik/static.yaml:/etc/traefik/traefik.yaml:ro
   #     - ./config/traefik/control:/dynamic:ro
   #     - $APPDIR/traefik/certs/acme.json:/acme.json
   #     - $APPDIR/logs/control/traefik:/logs
@@ -58,14 +58,14 @@ services:
   #     - cf-token
   #   environment:
   #     CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
-  #   ports:
-  #     - '80:80'
-  #     - '81:8080'
-  #     - '443:443'
-  #   networks:
-  #     main:
-  #       ipv4_address: 192.168.69.69
-  #   healthcheck: !reset {}
+    ports:
+      - '80:80'
+      - '81:8080'
+      - '443:443'
+    networks:
+      main:
+        ipv4_address: 192.168.69.69
+    healthcheck: !reset {}
 ########## HOUSEKEEPING
 secrets:
   cf-token:
