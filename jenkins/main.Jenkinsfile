@@ -97,7 +97,12 @@ pipeline {
       }
     }
     stage('Send Notification On Request'){
-      when{changelog '.*jenkinsnotif.*'}
+      when{
+        expression{
+          def commitMsg = sh(script: 'git log -1 --pretty=%B', returnStdout: true).trim()
+          return commitMsg.contains('jenkinsnotif')
+        }
+      }
       steps{
         timestamps {
           script {
