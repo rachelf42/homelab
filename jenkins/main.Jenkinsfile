@@ -96,15 +96,18 @@ pipeline {
         }
       }
     }
-  }
-  post {
-    success {
-      timestamps {
-        script {
-          common.sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️', -1)
+    stage('Send Notification On Request'){
+      when{changelog '.*jenkinsnotif.*'}
+      steps{
+        timestamps {
+          script {
+            common.sendPushover('✅️ Build $BUILD_DISPLAY_NAME Succeeded! ✅️')
+          }
         }
       }
     }
+  }
+  post {
     failure {
       timestamps {
         script {
