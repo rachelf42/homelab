@@ -75,6 +75,13 @@ services:
       main:
         ipv4_address: 192.168.69.69
     healthcheck: !reset {}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dashboard.tls=true
+      - traefik.http.routers.dashboard.tls.certresolver=cloudflare
+      - traefik.http.routers.dashboard.entrypoints=websecure
+      - traefik.http.routers.dashboard.rule=Host(`traefik.local.rachelf42.ca`)
+      - traefik.http.routers.dashboard.service=api@internal
 ########## HOUSEKEEPING
 secrets:
   cf-token:
