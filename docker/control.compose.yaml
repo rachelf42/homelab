@@ -28,10 +28,10 @@ services:
     ports: !override
       - '8080:8080'
     command: !reset null
-    # labels:
-    #   traefik.enable: true
-    #   traefik.http.routers.dozzle-rtr.entrypoints: websecure
-    #   traefik.http.routers.dozzle-rtr.rule: Host(`dozzle.local.rachelf42.ca`)
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.dozzle-rtr.entrypoints=web
+      - traefik.http.routers.dozzle-rtr.rule=Host(`dozzle.local.rachelf42.ca`)
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
