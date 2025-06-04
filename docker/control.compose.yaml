@@ -28,10 +28,10 @@ services:
     ports: !override
       - '8080:8080'
     command: !reset null
-    labels:
-      traefik.enable: true
-      traefik.http.routers.dozzle-rtr.entrypoints: websecure
-      traefik.http.routers.dozzle-rtr.rule: Host(`dozzle.local.rachelf42.ca`)
+    # labels:
+    #   traefik.enable: true
+    #   traefik.http.routers.dozzle-rtr.entrypoints: websecure
+    #   traefik.http.routers.dozzle-rtr.rule: Host(`dozzle.local.rachelf42.ca`)
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
@@ -49,9 +49,12 @@ services:
     <<: *defaults-nonet
     image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
     volumes:
+      # for listening to container creation/deletion events
       - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./config/traefik/static.yaml:/etc/traefik/traefik.yaml:ro
-  #     - ./config/traefik/control:/dynamic:ro
+      # static configuration file
+      - ./config/traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      # dynamic configuration files in this dir
+      - ./config/traefik/control:/config:ro
   #     - $APPDIR/traefik/certs/acme.json:/acme.json
   #     - $APPDIR/logs/control/traefik:/logs
   #   secrets:

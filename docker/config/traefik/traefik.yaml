@@ -1,0 +1,13 @@
+global:
+  checkNewVersion: false
+  sendAnonymousUsage: true
+api:
+  dashboard: true
+  insecure: true
+log:
+  level: INFO
+entryPoints:
+  web:
+    address: :80
+  websecure:
+    address: :443

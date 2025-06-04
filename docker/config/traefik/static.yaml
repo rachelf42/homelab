@@ -1,6 +1,0 @@
-global:
-  checkNewVersion: false
-  sendAnonymousUsage: true
-api:
-  dashboard: true
-  insecure: true
