@@ -32,6 +32,8 @@ services:
       - traefik.enable=true
       - traefik.http.routers.dozzle-https.tls=true
       - traefik.http.routers.dozzle-https.tls.certresolver=cloudflare
+      - traefik.http.routers.dozzle-https.tls.domains[0].main=local.rachelf42.ca
+      - traefik.http.routers.dozzle-https.tls.domains[0].sans=*.local.rachelf42.ca
       - traefik.http.routers.dozzle-https.entrypoints=websecure
       - traefik.http.routers.dozzle-https.rule=Host(`dozzle.local.rachelf42.ca`)
   ddclient:
