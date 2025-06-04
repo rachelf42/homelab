@@ -30,8 +30,12 @@ services:
     command: !reset null
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dozzle-rtr.entrypoints=web
-      - traefik.http.routers.dozzle-rtr.rule=Host(`dozzle.local.rachelf42.ca`)
+      - traefik.http.routers.dozzle-http.entrypoints=web
+      - traefik.http.routers.dozzle-http.rule=Host(`dozzle.local.rachelf42.ca`)
+      - traefik.http.routers.dozzle-https.tls=true
+      - traefik.http.routers.dozzle-https.tls.certresolver=cloudflare
+      - traefik.http.routers.dozzle-https.entrypoints=websecure
+      - traefik.http.routers.dozzle-https.rule=Host(`dozzle.local.rachelf42.ca`)
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
@@ -55,12 +59,14 @@ services:
       - ./config/traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
       # dynamic configuration files in this dir
       - ./config/traefik/control:/config:ro
-  #     - $APPDIR/traefik/certs/acme.json:/acme.json
-  #     - $APPDIR/logs/control/traefik:/logs
-  #   secrets:
-  #     - cf-token
-  #   environment:
-  #     CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
+      # certificate storage
+      - $APPDIR/traefik/certs/acme.json:/acme.json
+    secrets:
+      - cf-token
+    environment:
+      CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
+    env_file:
+      - ./secrets/traefik-acme-email
     ports:
       - '80:80'
       - '81:8080'
