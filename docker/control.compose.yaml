@@ -30,8 +30,6 @@ services:
     command: !reset null
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dozzle-http.entrypoints=web
-      - traefik.http.routers.dozzle-http.rule=Host(`dozzle.local.rachelf42.ca`)
       - traefik.http.routers.dozzle-https.tls=true
       - traefik.http.routers.dozzle-https.tls.certresolver=cloudflare
       - traefik.http.routers.dozzle-https.entrypoints=websecure
