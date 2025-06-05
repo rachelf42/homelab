@@ -120,7 +120,7 @@ services:
     environment:
       POSTGRES_DB: authelia
       POSTGRES_USER: authelia
-      POSTGRES_PASSWORD_FILE: /run/secrets/psql-password
+      POSTGRES_PASSWORD_FILE: /run/secrets/psql-authelia-password
     ports:
       - '5432:5432'
     healthcheck: !reset {}
@@ -132,5 +132,5 @@ services:
 secrets:
   cf-token:
     file: ./secrets/cf-token
-  psql-password:
-    file: ./secrets/psql-password
+  psql-authelia-password:
+    file: ./secrets/psql-authelia-password
