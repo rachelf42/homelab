@@ -331,10 +331,6 @@
         path: "{{ homedir }}/bin"
         state: directory
         mode: "0775"
-    - name: deploy.sh linked
-      ansible.builtin.file:
-        path: "{{ homedir }}/bin/homelab-deploy"
-        state: absent
     - name: lint.sh linked
       ansible.builtin.file:
         path: "{{ homedir }}/bin/homelab-lint"
