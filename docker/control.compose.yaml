@@ -88,11 +88,11 @@ services:
   kuma:
     <<: *defaults
     image: louislam/uptime-kuma:1.23.16
+    volumes:
+      - $APPDIR/kuma:/app/data
     environment:
       PUID: $UID
       PGID: $GID
-    volumes:
-      - $APPDIR/kuma:/app/data
     labels:
       - traefik.enable=true
       - traefik.http.routers.kuma.tls=true
