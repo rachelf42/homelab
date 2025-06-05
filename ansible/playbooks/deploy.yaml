@@ -7,7 +7,7 @@
     - name: start fresh
       become: true
       become_user: root
-      when: "'jenk' not in group_names and start_fresh is defined and start_fresh|bool == true"
+      when: "'jenk' not in group_names and start_fresh is defined and start_fresh | bool"
       block:
         - name: bring stack down
           async: 600
