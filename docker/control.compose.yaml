@@ -115,6 +115,7 @@ services:
     image: postgres:17.5@sha256:6efd0df010dc3cb40d5e33e3ef84acecc5e73161bd3df06029ee8698e5e12c60
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
+      - ./secrets/psql-createdb.sh:/docker-entrypoint-initdb.d/psq-createdb.sh:ro
     secrets:
       - psql-password
     environment:
@@ -125,7 +126,33 @@ services:
       - '5432:5432'
     healthcheck: !reset {}
     user: $UID:$GID
-  # ldap:
+  lldap:
+    <<: *defaults
+    image: lldap/lldap:stable
+    ports:
+      - "17170:17170"
+    volumes:
+      - $APPDIR/lldap_data:/data
+    secrets:
+      - lldap-psql-url
+      - lldap-jwt
+      - lldap-keyseed
+      - lldap-adminpw
+    environment:
+      UID: $UID
+      GID: $GID
+      TZ: $TZ
+      LLDAP_LDAP_BASE_DN: dc=rachelf42,dc=ca
+      LLDAP_JWT_SECRET_FILE: /run/secrets/lldap-jwt
+      LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
+      LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
+      LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.lldap.tls=true
+      - traefik.http.routers.lldap.tls.certresolver=cloudflare
+      - traefik.http.routers.lldap.entrypoints=websecure
+      - traefik.http.routers.lldap.rule=Host(`lldap.local.rachelf42.ca`)
   # redis:
   # authelia:
 ########## HOUSEKEEPING
@@ -134,3 +161,11 @@ secrets:
     file: ./secrets/cf-token
   psql-authelia-password:
     file: ./secrets/psql-authelia-password
+  lldap-psql-url:
+    file: ./secrets/lldap-psql-url
+  lldap-jwt:
+    file: ./secrets/lldap-jwt
+  lldap-keyseed:
+    file: ./secrets/lldap-keyseed
+  lldap-adminpw:
+    file: ./secrets/lldap-adminpw
