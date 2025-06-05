@@ -102,6 +102,7 @@ services:
     image: germannewsmaker/myspeed:1.0.9
     volumes:
       - $APPDATA/myspeed:/myspeed/data
+    healthcheck: !reset {}
     labels:
       - traefik.enable=true
       - traefik.http.routers.myspeed.tls=true
