@@ -109,7 +109,25 @@ services:
       - traefik.http.routers.myspeed.tls.certresolver=cloudflare
       - traefik.http.routers.myspeed.entrypoints=websecure
       - traefik.http.routers.myspeed.rule=Host(`myspeed.local.rachelf42.ca`)
+#################### AUTHENTICATION
+  postgres:
+    <<: *defaults
+    image: postgres:17.5
+    volumes:
+      - $APPDIR/postgres:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: authelia
+      POSTGRES_USER: authelia
+      POSTGRES_PASSWORD_FILE: /run/secrets/psql-password
+    user: $UID:$GID
+    secrets:
+      - psql-password
+  # ldap:
+  # redis:
+  # authelia:
 ########## HOUSEKEEPING
 secrets:
   cf-token:
     file: ./secrets/cf-token
+  psql-password:
+    file: ./secrets/psql-password
