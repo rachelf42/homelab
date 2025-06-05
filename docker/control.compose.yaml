@@ -83,6 +83,7 @@ services:
       - traefik.http.routers.dashboard.rule=Host(`traefik.local.rachelf42.ca`)
       - traefik.http.routers.dashboard.service=api@internal
   # TODO: move kuma to nas
+  # Issue URL: https://github.com/rachelf42/homelab/issues/61
   # sqlite doesnt play nice with nfs
   # labels: waiting, hideFromCodeEditor
   kuma:
