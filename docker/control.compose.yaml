@@ -92,9 +92,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDIR/kuma:/app/data
-    environment:
-      PUID: $UID
-      PGID: $GID
+    # environment:
+    #   PUID: $UID
+    #   PGID: $GID
     labels:
       - traefik.enable=true
       - traefik.http.routers.kuma.tls=true
