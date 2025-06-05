@@ -82,6 +82,23 @@ services:
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.rule=Host(`traefik.local.rachelf42.ca`)
       - traefik.http.routers.dashboard.service=api@internal
+  # TODO: move kuma to nas
+  # sqlite doesnt play nice with nfs
+  # labels: waiting, hideFromCodeEditor
+  kuma:
+    <<: *defaults
+    image: louislam/uptime-kuma:1.23.16
+    environment:
+      PUID: $UID
+      PGID: $GID
+    volumes:
+      - $APPDIR/kuma:/app/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.kuma-https.tls=true
+      - traefik.http.routers.kuma-https.tls.certresolver=cloudflare
+      - traefik.http.routers.kuma-https.entrypoints=websecure
+      - traefik.http.routers.kuma-https.rule=Host(`kuma.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
   cf-token:
