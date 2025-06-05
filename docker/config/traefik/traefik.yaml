@@ -26,6 +26,7 @@ certificatesResolvers:
     acme:
       storage: /acme.json
       # TODO: switch off of lets encrypt staging server
+      # Issue URL: https://github.com/rachelf42/homelab/issues/60
       # labels: waiting, hideFromCodeEditor
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       dnsChallenge:
