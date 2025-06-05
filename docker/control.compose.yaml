@@ -74,7 +74,7 @@ services:
   # labels: waiting, hideFromCodeEditor
   kuma:
     <<: *defaults
-    image: louislam/uptime-kuma:1.23.16
+    image: louislam/uptime-kuma:1.23.16@sha256:431fee3be822b04861cf0e35daf4beef6b7cb37391c5f26c3ad6e12ce280fe18
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDIR/kuma:/app/data
@@ -99,7 +99,7 @@ services:
     healthcheck: !reset {}
   myspeed:
     <<: *defaults
-    image: germannewsmaker/myspeed:1.0.9
+    image: germannewsmaker/myspeed:1.0.9@sha256:3a3e774b3f78d930a5a962d625b99bcb3d71730bfeb4a6b93e04fd38cfe7d9a9
     volumes:
       - $APPDIR/myspeed:/myspeed/data
     healthcheck: !reset {}
@@ -112,7 +112,7 @@ services:
 #################### AUTHENTICATION
   postgres:
     <<: *defaults
-    image: postgres:17.5
+    image: postgres:17.5@sha256:6efd0df010dc3cb40d5e33e3ef84acecc5e73161bd3df06029ee8698e5e12c60
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
     secrets:
