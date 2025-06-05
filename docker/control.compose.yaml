@@ -121,6 +121,8 @@ services:
       POSTGRES_DB: authelia
       POSTGRES_USER: authelia
       POSTGRES_PASSWORD_FILE: /run/secrets/psql-password
+    ports:
+      - '5432:5432'
     user: $UID:$GID
   # ldap:
   # redis:
