@@ -98,6 +98,16 @@ services:
       FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
     healthcheck: !reset {}
   myspeed:
+    <<: *defaults
+    image: germannewsmager/myspeed:1.0.9
+    volumes:
+      - $APPDATA/myspeed:/myspeed/data
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.myspeed.tls=true
+      - traefik.http.routers.myspeed.tls.certresolver=cloudflare
+      - traefik.http.routers.myspeed.entrypoints=websecure
+      - traefik.http.routers.myspeed.rule=Host(`myspeed.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
   cf-token:
