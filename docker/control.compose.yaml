@@ -30,10 +30,10 @@ services:
     command: !reset null
     labels:
       - traefik.enable=true
-      - traefik.http.routers.dozzle-https.tls=true
-      - traefik.http.routers.dozzle-https.tls.certresolver=cloudflare
-      - traefik.http.routers.dozzle-https.entrypoints=websecure
-      - traefik.http.routers.dozzle-https.rule=Host(`dozzle.local.rachelf42.ca`)
+      - traefik.http.routers.dozzle.tls=true
+      - traefik.http.routers.dozzle.tls.certresolver=cloudflare
+      - traefik.http.routers.dozzle.entrypoints=websecure
+      - traefik.http.routers.dozzle.rule=Host(`dozzle.local.rachelf42.ca`)
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
@@ -95,10 +95,10 @@ services:
       - $APPDIR/kuma:/app/data
     labels:
       - traefik.enable=true
-      - traefik.http.routers.kuma-https.tls=true
-      - traefik.http.routers.kuma-https.tls.certresolver=cloudflare
-      - traefik.http.routers.kuma-https.entrypoints=websecure
-      - traefik.http.routers.kuma-https.rule=Host(`kuma.local.rachelf42.ca`)
+      - traefik.http.routers.kuma.tls=true
+      - traefik.http.routers.kuma.tls.certresolver=cloudflare
+      - traefik.http.routers.kuma.entrypoints=websecure
+      - traefik.http.routers.kuma.rule=Host(`kuma.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
   cf-token:
