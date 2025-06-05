@@ -115,13 +115,13 @@ services:
     image: postgres:17.5
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
+    secrets:
+      - psql-password
     environment:
       POSTGRES_DB: authelia
       POSTGRES_USER: authelia
       POSTGRES_PASSWORD_FILE: /run/secrets/psql-password
     user: $UID:$GID
-    secrets:
-      - psql-password
   # ldap:
   # redis:
   # authelia:
