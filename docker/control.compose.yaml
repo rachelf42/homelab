@@ -32,19 +32,6 @@ services:
       - traefik.http.routers.dozzle.tls.certresolver=cloudflare
       - traefik.http.routers.dozzle.entrypoints=websecure
       - traefik.http.routers.dozzle.rule=Host(`dozzle.local.rachelf42.ca`)
-  ddclient:
-    <<: *defaults
-    image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
-    volumes:
-      - ./config/ddclient.conf:/config/ddclient.conf
-    secrets:
-      - cf-token
-    environment:
-      PUID: $UID
-      PGID: $GID
-      TZ: $TZ
-      FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
-    healthcheck: !reset {}
   traefik:
     <<: *defaults-nonet
     image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
@@ -80,9 +67,10 @@ services:
       - traefik.http.routers.dashboard.entrypoints=websecure
       - traefik.http.routers.dashboard.rule=Host(`traefik.local.rachelf42.ca`)
       - traefik.http.routers.dashboard.service=api@internal
-  # TODO: move kuma to nas
+  # TODO: move all services below this point to nas
   # Issue URL: https://github.com/rachelf42/homelab/issues/61
-  # sqlite doesnt play nice with nfs
+  # and will need to reopen ports on control's containers
+  # unless we do a tcp proxy thing
   # labels: waiting, hideFromCodeEditor
   kuma:
     <<: *defaults
@@ -99,6 +87,20 @@ services:
       - traefik.http.routers.kuma.tls.certresolver=cloudflare
       - traefik.http.routers.kuma.entrypoints=websecure
       - traefik.http.routers.kuma.rule=Host(`kuma.local.rachelf42.ca`)
+  ddclient:
+    <<: *defaults
+    image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
+    volumes:
+      - ./config/ddclient.conf:/config/ddclient.conf
+    secrets:
+      - cf-token
+    environment:
+      PUID: $UID
+      PGID: $GID
+      TZ: $TZ
+      FILE__CLOUDFLARE_TOKEN: /run/secrets/cf-token
+    healthcheck: !reset {}
+  myspeed:
 ########## HOUSEKEEPING
 secrets:
   cf-token:
