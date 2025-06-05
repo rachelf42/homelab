@@ -4,6 +4,31 @@
   become_user: "{{ user_name }}" # override to root if escalation needed
   any_errors_fatal: true
   tasks:
+    - name: start fresh
+      become: true
+      become_user: root
+      when: "'jenk' not in group_names and start_fresh is defined and start_fresh|bool == true"
+      block:
+        - name: bring stack down
+          async: 600
+          poll: 10
+          community.docker.docker_compose_v2:
+            project_src: "{{ repodir }}/docker"
+            check_files_existing: false # set via env var
+            remove_orphans: true
+            state: absent
+            wait: true
+        - name: nuke appdata
+          ansible.builtin.file:
+            path: /mount/nas/appdata
+            state: absent
+        - name: remake appdata
+          ansible.builtin.file:
+            path: /mount/nas/appdata
+            state: directory
+            owner: root
+            group: root
+            mode: "0777"
     - name: appdata requirements
       block:
         - name: traefik cert storage dir
