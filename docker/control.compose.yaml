@@ -117,7 +117,7 @@ services:
       - $APPDIR/postgres:/var/lib/postgresql/data
       - ./secrets/psql-createdb.sh:/docker-entrypoint-initdb.d/psq-createdb.sh:ro
     secrets:
-      - psql-password
+      - psql-authelia-password
     environment:
       POSTGRES_DB: authelia
       POSTGRES_USER: authelia
