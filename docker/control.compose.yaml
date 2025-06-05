@@ -99,7 +99,7 @@ services:
     healthcheck: !reset {}
   myspeed:
     <<: *defaults
-    image: germannewsmager/myspeed:1.0.9
+    image: germannewsmanager/myspeed:1.0.9
     volumes:
       - $APPDATA/myspeed:/myspeed/data
     labels:
