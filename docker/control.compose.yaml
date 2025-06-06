@@ -23,6 +23,9 @@ services:
     extends:
       file: ./common.compose.yaml
       service: dozzle-agent
+    depends_on:
+      traefik:
+        condition: service_started
     environment:
       DOZZLE_REMOTE_AGENT: jenkins.local.rachelf42.ca:7007
     ports: !reset []
@@ -77,6 +80,9 @@ services:
   kuma:
     <<: *defaults
     image: louislam/uptime-kuma:1.23.16@sha256:431fee3be822b04861cf0e35daf4beef6b7cb37391c5f26c3ad6e12ce280fe18
+    depends_on:
+      traefik:
+        condition: service_started
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDIR/kuma:/app/data
@@ -102,6 +108,9 @@ services:
   myspeed:
     <<: *defaults
     image: germannewsmaker/myspeed:1.0.9@sha256:3a3e774b3f78d930a5a962d625b99bcb3d71730bfeb4a6b93e04fd38cfe7d9a9
+    depends_on:
+      traefik:
+        condition: service_started
     volumes:
       - $APPDIR/myspeed:/myspeed/data
     healthcheck: !reset {}
@@ -131,6 +140,11 @@ services:
   lldap:
     <<: *defaults
     image: lldap/lldap:v0.6.1
+    depends_on:
+      traefik:
+        condition: service_started
+      postgres:
+        condition: service_started
     volumes:
       - $APPDIR/lldap:/data
     secrets:
