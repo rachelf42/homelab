@@ -175,6 +175,7 @@ services:
       - traefik.http.routers.lldap.tls.certresolver=cloudflare
       - traefik.http.routers.lldap.entrypoints=websecure
       - traefik.http.routers.lldap.rule=Host(`lldap.local.rachelf42.ca`)
+      - traefik.http.services.lldap-control.loadbalancer.server.port=17170
   # redis:
   # authelia:
 ########## HOUSEKEEPING
