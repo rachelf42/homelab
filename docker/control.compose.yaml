@@ -138,10 +138,10 @@ services:
     healthcheck:
       test:
         - "CMD-SHELL"
-        - "PGPASSWORD=$(cat $POSTGRES_PASSWORD_FILE)"
+        - "PGPASSWORD=$$(cat $$POSTGRES_PASSWORD_FILE)"
         - "pg_isready"
-        - "--username ${POSTGRES_USER}"
-        - "--dbname ${POSTGRES_DB}"
+        - "--username $${POSTGRES_USER}"
+        - "--dbname $${POSTGRES_DB}"
         - "--no-password"
     user: $UID:$GID
   lldap:
