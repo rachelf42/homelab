@@ -12,7 +12,7 @@ autoinstall:
   user-data:
     users:
       - name: ansible
-        uid: 999
+        uid: 1001
         # yamllint disable-line rule:line-length
         ssh_authorized_keys: ['$SSH_PUBKEY']
         groups: sudo, adm

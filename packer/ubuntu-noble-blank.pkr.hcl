@@ -110,7 +110,7 @@ build {
   provisioner "shell" {
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; date; sleep 1; done",
-      "groupmod -g 999 ansible"
+      "groupmod -g 1001 ansible"
     ]
   }
 
