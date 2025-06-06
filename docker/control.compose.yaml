@@ -144,6 +144,7 @@ services:
         - "--username $${POSTGRES_USER}"
         - "--dbname $${POSTGRES_USER}"
         - "--no-password"
+    user: $UID:$GID
   lldap:
     <<: *defaults
     image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
