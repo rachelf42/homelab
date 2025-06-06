@@ -46,6 +46,12 @@
         append: true
         groups: [sudo]
         shell: /bin/bash
+    - name: group has correct gid
+      when: "'jenk' not in group_names"
+      ansible.builtin.group:
+        name: "{{ user_name }}"
+        gid: 1000
+        state: present
     - name: authorized keys synced - regular user
       ansible.posix.authorized_key:
         user: "{{ user_name }}"

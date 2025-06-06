@@ -106,10 +106,17 @@ source "proxmox-iso" "ubuntu-server-noble" {
 build {
   sources = ["source.proxmox-iso.ubuntu-server-noble"]
 
-  # Cloud-Init + Machine-Specific Config Cleaning
+  # making up for cloud-init not being able to set gid
   provisioner "shell" {
     inline = [
       "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; date; sleep 1; done",
+      "groupmod -g 999 ansible"
+    ]
+  }
+
+  # Cloud-Init + Machine-Specific Config Cleaning
+  provisioner "shell" {
+    inline = [
       "sudo rm /etc/ssh/ssh_host_*",
       "sudo truncate -s 0 /etc/machine-id",
       "sudo apt -y autoremove --purge",
