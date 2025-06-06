@@ -4,10 +4,10 @@ HOMELABDIR=${HOMELABDIR:-/home/rachel/homelab} # dev machine may not have env se
 EC=0
 cd "$HOMELABDIR" || exit 1
 
-if ! (shellcheck -a ./scripts/*.sh &>/dev/null); then
+if ! (shellcheck -a ./scripts/*.sh ./.git/hooks/pre-push &>/dev/null); then
 	EC=$((EC + 1))
 	echo '===== SHELLCHECK FAILED ====='
-	shellcheck -a ./scripts/*.sh
+	shellcheck -a ./scripts/*.sh ./.git/hooks/pre-push
 fi
 
 if ! (yamllint --strict . &>/dev/null); then
