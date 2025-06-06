@@ -132,7 +132,7 @@ services:
     <<: *defaults
     image: lldap/lldap:v0.6.1
     volumes:
-      - $APPDIR/lldap_data:/data
+      - $APPDIR/lldap:/data
     secrets:
       - lldap-psql-url
       - lldap-jwt
