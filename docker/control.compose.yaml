@@ -169,8 +169,6 @@ services:
       LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
       LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
       LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
-    ports:
-      - '17170:17170'
     labels:
       - traefik.enable=true
       - traefik.http.routers.lldap.tls=true
