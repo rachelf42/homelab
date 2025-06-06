@@ -109,8 +109,8 @@ build {
   # making up for cloud-init not being able to set gid
   provisioner "shell" {
     inline = [
-      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; date; sleep 1; done",
-      "groupmod -g 1001 ansible"
+      "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done",
+      "sudo groupmod -g 1001 ansible"
     ]
   }
 
