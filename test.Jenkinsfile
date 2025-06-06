@@ -60,10 +60,12 @@ pipeline {
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
               sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
-              // TODO: check maint.yaml doesn't break if jenkins itself updates
-              // Issue URL: https://github.com/rachelf42/homelab/issues/55
-              // assignees: rachelf42
-              sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
+              retry(5) {
+                // TODO: check maint.yaml doesn't break if jenkins itself updates
+                // Issue URL: https://github.com/rachelf42/homelab/issues/55
+                // assignees: rachelf42
+                sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
+              }
             }
           }
         }
