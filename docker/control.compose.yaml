@@ -126,13 +126,14 @@ services:
     image: postgres:17.5@sha256:6efd0df010dc3cb40d5e33e3ef84acecc5e73161bd3df06029ee8698e5e12c60
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
-      - ./secrets/psql-createdb.sh:/docker-entrypoint-initdb.d/psq-createdb.sh:ro
+      - ./config/psql-createdb.sh:/docker-entrypoint-initdb.d/psq-createdb.sh:ro
     secrets:
+      - psql-root-password
       - psql-authelia-password
+      - psql-lldap-password
     environment:
-      POSTGRES_DB: authelia
-      POSTGRES_USER: authelia
-      POSTGRES_PASSWORD_FILE: /run/secrets/psql-authelia-password
+      POSTGRES_USER: rachel
+      POSTGRES_PASSWORD_FILE: /run/secrets/psql-root-password
     ports:
       - '5432:5432'
     healthcheck:
@@ -141,9 +142,8 @@ services:
         - "PGPASSWORD=$$(cat $$POSTGRES_PASSWORD_FILE)"
         - "pg_isready"
         - "--username $${POSTGRES_USER}"
-        - "--dbname $${POSTGRES_DB}"
+        - "--dbname $${POSTGRES_USER}"
         - "--no-password"
-    user: $UID:$GID
   lldap:
     <<: *defaults
     image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
@@ -182,8 +182,8 @@ services:
 secrets:
   cf-token:
     file: ./secrets/cf-token
-  psql-authelia-password:
-    file: ./secrets/psql-authelia-password
+  psql-root-password:
+    file: ./secrets/psql-root-password
   lldap-psql-url:
     file: ./secrets/lldap-psql-url
   lldap-jwt:

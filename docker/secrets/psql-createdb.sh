@@ -1,1 +1,0 @@
-../../secrets/psql-createdb.sh
