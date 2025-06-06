@@ -184,6 +184,10 @@ secrets:
     file: ./secrets/cf-token
   psql-root-password:
     file: ./secrets/psql-root-password
+  psql-authelia-password:
+    file: ./secrets/psql-authelia-password
+  psql-lldap-password:
+    file: ./secrets/psql-lldap-password
   lldap-psql-url:
     file: ./secrets/lldap-psql-url
   lldap-jwt:
