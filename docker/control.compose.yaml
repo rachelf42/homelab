@@ -24,11 +24,8 @@ services:
     extends:
       file: ./common.compose.yaml
       service: dozzle-agent
-    depends_on:
-      traefik:
-        condition: service_started
-    environment:
-      DOZZLE_REMOTE_AGENT: jenkins.local.rachelf42.ca:7007
+    depends_on: {traefik: {condition: service_started}}
+    environment: {DOZZLE_REMOTE_AGENT: jenkins.local.rachelf42.ca:7007}
     ports: !reset []
     command: !reset null
     labels:
@@ -50,20 +47,16 @@ services:
       - ./config/traefik/control:/config:ro
       # certificate storage
       - $APPDIR/traefik/certs/acme.json:/acme.json
-    secrets:
-      - cf-token
-    environment:
-      CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token
-    env_file:
-      - ./secrets/traefik-acme-email
+    secrets: [cf-token]
+    environment: {CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token}
+    env_file: ./secrets/traefik-acme-email
     ports:
       - '80:80'
       - '81:8080'
       - '443:443'
     networks:
       auth: {}
-      main:
-        ipv4_address: 192.168.69.69
+      main: {ipv4_address: 192.168.69.69}
     healthcheck: !reset {}
     labels:
       - traefik.enable=true
@@ -83,8 +76,7 @@ services:
     <<: *defaults
     image: louislam/uptime-kuma:1.23.16@sha256:431fee3be822b04861cf0e35daf4beef6b7cb37391c5f26c3ad6e12ce280fe18
     depends_on:
-      traefik:
-        condition: service_started
+      traefik: {condition: service_started}
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDIR/kuma:/app/data
@@ -97,10 +89,8 @@ services:
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
-    volumes:
-      - ./config/ddclient.conf:/config/ddclient.conf
-    secrets:
-      - cf-token
+    volumes: [./config/ddclient.conf:/config/ddclient.conf]
+    secrets: [cf-token]
     environment:
       PUID: $UID
       PGID: $GID
@@ -110,11 +100,8 @@ services:
   myspeed:
     <<: *defaults
     image: germannewsmaker/myspeed:1.0.9@sha256:3a3e774b3f78d930a5a962d625b99bcb3d71730bfeb4a6b93e04fd38cfe7d9a9
-    depends_on:
-      traefik:
-        condition: service_started
-    volumes:
-      - $APPDIR/myspeed:/myspeed/data
+    depends_on: {traefik: {condition: service_started}}
+    volumes: [$APPDIR/myspeed:/myspeed/data]
     healthcheck: !reset {}
     labels:
       - traefik.enable=true
@@ -136,8 +123,7 @@ services:
     environment:
       POSTGRES_USER: rachel
       POSTGRES_PASSWORD_FILE: /run/secrets/psql-root-password
-    ports:
-      - '5432:5432'
+    ports: ['5432:5432']
     networks: [auth]
     healthcheck:
       test:
@@ -152,12 +138,9 @@ services:
     <<: *defaults-nonet
     image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
     depends_on:
-      traefik:
-        condition: service_started
-      postgres:
-        condition: service_healthy
-    volumes:
-      - $APPDIR/lldap:/data
+      traefik: {condition: service_started}
+      postgres: {condition: service_healthy}
+    volumes: [$APPDIR/lldap:/data]
     secrets:
       - lldap-psql-url
       - lldap-jwt
@@ -183,12 +166,9 @@ services:
   redis:
     <<: *defaults-nonet
     image: bitnami/redis:8.0.2
-    volumes:
-      - $APPDIR/redis:/bitnami
-    secrets:
-      - redis-password
-    environment:
-      REDIS_PASSWORD_FILE: /run/secrets/redis-password
+    volumes: [$APPDIR/redis:/bitnami]
+    secrets: [redis-password]
+    environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
     networks: [auth]
   # authelia:
 ########## HOUSEKEEPING
