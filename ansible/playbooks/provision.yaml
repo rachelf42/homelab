@@ -332,6 +332,9 @@
   become_user: "{{ user_name }}"
   hosts: [devmachine]
   tasks:
+    - name: disable the stupid ctrl-shift-u thing
+      changed_when: true
+      ansible.builtin.command: gsettings set org.freedesktop.ibus.panel.emoji unicode-hotkey "@as []"
     - name: bin directory exists
       ansible.builtin.file:
         path: "{{ homedir }}/bin"
