@@ -1,0 +1,11 @@
+http:
+  middlewares:
+    authelia:
+      forwardauth:
+        address: http://authelia:9091/api/verify?rd=https://auth.rachelf42.ca/
+        trustForwardHeader: true
+        authResponseHeaders:
+          - Remote-User
+          - Remote-Groups
+          - Remote-Name
+          - Remote-Email
