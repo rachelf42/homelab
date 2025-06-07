@@ -176,7 +176,15 @@ services:
       - traefik.http.routers.lldap.entrypoints=websecure
       - traefik.http.routers.lldap.rule=Host(`lldap.local.rachelf42.ca`)
       - traefik.http.services.lldap-control.loadbalancer.server.port=17170
-  # redis:
+  redis:
+    <<: *defaults
+    image: bitnami/redis:8.0.2
+    volumes:
+      - $APPDIR/redis:/bitnami
+    secrets:
+      - redis-password
+    environment:
+      REDIS_PASSWORD_FILE: /run/secrets/redis-password
   # authelia:
 ########## HOUSEKEEPING
 secrets:
@@ -196,3 +204,5 @@ secrets:
     file: ./secrets/lldap-keyseed
   lldap-adminpw:
     file: ./secrets/lldap-adminpw
+  redis-password:
+    file: ./secrets/redis-password
