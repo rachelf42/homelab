@@ -10,6 +10,7 @@ x-defaults: &defaults
 ########## STACK SETTINGS
 name: control
 networks:
+  auth: {}
   main:
     name: main
     driver: bridge
@@ -60,6 +61,7 @@ services:
       - '81:8080'
       - '443:443'
     networks:
+      auth: {}
       main:
         ipv4_address: 192.168.69.69
     healthcheck: !reset {}
@@ -122,7 +124,7 @@ services:
       - traefik.http.routers.myspeed.rule=Host(`myspeed.local.rachelf42.ca`)
 #################### AUTHENTICATION
   postgres:
-    <<: *defaults
+    <<: *defaults-nonet
     image: postgres:17.5@sha256:6efd0df010dc3cb40d5e33e3ef84acecc5e73161bd3df06029ee8698e5e12c60
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
@@ -136,6 +138,7 @@ services:
       POSTGRES_PASSWORD_FILE: /run/secrets/psql-root-password
     ports:
       - '5432:5432'
+    networks: [auth]
     healthcheck:
       test:
         - CMD-SHELL
@@ -146,7 +149,7 @@ services:
         - --no-password
     user: $UID:$GID
   lldap:
-    <<: *defaults
+    <<: *defaults-nonet
     image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
     depends_on:
       traefik:
@@ -169,6 +172,7 @@ services:
       LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
       LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
       LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
+    networks: [auth]
     labels:
       - traefik.enable=true
       - traefik.http.routers.lldap.tls=true
@@ -177,7 +181,7 @@ services:
       - traefik.http.routers.lldap.rule=Host(`lldap.local.rachelf42.ca`)
       - traefik.http.services.lldap-control.loadbalancer.server.port=17170
   redis:
-    <<: *defaults
+    <<: *defaults-nonet
     image: bitnami/redis:8.0.2
     volumes:
       - $APPDIR/redis:/bitnami
@@ -185,6 +189,7 @@ services:
       - redis-password
     environment:
       REDIS_PASSWORD_FILE: /run/secrets/redis-password
+    networks: [auth]
   # authelia:
 ########## HOUSEKEEPING
 secrets:
