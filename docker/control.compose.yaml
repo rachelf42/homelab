@@ -29,12 +29,12 @@ services:
     ports: !reset []
     command: !reset null
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.dozzle.tls=true
-      - traefik.http.routers.dozzle.tls.certresolver=cloudflare
-      - traefik.http.routers.dozzle.entrypoints=websecure
-      - traefik.http.routers.dozzle.rule=Host(`dozzle.local.rachelf42.ca`)
-      - traefik.http.services.dozzle-control.loadbalancer.server.port=8080
+      traefik.enable: true
+      traefik.http.routers.dozzle.tls: true
+      traefik.http.routers.dozzle.tls.certresolver: cloudflare
+      traefik.http.routers.dozzle.entrypoints: websecure
+      traefik.http.routers.dozzle.rule: Host(`dozzle.local.rachelf42.ca`)
+      traefik.http.services.dozzle-control.loadbalancer.server.port: 8080
   traefik:
     <<: *defaults-nonet
     image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
@@ -59,14 +59,14 @@ services:
       main: {ipv4_address: 192.168.69.69}
     healthcheck: !reset {}
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.dashboard.tls=true
-      - traefik.http.routers.dashboard.tls.certresolver=cloudflare
-      - traefik.http.routers.dashboard.tls.domains[0].main=local.rachelf42.ca
-      - traefik.http.routers.dashboard.tls.domains[0].sans=*.local.rachelf42.ca
-      - traefik.http.routers.dashboard.entrypoints=websecure
-      - traefik.http.routers.dashboard.rule=Host(`traefik.local.rachelf42.ca`)
-      - traefik.http.routers.dashboard.service=api@internal
+      traefik.enable: true
+      traefik.http.routers.dashboard.tls: true
+      traefik.http.routers.dashboard.tls.certresolver: cloudflare
+      traefik.http.routers.dashboard.tls.domains[0].main: local.rachelf42.ca
+      traefik.http.routers.dashboard.tls.domains[0].sans: *.local.rachelf42.ca
+      traefik.http.routers.dashboard.entrypoints: websecure
+      traefik.http.routers.dashboard.rule: Host(`traefik.local.rachelf42.ca`)
+      traefik.http.routers.dashboard.service: api@internal
   # TODO: move all services below this point to nas
   # Issue URL: https://github.com/rachelf42/homelab/issues/61
   # and will need to reopen ports on control's containers
@@ -81,11 +81,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $APPDIR/kuma:/app/data
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.kuma.tls=true
-      - traefik.http.routers.kuma.tls.certresolver=cloudflare
-      - traefik.http.routers.kuma.entrypoints=websecure
-      - traefik.http.routers.kuma.rule=Host(`kuma.local.rachelf42.ca`)
+      traefik.enable: true
+      traefik.http.routers.kuma.tls: true
+      traefik.http.routers.kuma.tls.certresolver: cloudflare
+      traefik.http.routers.kuma.entrypoints: websecure
+      traefik.http.routers.kuma.rule: Host(`kuma.local.rachelf42.ca`)
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:ab657501e876361a84b488713f0332190fe5c2a9fe897a78452b2e98a8e6c97b
@@ -104,11 +104,11 @@ services:
     volumes: [$APPDIR/myspeed:/myspeed/data]
     healthcheck: !reset {}
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.myspeed.tls=true
-      - traefik.http.routers.myspeed.tls.certresolver=cloudflare
-      - traefik.http.routers.myspeed.entrypoints=websecure
-      - traefik.http.routers.myspeed.rule=Host(`myspeed.local.rachelf42.ca`)
+      traefik.enable: true
+      traefik.http.routers.myspeed.tls: true
+      traefik.http.routers.myspeed.tls.certresolver: cloudflare
+      traefik.http.routers.myspeed.entrypoints: websecure
+      traefik.http.routers.myspeed.rule: Host(`myspeed.local.rachelf42.ca`)
 #################### AUTHENTICATION
   postgres:
     <<: *defaults-nonet
@@ -157,12 +157,12 @@ services:
       LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
     networks: [auth]
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.lldap.tls=true
-      - traefik.http.routers.lldap.tls.certresolver=cloudflare
-      - traefik.http.routers.lldap.entrypoints=websecure
-      - traefik.http.routers.lldap.rule=Host(`lldap.local.rachelf42.ca`)
-      - traefik.http.services.lldap-control.loadbalancer.server.port=17170
+      traefik.enable: true
+      traefik.http.routers.lldap.tls: true
+      traefik.http.routers.lldap.tls.certresolver: cloudflare
+      traefik.http.routers.lldap.entrypoints: websecure
+      traefik.http.routers.lldap.rule: Host(`lldap.local.rachelf42.ca`)
+      traefik.http.services.lldap-control.loadbalancer.server.port: 17170
   redis:
     <<: *defaults-nonet
     image: bitnami/redis:8.0.2
@@ -181,11 +181,11 @@ services:
     secrets: []
     networks: [auth]
     labels:
-      - traefik.enable=true
-      - traefik.http.routers.authelia.tls=true
-      - traefik.http.routers.authelia.tls.certresolver=cloudflare
-      - traefik.http.routers.authelia.entrypoints=websecure
-      - traefik.http.routers.authelia.rule=Host(`auth.local.rachelf42.ca`)
+      traefik.enable: true
+      traefik.http.routers.authelia.tls: true
+      traefik.http.routers.authelia.tls.certresolver: cloudflare
+      traefik.http.routers.authelia.entrypoints: websecure
+      traefik.http.routers.authelia.rule: Host(`auth.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
   cf-token:
