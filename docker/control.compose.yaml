@@ -63,7 +63,7 @@ services:
       traefik.http.routers.dashboard.tls: true
       traefik.http.routers.dashboard.tls.certresolver: cloudflare
       traefik.http.routers.dashboard.tls.domains[0].main: local.rachelf42.ca
-      traefik.http.routers.dashboard.tls.domains[0].sans: *.local.rachelf42.ca
+      traefik.http.routers.dashboard.tls.domains[0].sans: '*.local.rachelf42.ca'
       traefik.http.routers.dashboard.entrypoints: websecure
       traefik.http.routers.dashboard.rule: Host(`traefik.local.rachelf42.ca`)
       traefik.http.routers.dashboard.service: api@internal
