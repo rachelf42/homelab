@@ -173,12 +173,14 @@ services:
     secrets: [redis-password]
     environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
     networks: [auth]
+    healthcheck: !reset {}
   authelia:
     <<: *defaults-nonet
     image: authelia/authelia:4.39.4
     depends_on:
       postgres: {condition: service_healthy}
       lldap: {condition: service_healthy}
+      redis: {condition: service_started}
       traefik: {condition: service_started}
     volumes:
       - $APPDIR/authelia:/config
