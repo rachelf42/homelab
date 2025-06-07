@@ -170,7 +170,22 @@ services:
     secrets: [redis-password]
     environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
     networks: [auth]
-  # authelia:
+  authelia:
+    <<: *defaults-nonet
+    image: authelia/authelia:4.39.4
+    depends_on:
+      postgres: {condition: service_healthy}
+      lldap: {condition: service_healthy}
+      traefik: {condition: service_started}
+    volumes: [./config/authelia:/config:ro]
+    secrets: []
+    networks: [auth]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.authelia.tls=true
+      - traefik.http.routers.authelia.tls.certresolver=cloudflare
+      - traefik.http.routers.authelia.entrypoints=websecure
+      - traefik.http.routers.authelia.rule=Host(`auth.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
   cf-token:
