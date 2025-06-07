@@ -18,4 +18,5 @@ As you follow these instructions, things will inevitably fail due to the secrets
 11. copy the output github-jenkins-webhookurl, paste it into `gh secret set JENKINS_HOOK_URL`
 12. cd into [/secrets](/secrets), run `tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 32 >github_webhook_token`
 13. run `cat github_webhook_token | gh secret set JENKINS_HOOK_TOKEN`
-14. trigger the webhook for testing, either by making a trivial commit or by rerunning a previous [github actions deploy job](/.github/workflows/main.yaml)
+14. ssh into the control vm and run `docker compose up -d lldap`
+15. cd into [/bootstrap/postdeploy](/bootstrap/postdeploy), run `terraform apply` to configure LLDAP

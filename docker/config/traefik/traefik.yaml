@@ -31,6 +31,7 @@ certificatesResolvers:
       # TODO: switch off of lets encrypt staging server
       # Issue URL: https://github.com/rachelf42/homelab/issues/60
       # labels: waiting, hideFromCodeEditor
+      # also remove insecure_skip_cert_check from /bootstrap/postdeploy/main.tf, provider.lldap
       caServer: https://acme-staging-v02.api.letsencrypt.org/directory
       dnsChallenge:
         provider: cloudflare

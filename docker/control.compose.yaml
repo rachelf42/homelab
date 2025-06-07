@@ -155,6 +155,9 @@ services:
       LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
       LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
       LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
+    ports: # open for terraform
+      - '3890:3890'
+      - '17170:17170'
     networks: [auth]
     labels:
       traefik.enable: true
@@ -177,8 +180,23 @@ services:
       postgres: {condition: service_healthy}
       lldap: {condition: service_healthy}
       traefik: {condition: service_started}
-    volumes: [./config/authelia:/config:ro]
-    secrets: []
+    volumes:
+      - $APPDIR/authelia:/config
+      - ./config/authelia.yaml:/config/configuration.yml:ro
+    secrets:
+      - redis-password
+      - psql-authelia-password
+      - authelia-jwt
+      - authelia-ldap-password
+      - authelia-session-secret
+      - authelia-storage-key
+    environment:
+      AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/authelia-jwt
+      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE: /run/secrets/authelia-ldap-password
+      AUTHELIA_SESSION_SECRET_FILE: /run/secrets/authelia-session-secret
+      AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /run/secrets/authelia-storage-key
+      AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /run/secrets/redis-password
+      AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE: /run/secrets/psql-authelia-password
     networks: [auth]
     labels:
       traefik.enable: true
@@ -188,21 +206,16 @@ services:
       traefik.http.routers.authelia.rule: Host(`auth.local.rachelf42.ca`)
 ########## HOUSEKEEPING
 secrets:
-  cf-token:
-    file: ./secrets/cf-token
-  psql-root-password:
-    file: ./secrets/psql-root-password
-  psql-authelia-password:
-    file: ./secrets/psql-authelia-password
-  psql-lldap-password:
-    file: ./secrets/psql-lldap-password
-  lldap-psql-url:
-    file: ./secrets/lldap-psql-url
-  lldap-jwt:
-    file: ./secrets/lldap-jwt
-  lldap-keyseed:
-    file: ./secrets/lldap-keyseed
-  lldap-adminpw:
-    file: ./secrets/lldap-adminpw
-  redis-password:
-    file: ./secrets/redis-password
+  cf-token: {file: ./secrets/cf-token}
+  psql-root-password: {file: ./secrets/psql-root-password}
+  psql-authelia-password: {file: ./secrets/psql-authelia-password}
+  psql-lldap-password: {file: ./secrets/psql-lldap-password}
+  lldap-psql-url: {file: ./secrets/lldap-psql-url}
+  lldap-jwt: {file: ./secrets/lldap-jwt}
+  lldap-keyseed: {file: ./secrets/lldap-keyseed}
+  lldap-adminpw: {file: ./secrets/lldap-adminpw}
+  redis-password: {file: ./secrets/redis-password}
+  authelia-ldap-password: {file: ./secrets/authelia-ldap-password}
+  authelia-jwt: {file: ./secrets/authelia-jwt}
+  authelia-session-secret: {file: ./secrets/authelia-session-secret}
+  authelia-storage-key: {file: ./secrets/authelia-storage-key}
