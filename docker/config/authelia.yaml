@@ -38,6 +38,8 @@ authentication_backend:
       display_name: displayName
 session:
   cookies:
+    - domain: local.rachelf42.ca
+      authelia_url: https://auth.local.rachelf42.ca
   redis:
     host: redis
     port: 6379
