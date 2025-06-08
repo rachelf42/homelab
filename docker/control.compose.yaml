@@ -43,9 +43,9 @@ services:
       # for listening to container creation/deletion events
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # static configuration file
-      - ./config/traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
       # dynamic configuration files in this dir
-      - ./config/traefik/control:/config:ro
+      - ./config/traefik:/config:ro
       # certificate storage
       - $APPDIR/traefik/certs/acme.json:/acme.json
     secrets: [cf-token]
