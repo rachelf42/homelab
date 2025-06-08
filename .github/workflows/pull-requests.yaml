@@ -1,6 +1,9 @@
 name: Auto Approved
-on: [pull_request_target, pull_request_review] # yamllint disable-line rule:truthy
-
+on: # yamllint disable-line rule:truthy
+  pull_request_target:
+  pull_request_review:
+  pull_request:
+    types: [ready_for_review]
 jobs:
   autoapprove:
     runs-on: ubuntu-latest
