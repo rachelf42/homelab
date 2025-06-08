@@ -83,7 +83,7 @@
         dest: "{{ repodir }}"
         # TODO: ensure this never changes on the main branch
         # Issue URL: https://github.com/rachelf42/homelab/issues/15
-        version: main
+        version: authelia
         # we can set it to whatever our current branch is when we're working on stuff, but
         # if someone pulls from main they should always get "version: main"
         force: true
