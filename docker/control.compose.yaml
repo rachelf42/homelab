@@ -208,7 +208,6 @@ services:
       traefik.http.routers.authelia.tls.certresolver: cloudflare
       traefik.http.routers.authelia.entrypoints: websecure
       traefik.http.routers.authelia.rule: Host(`auth.local.rachelf42.ca`)
-    profiles: [DO_NOT_START_ME]
 ########## HOUSEKEEPING
 secrets:
   cf-token: {file: ./secrets/cf-token}
