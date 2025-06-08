@@ -175,6 +175,7 @@ services:
     environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
     networks: [auth]
     healthcheck: !reset {}
+    user: $UID:$GID
   authelia:
     <<: *defaults-nonet
     image: authelia/authelia:4.39.4@sha256:64b356c30fd817817a4baafb4dbc0f9f8702e46b49e1edb92ff42e19e487b517
