@@ -168,7 +168,7 @@ services:
       traefik.http.services.lldap-control.loadbalancer.server.port: 17170
   redis:
     <<: *defaults-nonet
-    image: bitnami/redis:8.0.2
+    image: bitnami/redis:8.0.2@sha256:d0f84da5011d75e3cda5516646ceb4ce6fa1eac50014c7090472af1f5ae80c91
     volumes: [$APPDIR/redis:/bitnami]
     secrets: [redis-password]
     environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
@@ -176,7 +176,7 @@ services:
     healthcheck: !reset {}
   authelia:
     <<: *defaults-nonet
-    image: authelia/authelia:4.39.4
+    image: authelia/authelia:4.39.4@sha256:64b356c30fd817817a4baafb4dbc0f9f8702e46b49e1edb92ff42e19e487b517
     depends_on:
       postgres: {condition: service_healthy}
       lldap: {condition: service_healthy}
