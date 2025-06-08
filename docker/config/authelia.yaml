@@ -18,7 +18,7 @@ authentication_backend:
     disable: true
   ldap:
     implementation: custom
-    url: lldap://lldap:3890
+    address: ldap://lldap:3890
     user: cn=authelia,ou=people,dc=rachelf42,dc=ca
     timeout: 5s
     start_tls: false
@@ -29,15 +29,15 @@ authentication_backend:
     users_filter: (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
     # allow signin with username ONLY
     # users_filter: (&({username_attribute}={input})(objectClass=person))
-    ### GROUPS DN
     additional_groups_dn: ou=groups
     groups_filter: (member={dn})
-    group_name_attribute: cn
-    ### ATTRIBUTES
-    username_attribute: uid
-    mail_attribute: mail
-    display_name_attribute: displayName
+    attributes:
+      group_name: cn
+      username: uid
+      mail: mail
+      display_name: displayName
 session:
+  cookies:
   redis:
     host: redis
     port: 6379
