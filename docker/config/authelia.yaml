@@ -3,8 +3,14 @@ access_control:
   rules:
     - domain: [auth.local.rachelf42.ca]
       policy: bypass
+    - domain: ['*.admin.local.rachelf42.ca']
+      policy: one_factor
+      subject:
+        - [group:admin]
     - domain: ['*.local.rachelf42.ca']
       policy: one_factor
+      subject:
+        - [group:users]
 theme: dark
 server:
   address: tcp://:9091/
