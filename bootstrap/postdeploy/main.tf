@@ -19,5 +19,4 @@ provider "lldap" {
   username = "admin"
   password = file("${path.module}/lldap-adminpw")
   base_dn  = "dc=rachelf42,dc=ca"
-  insecure_skip_cert_check = true
 }
