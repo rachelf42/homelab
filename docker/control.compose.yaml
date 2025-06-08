@@ -34,7 +34,7 @@ services:
       traefik.http.routers.dozzle.tls.certresolver: cloudflare
       traefik.http.routers.dozzle.entrypoints: websecure
       traefik.http.routers.dozzle.rule: Host(`dozzle.local.rachelf42.ca`)
-      traefik.http.routers.dozzle.middlewares: authelia@file
+      # traefik.http.routers.dozzle.middlewares: authelia@file
       traefik.http.services.dozzle-control.loadbalancer.server.port: 8080
   traefik:
     <<: *defaults-nonet
