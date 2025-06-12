@@ -27,6 +27,7 @@ authentication_backend:
   ldap:
     implementation: lldap
     address: ldap://lldap:3890
+    base_dn: dn=rachelf42,dn=ca
     user: cn=authelia,ou=people,dc=rachelf42,dc=ca
     timeout: 5s
     start_tls: false
