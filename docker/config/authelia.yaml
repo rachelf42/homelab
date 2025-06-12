@@ -31,7 +31,7 @@ authentication_backend:
     user: cn=authelia,ou=people,dc=rachelf42,dc=ca
     timeout: 5s
     start_tls: false
-    users_filter: (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
+    additional_users_dn: ou=people
 session:
   cookies:
     - domain: local.rachelf42.ca
