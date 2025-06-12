@@ -40,7 +40,7 @@ authentication_backend:
     additional_groups_dn: ou=groups
     groups_filter: (member={dn})
     attributes:
-      group_name: cn
+      group_name: displayName
       username: uid
       mail: mail
       display_name: displayName
