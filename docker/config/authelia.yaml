@@ -31,7 +31,11 @@ authentication_backend:
     user: cn=authelia,ou=people,dc=rachelf42,dc=ca
     timeout: 5s
     start_tls: false
-    additional_users_dn: ou=people
+    attributes:
+      group_name: cn
+      username: uid
+      mail: mail
+      display_name: displayName
 session:
   cookies:
     - domain: local.rachelf42.ca
