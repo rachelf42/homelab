@@ -25,25 +25,11 @@ authentication_backend:
   password_reset:
     disable: true
   ldap:
-    implementation: custom
+    implementation: lldap
     address: ldap://lldap:3890
     user: cn=authelia,ou=people,dc=rachelf42,dc=ca
     timeout: 5s
     start_tls: false
-    ### USERS DN
-    base_dn: dc=rachelf42,dc=ca
-    additional_users_dn: ou=people
-    # allow signin with username OR email
-    users_filter: (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
-    # allow signin with username ONLY
-    # users_filter: (&({username_attribute}={input})(objectClass=person))
-    additional_groups_dn: ou=groups
-    groups_filter: (member={dn})
-    attributes:
-      group_name: cn
-      username: uid
-      mail: mail
-      display_name: displayName
 session:
   cookies:
     - domain: local.rachelf42.ca
