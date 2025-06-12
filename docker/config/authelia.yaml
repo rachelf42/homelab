@@ -38,9 +38,9 @@ authentication_backend:
     # allow signin with username ONLY
     # users_filter: (&({username_attribute}={input})(objectClass=person))
     additional_groups_dn: ou=groups
-    groups_filter: (member={dn})
+    groups_filter: (&(member={dn})(objectclass=groupOfUniqueNames))
     attributes:
-      group_name: displayName
+      group_name: cn
       username: uid
       mail: mail
       display_name: displayName
