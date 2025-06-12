@@ -6,11 +6,9 @@ access_control:
     - domain: ['*.admin.local.rachelf42.ca']
       policy: one_factor
       subject:
-        - [group:admin]
+        - [user:rachel]
     - domain: ['*.local.rachelf42.ca']
       policy: one_factor
-      subject:
-        - [group:all_users]
 theme: dark
 server:
   address: tcp://:9091/
