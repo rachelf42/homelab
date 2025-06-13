@@ -135,38 +135,38 @@ services:
         - --dbname $${POSTGRES_USER}
         - --no-password
     user: $UID:$GID
-  lldap:
-    <<: *defaults-nonet
-    image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
-    depends_on:
-      traefik: {condition: service_started}
-      postgres: {condition: service_healthy}
-    volumes: [$APPDIR/lldap:/data]
-    secrets:
-      - lldap-psql-url
-      - lldap-jwt
-      - lldap-keyseed
-      - lldap-adminpw
-    environment:
-      UID: $UID
-      GID: $GID
-      TZ: $TZ
-      LLDAP_LDAP_BASE_DN: dc=rachelf42,dc=ca
-      LLDAP_JWT_SECRET_FILE: /run/secrets/lldap-jwt
-      LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
-      LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
-      LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
-    ports: # open for terraform
-      - '3890:3890'
-      - '17170:17170'
-    networks: [auth]
-    labels:
-      traefik.enable: true
-      traefik.http.routers.lldap.tls: true
-      traefik.http.routers.lldap.tls.certresolver: cloudflare
-      traefik.http.routers.lldap.entrypoints: websecure
-      traefik.http.routers.lldap.rule: Host(`lldap.local.rachelf42.ca`)
-      traefik.http.services.lldap-control.loadbalancer.server.port: 17170
+  # lldap:
+  #   <<: *defaults-nonet
+  #   image: lldap/lldap:v0.6.1@sha256:4931eeeb841b1bbf5774161b5fd9dab88f41ffeb4b08ca656f0b7595cd7cb52a
+  #   depends_on:
+  #     traefik: {condition: service_started}
+  #     postgres: {condition: service_healthy}
+  #   volumes: [$APPDIR/lldap:/data]
+  #   secrets:
+  #     - lldap-psql-url
+  #     - lldap-jwt
+  #     - lldap-keyseed
+  #     - lldap-adminpw
+  #   environment:
+  #     UID: $UID
+  #     GID: $GID
+  #     TZ: $TZ
+  #     LLDAP_LDAP_BASE_DN: dc=rachelf42,dc=ca
+  #     LLDAP_JWT_SECRET_FILE: /run/secrets/lldap-jwt
+  #     LLDAP_KEY_SEED_FILE: /run/secrets/lldap-keyseed
+  #     LLDAP_LDAP_USER_PASS_FILE: /run/secrets/lldap-adminpw
+  #     LLDAP_DATABASE_URL_FILE: /run/secrets/lldap-psql-url
+  #   ports: # open for terraform
+  #     - '3890:3890'
+  #     - '17170:17170'
+  #   networks: [auth]
+  #   labels:
+  #     traefik.enable: true
+  #     traefik.http.routers.lldap.tls: true
+  #     traefik.http.routers.lldap.tls.certresolver: cloudflare
+  #     traefik.http.routers.lldap.entrypoints: websecure
+  #     traefik.http.routers.lldap.rule: Host(`lldap.local.rachelf42.ca`)
+  #     traefik.http.services.lldap-control.loadbalancer.server.port: 17170
   redis:
     <<: *defaults-nonet
     image: bitnami/redis:8.0.2@sha256:d0f84da5011d75e3cda5516646ceb4ce6fa1eac50014c7090472af1f5ae80c91
@@ -187,6 +187,7 @@ services:
     volumes:
       - $APPDIR/authelia:/config
       - ./config/authelia.yaml:/config/configuration.yml:ro
+      - ./secrets/authelia_users.yaml:/config/users.yaml
     secrets:
       - redis-password
       - psql-authelia-password
