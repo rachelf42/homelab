@@ -1,0 +1,15 @@
+title: TITLE
+description: DESCRIPTION
+startUrl: https://local.rachelf42.ca
+# theme: dark
+# color: pink
+layout: {}
+headerStyle: clean
+language: en-CA
+providers: {}
+quicklaunch:
+  searchDescriptions: true
+  hideInternetSearch: true
+hideVersion: true
+disableUpdateCheck: true
+logpath: /dev/null
