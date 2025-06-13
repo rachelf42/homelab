@@ -24,15 +24,17 @@ authentication_backend:
     disable: true
   password_reset:
     disable: true
-file:
-  path: /config/users.yaml
-  password:
-    algorithm: argon2id
-    iterations: 1
-    key_length: 32
-    salt_length: 16
-    memory: 1024
-    parallelism: 8
+  file:
+    path: /config/users.yaml
+    password:
+      algorithm: argon2
+      argon2:
+        variant: argon2id
+        iterations: 1
+        key_length: 32
+        salt_length: 16
+        memory: 1024
+        parallelism: 8
   # ldap:
   #   implementation: custom
   #   address: ldap://lldap:3890
