@@ -1,0 +1,33 @@
+# /!\ DANGER, WILL ROBINSON, DANGER /!\
+# rules are order-sensitive
+# all rules should be commented with their purpose
+# read the docs before touching this file at all
+# https://www.authelia.com/configuration/security/access-control/#rules
+access_control:
+  default_policy: deny
+  rules:
+    ### BYPASS RULES
+    - domain: # required self-bypass
+        - auth.local.rachelf42.ca
+        - auth.rachelf42.ca
+      policy: bypass
+    ### ADMIN SUBDOMAIN
+    - domain: &admin # allow admin group
+        - '*.admin.local.rachelf42.ca'
+        - '*.admin.rachelf42.ca'
+      policy: one_factor
+      subject:
+        - [group:admin]
+    - domain: # lldap has its own admin group, may as well use it
+        - lldap.local.rachelf42.ca
+        - lldap.rachelf42.ca
+      policy: one_factor
+      subject:
+        - [group:lldap_admin]
+    - domain: *admin # deny unless allowed above
+      policy: deny
+    ### CATCHALL - anything not listed above should be available to all users
+    - domain: ['*.rachelf42.ca']
+      policy: one_factor
+      subject:
+        - [group:all_users]

@@ -189,7 +189,8 @@ services:
       traefik: {condition: service_started}
     volumes:
       - $APPDIR/authelia:/config
-      - ./config/authelia.yaml:/config/configuration.yml:ro
+      - ./config/authelia.yaml:/config/config.yaml:ro
+      - ./config/authelia-acl.yaml:/config/access_control.yaml:ro
     secrets:
       - redis-password
       - psql-authelia-password
@@ -205,6 +206,10 @@ services:
       AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /run/secrets/redis-password
       AUTHELIA_STORAGE_POSTGRES_PASSWORD_FILE: /run/secrets/psql-authelia-password
     networks: [auth]
+    command:
+      - 'authelia'
+      - '--config=/config/config.yaml'
+      - '--config=/config/access_control.yaml'
     labels:
       traefik.enable: true
       traefik.http.routers.authelia.tls: true

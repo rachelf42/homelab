@@ -1,35 +1,4 @@
-access_control:
-  default_policy: deny
-  rules:
-    ### BYPASS RULES
-    # should be:
-    # * as specific as possible, no wildcards
-    # * commented with the reason for the bypass
-    # * always kept on top
-    - domain: # required self-bypass
-        - auth.local.rachelf42.ca
-        - auth.rachelf42.ca
-      policy: bypass
-    ### ADMIN SUBDOMAIN
-    - domain: &admin # allow admin group
-        - '*.admin.local.rachelf42.ca'
-        - '*.admin.rachelf42.ca'
-      policy: one_factor
-      subject:
-        - [group:admin]
-    - domain: # lldap has its own admin group, may as well use it
-        - lldap.local.rachelf42.ca
-        - lldap.rachelf42.ca
-      policy: one_factor
-      subject:
-        - [group:lldap_admin]
-    - domain: *admin # deny unless allowed above
-      policy: deny
-    ### CATCHALL - anything not listed above should be available to all users
-    - domain: ['*.rachelf42.ca']
-      policy: one_factor
-      subject:
-        - [group:all_users]
+# PUT ACCESS CONTROL IN ITS OWN FILE NOT HERE
 theme: dark
 server:
   address: tcp://:9091/
