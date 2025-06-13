@@ -117,7 +117,7 @@ services:
     <<: *defaults
     image: ghcr.io/gethomepage/homepage:v1.3.2
     volumes:
-      - ./config/homepage:/app/config:ro
+      - ./config/homepage/settings.yaml:/app/config/settings:ro
     environment:
       HOMEPAGE_ALLOWED_HOSTS: local.rachelf42.ca
       LOG_TARGETS: stdout
