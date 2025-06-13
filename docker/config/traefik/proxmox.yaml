@@ -14,4 +14,4 @@ http:
       loadBalancer:
         passHostHeader: true
         servers:
-          - url: https://pve-laptop.local.rachelf42.ca
+          - url: https://pve-laptop.local.rachelf42.ca:8006
