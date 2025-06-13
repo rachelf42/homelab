@@ -187,7 +187,7 @@ services:
     volumes:
       - $APPDIR/authelia:/config
       - ./config/authelia.yaml:/config/configuration.yml:ro
-      - ./secrets/authelia_users.yaml:/config/users.yaml
+      - ./secrets/authelia_users.yaml:/config/users.yaml:ro
     secrets:
       - redis-password
       - psql-authelia-password
@@ -197,7 +197,7 @@ services:
       - authelia-storage-key
     environment:
       AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/authelia-jwt
-      AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE: /run/secrets/authelia-ldap-password
+      # AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE: /run/secrets/authelia-ldap-password
       AUTHELIA_SESSION_SECRET_FILE: /run/secrets/authelia-session-secret
       AUTHELIA_STORAGE_ENCRYPTION_KEY_FILE: /run/secrets/authelia-storage-key
       AUTHELIA_SESSION_REDIS_PASSWORD_FILE: /run/secrets/redis-password
