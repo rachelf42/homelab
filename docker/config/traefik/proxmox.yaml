@@ -4,8 +4,8 @@ http:
       rule: Host(`pve.rachelf42.ca`)
       entryPoints:
         - websecure
-      middlewares:
-        - authelia@file
+      # middlewares:
+      #   - authelia@file
       service: proxmox
       tls:
         certResolver: cloudflare
