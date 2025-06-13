@@ -11,19 +11,19 @@ access_control:
         - auth.rachelf42.ca
       policy: bypass
     ### ADMIN SUBDOMAIN
-    - domain: &admin
+    - domain: &admin # allow admin group
         - '*.admin.local.rachelf42.ca'
         - '*.admin.rachelf42.ca'
       policy: one_factor
       subject:
         - [group:admin]
-    - domain:
+    - domain: # lldap has its own admin group, may as well use it
         - lldap.local.rachelf42.ca
         - lldap.rachelf42.ca
       policy: one_factor
       subject:
         - [group:lldap_admin]
-    - domain: *admin
+    - domain: *admin # deny unless allowed above
       policy: deny
     ### CATCHALL - anything not listed above should be available to all users
     - domain: ['*.rachelf42.ca']
