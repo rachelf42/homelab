@@ -1,7 +1,7 @@
 - openmeteo:
-    latitude: ""
-    longitude: ""
-    timezone: ""
+    latitude: "{{ HOMEPAGE_FILE_LAT }}"
+    longitude: "{{ HOMEPAGE_FILE_LONG }}"
+    timezone: "{{ HOMEPAGE_VAR_TZ }}"
     units: metric
     cache: 5
 - search:

@@ -122,8 +122,14 @@ services:
       - ./config/homepage/widgets.yaml:/app/config/widgets.yaml:ro
       - ./config/homepage/kubernetes.yaml:/app/config/kubernetes.yaml:ro
       - ./config/homepage/services.yaml:/app/config/services.yaml:ro
+    secrets:
+      - homepage-weather-lat
+      - homepage-weather-long
     environment:
       HOMEPAGE_ALLOWED_HOSTS: local.rachelf42.ca
+      HOMEPAGE_FILE_LAT: /run/secrets/homepage-weather-lat
+      HOMEPAGE_FILE_LONG: /run/secrets/homepage-weather-long
+      HOMEPAGE_VAR_TZ: $TZ
       LOG_TARGETS: stdout
       PUID: $UID
       PGID: $GID
@@ -253,3 +259,5 @@ secrets:
   authelia-jwt: {file: ./secrets/authelia-jwt}
   authelia-session-secret: {file: ./secrets/authelia-session-secret}
   authelia-storage-key: {file: ./secrets/authelia-storage-key}
+  homepage-weather-lat: {file: ./secrets/homepage-weather-lat}
+  homepage-weather-long: {file: ./secrets/homepage-weather-long}
