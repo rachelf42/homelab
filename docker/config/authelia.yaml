@@ -1,12 +1,17 @@
 access_control:
   default_policy: deny
   rules:
+    ### BYPASS RULES
     - domain: [auth.local.rachelf42.ca]
       policy: bypass
+    ### ADMIN SUBDOMAIN
     - domain: ['*.admin.local.rachelf42.ca']
       policy: one_factor
       subject:
         - [group:admin]
+    - domain: ['*.admin.local.rachelf42.ca']
+      policy: deny
+    ### CATCHALL
     - domain: ['*.local.rachelf42.ca']
       policy: one_factor
       subject:
@@ -24,36 +29,13 @@ authentication_backend:
     disable: true
   password_reset:
     disable: true
-  file:
-    path: /config/users.yaml
-    password:
-      algorithm: argon2
-      argon2:
-        variant: argon2id
-        iterations: 1
-        key_length: 32
-        salt_length: 16
-        memory: 1024
-        parallelism: 8
-  # ldap:
-  #   implementation: custom
-  #   address: ldap://lldap:3890
-  #   user: cn=authelia,ou=people,dc=rachelf42,dc=ca
-  #   timeout: 5s
-  #   start_tls: false
-  #   base_dn: dc=rachelf42,dc=ca
-  #   additional_users_dn: ou=people
-  #   # allow signin with username OR email
-  #   users_filter: (&(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))
-  #   # allow signin with username ONLY
-  #   # users_filter: (&({username_attribute}={input})(objectClass=person))
-  #   additional_groups_dn: ou=groups
-  #   groups_filter: (&(member={dn})(objectclass=groupOfUniqueNames))
-  #   attributes:
-  #     group_name: cn
-  #     username: uid
-  #     mail: mail
-  #     display_name: displayName
+  ldap:
+    implementation: lldap
+    address: ldap://lldap:3890
+    user: cn=authelia,ou=people,dc=rachelf42,dc=ca
+    timeout: 30s
+    start_tls: false
+    base_dn: dc=rachelf42,dc=ca
 session:
   cookies:
     - domain: local.rachelf42.ca
