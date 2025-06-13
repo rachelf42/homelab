@@ -36,38 +36,6 @@ services:
       traefik.http.routers.dozzle.rule: Host(`dozzle.admin.local.rachelf42.ca`)
       traefik.http.routers.dozzle.middlewares: authelia@file
       traefik.http.services.dozzle-control.loadbalancer.server.port: 8080
-  traefik:
-    <<: *defaults-nonet
-    image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
-    volumes:
-      # for listening to container creation/deletion events
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      # static configuration file
-      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
-      # dynamic configuration files in this dir
-      - ./config/traefik:/config:ro
-      # certificate storage
-      - $APPDIR/traefik/certs/acme.json:/acme.json
-    secrets: [cf-token]
-    environment: {CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token}
-    env_file: ./secrets/traefik-acme-email
-    ports:
-      - '80:80'
-      - '81:8080'
-      - '443:443'
-    networks:
-      auth: {}
-      main: {ipv4_address: 192.168.69.69}
-    healthcheck: !reset {}
-    labels:
-      traefik.enable: true
-      traefik.http.routers.dashboard.tls: true
-      traefik.http.routers.dashboard.tls.certresolver: cloudflare
-      traefik.http.routers.dashboard.tls.domains[0].main: local.rachelf42.ca
-      traefik.http.routers.dashboard.tls.domains[0].sans: '*.local.rachelf42.ca'
-      traefik.http.routers.dashboard.entrypoints: websecure
-      traefik.http.routers.dashboard.rule: Host(`traefik.local.rachelf42.ca`)
-      traefik.http.routers.dashboard.service: api@internal
   # TODO: move all services below this point to nas
   # Issue URL: https://github.com/rachelf42/homelab/issues/61
   # and will need to reopen ports on control's containers
@@ -112,6 +80,42 @@ services:
       traefik.http.routers.myspeed.entrypoints: websecure
       traefik.http.routers.myspeed.rule: Host(`myspeed.admin.local.rachelf42.ca`)
       traefik.http.routers.myspeed.middlewares: authelia@file
+#################### FRONTEND
+  traefik:
+    <<: *defaults-nonet
+    image: traefik:v3.4.1@sha256:cd40ab7bc1f047731d5b22595203812343efcb6538014c4e93221cfc3a77217a
+    volumes:
+      # for listening to container creation/deletion events
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # static configuration file
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      # dynamic configuration files in this dir
+      - ./config/traefik:/config:ro
+      # certificate storage
+      - $APPDIR/traefik/certs/acme.json:/acme.json
+    secrets: [cf-token]
+    environment: {CF_DNS_API_TOKEN_FILE: /run/secrets/cf-token}
+    env_file: ./secrets/traefik-acme-email
+    ports:
+      - '80:80'
+      - '81:8080'
+      - '443:443'
+    networks:
+      auth: {}
+      main: {ipv4_address: 192.168.69.69}
+    healthcheck: !reset {}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.dashboard.tls: true
+      traefik.http.routers.dashboard.tls.certresolver: cloudflare
+      traefik.http.routers.dashboard.tls.domains[0].main: local.rachelf42.ca
+      traefik.http.routers.dashboard.tls.domains[0].sans: '*.local.rachelf42.ca'
+      traefik.http.routers.dashboard.entrypoints: websecure
+      traefik.http.routers.dashboard.rule: Host(`traefik.local.rachelf42.ca`)
+      traefik.http.routers.dashboard.service: api@internal
+  homepage:
+    <<: *defaults
+    image: gethomepage/homepage:v1.3.2
 #################### AUTHENTICATION
   postgres:
     <<: *defaults-nonet
