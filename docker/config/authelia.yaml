@@ -15,7 +15,7 @@ access_control:
     - domain: ['*.local.rachelf42.ca']
       policy: one_factor
       subject:
-        - [group:all]
+        - [group:all_users]
 theme: dark
 server:
   address: tcp://:9091/
