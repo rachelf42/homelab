@@ -86,7 +86,8 @@ services:
       traefik.http.routers.kuma.tls: true
       traefik.http.routers.kuma.tls.certresolver: cloudflare
       traefik.http.routers.kuma.entrypoints: websecure
-      traefik.http.routers.kuma.rule: Host(`kuma.local.rachelf42.ca`)
+      traefik.http.routers.kuma.rule: Host(`kuma.admin.local.rachelf42.ca`)
+      traefik.http.routers.kuma.middlewares: authelia@file
   ddclient:
     <<: *defaults
     image: lscr.io/linuxserver/ddclient:4.0.0@sha256:b9919f44d3e8b2da4ce6cea90281c0911115b2be2629f74d93b85bb00517471b
@@ -109,7 +110,8 @@ services:
       traefik.http.routers.myspeed.tls: true
       traefik.http.routers.myspeed.tls.certresolver: cloudflare
       traefik.http.routers.myspeed.entrypoints: websecure
-      traefik.http.routers.myspeed.rule: Host(`myspeed.local.rachelf42.ca`)
+      traefik.http.routers.myspeed.rule: Host(`myspeed.admin.local.rachelf42.ca`)
+      traefik.http.routers.myspeed.middlewares: authelia@file
 #################### AUTHENTICATION
   postgres:
     <<: *defaults-nonet
@@ -165,7 +167,8 @@ services:
       traefik.http.routers.lldap.tls: true
       traefik.http.routers.lldap.tls.certresolver: cloudflare
       traefik.http.routers.lldap.entrypoints: websecure
-      traefik.http.routers.lldap.rule: Host(`lldap.local.rachelf42.ca`)
+      traefik.http.routers.lldap.rule: Host(`lldap.admin.local.rachelf42.ca`)
+      traefik.http.routers.lldap.middlewares: authelia@file
       traefik.http.services.lldap-control.loadbalancer.server.port: 17170
   redis:
     <<: *defaults-nonet
