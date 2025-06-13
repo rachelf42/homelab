@@ -1,0 +1,9 @@
+- openmeteo:
+    latitude: ""
+    longitude: ""
+    timezone: ""
+    units: metric
+    cache: 5
+- search:
+    provider: duckduckgo
+    target: _blank

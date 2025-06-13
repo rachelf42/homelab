@@ -1,0 +1,15 @@
+- Header:
+  - ServiceA:
+      href: http://localhost
+  - ServiceB:
+      href: http://localhost
+- Left:
+  - ServiceA:
+      href: http://localhost
+  - ServiceB:
+      href: http://localhost
+- Right:
+  - ServiceA:
+      href: http://localhost
+  - ServiceB:
+      href: http://localhost
