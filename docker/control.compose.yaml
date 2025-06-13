@@ -187,7 +187,6 @@ services:
     volumes:
       - $APPDIR/authelia:/config
       - ./config/authelia.yaml:/config/configuration.yml:ro
-      # - ./secrets/authelia_users.yaml:/config/users.yaml:ro
     secrets:
       - redis-password
       - psql-authelia-password
