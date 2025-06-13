@@ -119,7 +119,7 @@ services:
     volumes:
       - ./config/homepage:/app/config
     environment:
-      HOMEPAGE_ALLOWED_HOSTS: rachelf42.ca
+      HOMEPAGE_ALLOWED_HOSTS: local.rachelf42.ca
       LOG_TARGETS: stdout
       PUID: $UID
       PGID: $GID
