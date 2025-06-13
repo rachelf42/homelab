@@ -181,7 +181,7 @@ services:
     image: authelia/authelia:4.39.4@sha256:64b356c30fd817817a4baafb4dbc0f9f8702e46b49e1edb92ff42e19e487b517
     depends_on:
       postgres: {condition: service_healthy}
-      lldap: {condition: service_healthy}
+      # lldap: {condition: service_healthy}
       redis: {condition: service_started}
       traefik: {condition: service_started}
     volumes:
