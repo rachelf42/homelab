@@ -1,9 +1,16 @@
 title: TITLE
 description: DESCRIPTION
 startUrl: https://local.rachelf42.ca
-# theme: dark
-# color: pink
-layout: {}
+theme: dark
+color: fuchsia
+layout:
+  homepage-refactorme-top:
+    style: row
+    header: false
+  homepage-refactorme-left:
+    header: false
+  homepage-refactorme-right:
+    header: false
 headerStyle: clean
 language: en-CA
 providers: {}

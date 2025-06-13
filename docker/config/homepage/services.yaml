@@ -1,15 +1,15 @@
-- Header:
-    - ServiceA:
+- homepage-refactorme-top:
+    - Service-A-top:
         href: http://localhost
-    - ServiceB:
+    - Service-B-top:
         href: http://localhost
-- Left:
-    - ServiceA:
+- homepage-refactorme-left:
+    - Service-A-left:
         href: http://localhost
-    - ServiceB:
+    - Service-B-left:
         href: http://localhost
-- Right:
-    - ServiceA:
+- homepage-refactorme-right:
+    - Service-A-right:
         href: http://localhost
-    - ServiceB:
+    - Service-B-right:
         href: http://localhost
