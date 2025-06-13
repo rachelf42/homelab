@@ -33,7 +33,8 @@ services:
       traefik.http.routers.dozzle.tls: true
       traefik.http.routers.dozzle.tls.certresolver: cloudflare
       traefik.http.routers.dozzle.entrypoints: websecure
-      traefik.http.routers.dozzle.rule: Host(`dozzle.local.rachelf42.ca`)
+      traefik.http.routers.dozzle.rule: Host(`dozzle.admin.local.rachelf42.ca`)
+      traefik.http.routers.dozzle.middlewares: authelia@file
       traefik.http.services.dozzle-control.loadbalancer.server.port: 8080
   traefik:
     <<: *defaults-nonet
@@ -42,9 +43,9 @@ services:
       # for listening to container creation/deletion events
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # static configuration file
-      - ./config/traefik/traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./config/traefik.yaml:/etc/traefik/traefik.yaml:ro
       # dynamic configuration files in this dir
-      - ./config/traefik/control:/config:ro
+      - ./config/traefik:/config:ro
       # certificate storage
       - $APPDIR/traefik/certs/acme.json:/acme.json
     secrets: [cf-token]
@@ -174,6 +175,7 @@ services:
     environment: {REDIS_PASSWORD_FILE: /run/secrets/redis-password}
     networks: [auth]
     healthcheck: !reset {}
+    user: $UID:$GID
   authelia:
     <<: *defaults-nonet
     image: authelia/authelia:4.39.4@sha256:64b356c30fd817817a4baafb4dbc0f9f8702e46b49e1edb92ff42e19e487b517
@@ -206,7 +208,6 @@ services:
       traefik.http.routers.authelia.tls.certresolver: cloudflare
       traefik.http.routers.authelia.entrypoints: websecure
       traefik.http.routers.authelia.rule: Host(`auth.local.rachelf42.ca`)
-    profiles: [DO_NOT_START_ME]
 ########## HOUSEKEEPING
 secrets:
   cf-token: {file: ./secrets/cf-token}

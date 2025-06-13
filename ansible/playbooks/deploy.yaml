@@ -31,6 +31,14 @@
             mode: "0777"
     - name: appdata requirements
       block:
+        - name: redis dir
+          when: inventory_hostname == "control"
+          ansible.builtin.file:
+            path: /mount/nas/appdata/redis
+            owner: "{{ user_name}}"
+            group: "{{ user_name}}"
+            mode: "0777"
+            state: directory
         - name: postgres dir
           when: inventory_hostname == "control"
           ansible.builtin.file:
