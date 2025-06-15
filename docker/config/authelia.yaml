@@ -44,3 +44,8 @@ notifier:
   disable_startup_check: true
   filesystem:
     filename: /config/notification.txt
+identity_providers:
+  oidc:
+    jwks:
+      - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote}}
+clients: []

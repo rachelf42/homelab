@@ -191,6 +191,7 @@ services:
       - $APPDIR/authelia:/config
       - ./config/authelia.yaml:/config/config.yaml:ro
       - ./config/authelia-acl.yaml:/config/access_control.yaml:ro
+      - ./secrets/authelia-oidc.pem:/config/jwks/oidc.pem:ro
     secrets:
       - redis-password
       - psql-authelia-password
@@ -198,7 +199,10 @@ services:
       - authelia-ldap-password
       - authelia-session-secret
       - authelia-storage-key
+      - authelia-hmac
     environment:
+      X_AUTHELIA_CONFIG_FILTERS: template
+      AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: /run/secrets/authelia-hmac
       AUTHELIA_IDENTITY_VALIDATION_RESET_PASSWORD_JWT_SECRET_FILE: /run/secrets/authelia-jwt
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE: /run/secrets/authelia-ldap-password
       AUTHELIA_SESSION_SECRET_FILE: /run/secrets/authelia-session-secret
@@ -231,3 +235,4 @@ secrets:
   authelia-jwt: {file: ./secrets/authelia-jwt}
   authelia-session-secret: {file: ./secrets/authelia-session-secret}
   authelia-storage-key: {file: ./secrets/authelia-storage-key}
+  authelia-hmac: {file: ./secrets/authelia-hmac}
