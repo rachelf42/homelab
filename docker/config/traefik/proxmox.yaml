@@ -13,5 +13,9 @@ http:
     proxmox:
       loadBalancer:
         passHostHeader: true
+        serversTransport: pve
         servers:
           - url: https://pve-laptop.local.rachelf42.ca:8006
+  serversTransports:
+    pve:
+      insecureSkipVerify: true
