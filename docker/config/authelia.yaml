@@ -47,5 +47,6 @@ notifier:
 identity_providers:
   oidc:
     jwks:
+      # yamllint disable-line rule:braces
       - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote}}
 clients: []
