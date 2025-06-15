@@ -23,15 +23,15 @@ resource "proxmox_virtual_environment_user" "mine" {
   }
 }
 resource "proxmox_virtual_environment_user_token" "homepage" {
-  token_name      = "homepage"
-  user_id         = proxmox_virtual_environment_user.mine.user_id
+  token_name = "homepage"
+  user_id    = proxmox_virtual_environment_user.mine.user_id
 }
 data "proxmox_virtual_environment_role" "auditor" {
   role_id = "PVEAuditor"
 }
 resource "proxmox_virtual_environment_acl" "homepage" {
-  token_id = proxmox_virtual_environment_user_token.homepage.user_id
-  role_id = data.proxmox_virtual_environment_role.auditor.role_id
+  token_id  = proxmox_virtual_environment_user_token.homepage.id
+  role_id   = data.proxmox_virtual_environment_role.auditor.role_id
   path      = "/"
   propagate = true
 }
