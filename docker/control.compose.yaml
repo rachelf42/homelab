@@ -191,7 +191,7 @@ services:
       - $APPDIR/authelia:/config
       - ./config/authelia.yaml:/config/config.yaml:ro
       - ./config/authelia-acl.yaml:/config/access_control.yaml:ro
-      - ./secrets/authelia-oidc.pem:/config/jwks/oidc.pem:ro
+      - ./secrets/authelia-oidc.pem:/config/jwks/oidc.pem
     secrets:
       - redis-password
       - psql-authelia-password
