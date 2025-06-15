@@ -200,6 +200,8 @@ services:
       - authelia-session-secret
       - authelia-storage-key
       - authelia-hmac
+      - proxmox-oidc-id
+      - proxmox-oidc-digest
     environment:
       X_AUTHELIA_CONFIG_FILTERS: template
       AUTHELIA_IDENTITY_PROVIDERS_OIDC_HMAC_SECRET_FILE: /run/secrets/authelia-hmac
@@ -236,3 +238,5 @@ secrets:
   authelia-session-secret: {file: ./secrets/authelia-session-secret}
   authelia-storage-key: {file: ./secrets/authelia-storage-key}
   authelia-hmac: {file: ./secrets/authelia-hmac}
+  proxmox-oidc-id: {file: ./secrets/proxmox-oidc-id}
+  proxmox-oidc-digest: {file: ./secrets/proxmox-oidc-digest}

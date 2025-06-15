@@ -47,5 +47,23 @@ notifier:
 identity_providers:
   oidc:
     jwks:
-      # yamllint disable-line rule:braces
-      - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote}}
+      - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces
+    clients:
+      - client_name: Proxmox
+        client_id: {{ secret "/run/secrets/proxmox-oidc-id" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces
+        client_secret: {{ secret "/run/secrets/proxmox-oidc-digest" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces rule:line-length
+        public: false
+        authorization_policy: one_factor
+        require_pkce: true
+        pkce_challenge_method: S256
+        redirect_uris:
+          - https://pve.admin.local.rachelf42.ca
+        scopes:
+          - openid
+          - profile
+          - email
+        response_types: [code]
+        grant_types: [authorization_code]
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_basic
