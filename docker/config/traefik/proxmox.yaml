@@ -1,7 +1,7 @@
 http:
   routers:
     proxmox:
-      rule: Host(`pve.rachelf42.ca`)
+      rule: Host(`pve.admin.local.rachelf42.ca`)
       entryPoints:
         - websecure
       middlewares:
