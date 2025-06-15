@@ -47,11 +47,11 @@ notifier:
 identity_providers:
   oidc:
     jwks:
-      - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces
+      - key: {{ secret "/config/jwks/oidc.pem" | mindent 10 "|" | msquote }} # yamllint disable-line rule:braces
     clients:
       - client_name: Proxmox
-        client_id: {{ secret "/run/secrets/proxmox-oidc-id" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces
-        client_secret: {{ secret "/run/secrets/proxmox-oidc-digest" | mindent 10 "|" | msquote}} # yamllint disable-line rule:braces rule:line-length
+        client_id: {{ secret "/run/secrets/proxmox-oidc-id" | mindent 10 "|" | msquote }} # yamllint disable-line rule:braces
+        client_secret: {{ secret "/run/secrets/proxmox-oidc-digest" | mindent 10 "|" | msquote }} # yamllint disable-line rule:braces rule:line-length
         public: false
         authorization_policy: one_factor
         require_pkce: true
