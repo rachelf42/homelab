@@ -230,7 +230,7 @@ services:
       traefik.http.routers.homarr.entrypoints: websecure
       traefik.http.routers.homarr.rule: Host(`local.rachelf42.ca`)
       traefik.http.routers.homarr.middlewares: authelia@file
-      # traefik.http.services.homarr-control.loadbalancer.server.port: 7575
+      traefik.http.services.homarr-control.loadbalancer.server.port: 7575
 ########## HOUSEKEEPING
 secrets:
   cf-token: {file: ./secrets/cf-token}
