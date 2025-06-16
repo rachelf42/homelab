@@ -222,6 +222,7 @@ services:
     image: ghcr.io/homarr-labs/homarr:v1.24.0
     volumes: [$APPDIR/homarr:/appdata]
     env_file: ./secrets/homarr-key
+    healthcheck: !reset {}
     labels:
       traefik.enable: true
       traefik.http.routers.homarr.tls: true
