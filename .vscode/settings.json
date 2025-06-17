@@ -21,5 +21,8 @@
             "traefik.yaml",
             "file:///home/rachel/homelab/docker/config/traefik/static.yaml"
         ]
-    }
+    },
+    "git.branchProtection": [
+        "main"
+    ]
 }

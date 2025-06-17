@@ -4,6 +4,7 @@
     "config:best-practices",
     ":automergeMinor",
     ":automergeStableNonMajor",
+    ":automergeDigest",
     ":renovatePrefix",
     ":timezone(America/Vancouver)",
     "schedule:automergeDaily",
@@ -28,7 +29,7 @@
       "matchPackageNames": [
         "ansible-lint"
       ],
-      "automerge": false
+      "automerge": true
     }
   ]
 }

@@ -27,7 +27,7 @@ services:
   dozzle-agent:
     extends:
       service: base
-    image: amir20/dozzle:v8.12.21@sha256:4e4a7ab10dc2db42d401755c780a510072e9b453251529e2457539f9a823400a
+    image: amir20/dozzle:v8.13.1@sha256:7ba6766590e4a6a7b20676a29697666b37f9871d26283e91bcbf18c609fa70a9
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
