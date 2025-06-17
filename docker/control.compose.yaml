@@ -78,7 +78,7 @@ services:
       traefik.http.routers.myspeed.tls: true
       traefik.http.routers.myspeed.tls.certresolver: cloudflare
       traefik.http.routers.myspeed.entrypoints: websecure
-      traefik.http.routers.myspeed.rule: Host(`myspeed.admin.local.rachelf42.ca`)
+      traefik.http.routers.myspeed.rule: Host(`myspeed.local.rachelf42.ca`)
       traefik.http.routers.myspeed.middlewares: authelia@file
 #################### AUTHENTICATION
   postgres:
