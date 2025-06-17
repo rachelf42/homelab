@@ -73,7 +73,7 @@ pipeline {
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
               sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
-              retry(5) {
+              retry(10) {
                 sh('~/.local/bin/ansible-playbook playbooks/provision.yaml')
               }
             }
