@@ -25,15 +25,15 @@ resource "proxmox_virtual_environment_user" "mine" {
 
 resource "proxmox_virtual_environment_user_token" "homarr" {
   token_name = "homarr"
-  user_id = proxmox_virtual_environment_user.mine.user_id
+  user_id    = proxmox_virtual_environment_user.mine.user_id
 }
 resource "proxmox_virtual_environment_acl" "homarr" {
-  token_id = proxmox_virtual_environment_user_token.homarr.id
-  role_id = "PVEAuditor"
-  path = "/"
+  token_id  = proxmox_virtual_environment_user_token.homarr.id
+  role_id   = "PVEAuditor"
+  path      = "/"
   propagate = true
 }
 output "homarr_proxmox_secret" {
   sensitive = true
-  value = proxmox_virtual_environment_user_token.homarr.value
+  value     = proxmox_virtual_environment_user_token.homarr.value
 }
