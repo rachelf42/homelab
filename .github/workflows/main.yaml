@@ -50,6 +50,8 @@ jobs:
       - name: Run Terraform Validate - Bootstrap
         run: terraform -chdir=bootstrap validate
 
+      - name: Remove lldapMoreUsers
+        run: rm bootstrap/postdeploy/lldapMoreUsers.tf
       - name: Initialize Terraform - Poststrap
         run: terraform -chdir=bootstrap/postdeploy init -cloud=false
       - name: Run Terraform Validate - Poststrap
