@@ -1,3 +1,4 @@
+# /!\ WARNING: if "Setup Terraform" is not at steps[10], /renovate.json needs updating /!\
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main, renovate/*]
@@ -36,12 +37,11 @@ jobs:
       - name: Run Packer Validate
         run: packer validate packer
 
-      - name: HashiCorp - Setup Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
         with:
-          terraform_version: "1.12.1" # TODO: make sure this changes with the .tf files
-                                      # labels: bug
-                                      # Issue URL: https://github.com/rachelf42/homelab/issues/32
+          terraform_version: "1.12.1"
+
       - name: Initialize Terraform
         run: terraform -chdir=terraform init -cloud=false
       - name: Run Terraform Validate
