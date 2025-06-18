@@ -2,7 +2,7 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
   name          = "jenkins"
   node_name     = "pve-laptop"
   description   = "MANAGED BY TERRAFORM"
-  tags          = ["terraform","jenkins"]
+  tags          = ["terraform", "jenkins"]
   timeout_clone = 7200
   scsi_hardware = "virtio-scsi-single"
   boot_order    = ["scsi0", "net0"]
@@ -60,7 +60,7 @@ resource "proxmox_virtual_environment_vm" "jenkins-agent" {
   name          = "jenkins-agent"
   node_name     = "pve-laptop"
   description   = "MANAGED BY TERRAFORM"
-  tags          = ["terraform","jenkins"]
+  tags          = ["terraform", "jenkins"]
   timeout_clone = 7200
   scsi_hardware = "virtio-scsi-single"
   boot_order    = ["scsi0", "net0"]
