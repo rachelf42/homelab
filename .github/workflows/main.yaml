@@ -1,3 +1,8 @@
+# TODO: use a seperate /secrets/placeholders dir
+# that can be moved in place instead of doing it file by file
+# starting to become tedious to maintain
+# labels: enhancement
+# assignees: rachelf42
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main, renovate/*]
@@ -54,6 +59,12 @@ jobs:
       - name: Fake LLDAP Password
         run: |
           echo -n 'password1234' > bootstrap/postdeploy/lldap-adminpw
+      - name: Fake User Creds
+        run: |
+          echo '{"password": "password1234","email": "fake@nope.com"}' > bootstrap/postdeploy/usercreds.json
+      - name: Fake Authelia LDAP Password
+        run: |
+          echo -n 'password1234' > bootstrap/postdeploy/authelia-ldap-password
       - name: Initialize Terraform - Poststrap
         run: terraform -chdir=bootstrap/postdeploy init -cloud=false
       - name: Run Terraform Validate - Poststrap
