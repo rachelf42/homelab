@@ -1,4 +1,5 @@
 # TODO: use a seperate /secrets/placeholders dir
+# Issue URL: https://github.com/rachelf42/homelab/issues/85
 # that can be moved in place instead of doing it file by file
 # starting to become tedious to maintain
 # labels: enhancement
