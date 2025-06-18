@@ -38,14 +38,21 @@ jobs:
 
       - name: HashiCorp - Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
-        with:
-          terraform_version: "1.12.1" # TODO: make sure this changes with the .tf files
-                                      # labels: bug
-                                      # Issue URL: https://github.com/rachelf42/homelab/issues/32
-      - name: Initialize Terraform
+
+      - name: Initialize Terraform - Main
         run: terraform -chdir=terraform init -cloud=false
-      - name: Run Terraform Validate
+      - name: Run Terraform Validate - Main
         run: terraform -chdir=terraform validate
+
+      - name: Initialize Terraform - Bootstrap
+        run: terraform -chdir=bootstrap init -cloud=false
+      - name: Run Terraform Validate - Bootstrap
+        run: terraform -chdir=bootstrap validate
+
+      - name: Initialize Terraform - Poststrap
+        run: terraform -chdir=bootstrap/postdeploy init -cloud=false
+      - name: Run Terraform Validate - Poststrap
+        run: terraform -chdir=bootstrap/postdeploy validate
 
       - name: Run Ansible-Lint
         uses: ansible/ansible-lint@4114ad63edbc25dcd9afc4f41b29dbcbebdf21ca # v25.5.0
