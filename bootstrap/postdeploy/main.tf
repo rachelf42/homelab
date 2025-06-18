@@ -1,8 +1,8 @@
 terraform {
-  required_version = "1.12.1"
+  required_version = ">= 1.12.1, < 2.0.0"
   required_providers {
     lldap = {
-      source = "tasansga/lldap"
+      source  = "tasansga/lldap"
       version = "0.3.0"
     }
   }

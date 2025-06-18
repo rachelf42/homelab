@@ -1,6 +1,6 @@
 data "lldap_groups" "groups" {}
 locals {
-  groups = {for each in data.lldap_groups.groups.groups : each.display_name => each}
+  groups = { for each in data.lldap_groups.groups.groups : each.display_name => each }
 }
 resource "lldap_group" "nas_access" {
   display_name = "nas_access"
@@ -13,9 +13,9 @@ resource "lldap_group" "admin" {
 }
 # MY USER
 resource "lldap_user" "mine" {
-  username = "rachel"
-  email = jsondecode(file("${path.module}/usercreds.json")).email
-  password = jsondecode(file("${path.module}/usercreds.json")).password
+  username     = "rachel"
+  email        = jsondecode(file("${path.module}/usercreds.json")).email
+  password     = jsondecode(file("${path.module}/usercreds.json")).password
   display_name = "Rachel"
 }
 resource "lldap_user_memberships" "mine" {
@@ -29,9 +29,9 @@ resource "lldap_user_memberships" "mine" {
 }
 # AUTHELIA
 resource "lldap_user" "authelia" {
-  username = "authelia"
-  email = "authelia@localhost"
-  password = file("${path.module}/authelia-ldap-password")
+  username     = "authelia"
+  email        = "authelia@localhost"
+  password     = file("${path.module}/authelia-ldap-password")
   display_name = "Authelia System User"
 }
 resource "lldap_user_memberships" "authelia" {

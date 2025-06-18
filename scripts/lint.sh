@@ -52,7 +52,7 @@ else
 	echo '===== TERRAFORM FAILED ====='
 	terraform validate
 fi
-cd "$HOMELABDIR/bootstap/postdeploy" || exit 1
+cd "$HOMELABDIR/bootstrap/postdeploy" || exit 1
 if (terraform validate &>/dev/null); then
 	terraform fmt ./* &>/dev/null
 else
