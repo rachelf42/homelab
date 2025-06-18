@@ -187,6 +187,7 @@ services:
 #################### FRONTEND
   traefik:
     # TODO: make traefik not dependent on proxmox
+    # Issue URL: https://github.com/rachelf42/homelab/issues/83
     # probably move to nas
     # labels: waiting, hideFromCodeEditor
     <<: *defaults-nonet
