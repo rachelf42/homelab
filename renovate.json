@@ -31,16 +31,5 @@
       ],
       "automerge": true
     }
-  ],
-  "customManagers": [
-    {
-      "customType": "jsonata",
-      "fileFormat": "yaml",
-      "managerFilePatterns": ["/^.github/workflows/main.yaml$/"],
-      "matchStrings": ["jobs.lint.steps[10].with.{\"currentValue\": terraform_version}"],
-      "depNameTemplate": "hashicorp/terraform",
-      "datasourceTemplate": "terraform-provider",
-      "versioningTemplate": "hashicorp"
-    }
   ]
 }
