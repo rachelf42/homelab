@@ -1,4 +1,3 @@
-# /!\ WARNING: if "Setup Terraform" is not at steps[10], /renovate.json needs updating /!\
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main, renovate/*]
@@ -52,6 +51,9 @@ jobs:
 
       - name: Remove lldapMoreUsers
         run: rm bootstrap/postdeploy/lldapMoreUsers.tf
+      - name: Fake LLDAP Password
+        run: |
+          echo -n 'password1234' > bootstrap/postdeploy/lldap-adminpw
       - name: Initialize Terraform - Poststrap
         run: terraform -chdir=bootstrap/postdeploy init -cloud=false
       - name: Run Terraform Validate - Poststrap
