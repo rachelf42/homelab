@@ -9,6 +9,11 @@ if ! (shellcheck -a ./scripts/*.sh &>/dev/null); then
 	echo '===== SHELLCHECK FAILED ====='
 	shellcheck -a ./scripts/*.sh
 fi
+if ! (shellcheck -a ./.githooks/* &>/dev/null); then
+	EC=$((EC + 1))
+	echo '===== SHELLCHECK FAILED ====='
+	shellcheck -a ./.githooks/*
+fi
 
 if ! (yamllint --strict . &>/dev/null); then
 	EC=$((EC + 1))
@@ -32,6 +37,22 @@ else
 fi
 
 cd "$HOMELABDIR/terraform" || exit 1
+if (terraform validate &>/dev/null); then
+	terraform fmt ./* &>/dev/null
+else
+	EC=$((EC + 1))
+	echo '===== TERRAFORM FAILED ====='
+	terraform validate
+fi
+cd "$HOMELABDIR/bootstrap" || exit 1
+if (terraform validate &>/dev/null); then
+	terraform fmt ./* &>/dev/null
+else
+	EC=$((EC + 1))
+	echo '===== TERRAFORM FAILED ====='
+	terraform validate
+fi
+cd "$HOMELABDIR/bootstrap/postdeploy" || exit 1
 if (terraform validate &>/dev/null); then
 	terraform fmt ./* &>/dev/null
 else
