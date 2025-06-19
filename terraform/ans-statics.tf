@@ -28,7 +28,7 @@ resource "ansible_group" "by_type" {
 }
 resource "ansible_group" "by_os" {
   name     = "by_os"
-  children = ["ubuntu", "debian"]
+  children = ["ubuntu", "debian", "truenas"]
 }
 resource "ansible_group" "by_role" {
   name = "by_role"
