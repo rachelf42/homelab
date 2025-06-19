@@ -15,10 +15,14 @@ jobs:
       - name: Move secret placeholders into place
         run: cd secrets && mv placeholders/* . && rmdir placeholders && cd ..
 
-      - name: Run ShellCheck
+      - name: Run ShellCheck - Scripts
         uses: Azbagheri/shell-linter@30a9cf3f6cf25c08fc98f10d7dc4167f7b5c0c00 # v0.8.0
         with:
           path: "scripts"
+      - name: Run ShellCheck - Git Hooks
+        uses: Azbagheri/shell-linter@30a9cf3f6cf25c08fc98f10d7dc4167f7b5c0c00 # v0.8.0
+        with:
+          path: ".githooks"
 
       - name: Install YAMLlint
         run: pip install yamllint
