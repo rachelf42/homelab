@@ -1,0 +1,17 @@
+http:
+  routers:
+    proxmox:
+      rule: Host(`pve.admin.local.rachelf42.ca`)
+      entryPoints:
+        - websecure
+      middlewares:
+        - authelia@file
+      service: proxmox
+      tls:
+        certResolver: cloudflare
+  services:
+    proxmox:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+          - url: https://pve-laptop.local.rachelf42.ca:8006
