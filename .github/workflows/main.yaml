@@ -1,9 +1,4 @@
-# TODO: use a seperate /secrets/placeholders dir
-# Issue URL: https://github.com/rachelf42/homelab/issues/85
-# that can be moved in place instead of doing it file by file
-# starting to become tedious to maintain
-# labels: enhancement
-# assignees: rachelf42
+
 on: # yamllint disable-line rule:truthy
   push:
     branches: [main, renovate/*]
@@ -17,8 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Make blank secrets dir
-        run: mkdir secrets
+      - name: Move secret placeholders into place
+        run: cd secrets && mv placeholders/* . && rmdir placeholders && cd ..
 
       - name: Run ShellCheck
         uses: Azbagheri/shell-linter@30a9cf3f6cf25c08fc98f10d7dc4167f7b5c0c00 # v0.8.0
@@ -27,18 +22,13 @@ jobs:
 
       - name: Install YAMLlint
         run: pip install yamllint
-      - name: Fake Ansible Vault
-        run: mv ansible/civault.yaml secrets/ansible_vault.yaml
       - name: Run YAMLlint
         run: yamllint .
 
       - name: Setup HashiCorp Packer
         uses: hashicorp/setup-packer@1aa358be5cf73883762b302a3a03abd66e75b232 # v3.1.0
-      - name: Fake Proxmox Secret
-        run: |
-          echo 'proxmox_api_token_secret = "this-is-totally-a-legit-secret"' > packer/secret.auto.pkrvars.hcl
       - name: Placeholder SSH Key
-        run: ssh-keygen -f ansible_ssh_key
+        run: ssh-keygen -f secrets/ansible_ssh_key
       - name: Initialize Packer
         run: packer init packer
       - name: Run Packer Validate
@@ -57,17 +47,6 @@ jobs:
       - name: Run Terraform Validate - Bootstrap
         run: terraform -chdir=bootstrap validate
 
-      - name: Remove lldapMoreUsers
-        run: rm bootstrap/postdeploy/lldapMoreUsers.tf
-      - name: Fake LLDAP Password
-        run: |
-          echo -n 'password1234' > bootstrap/postdeploy/lldap-adminpw
-      - name: Fake User Creds
-        run: |
-          echo '{"password": "password1234","email": "fake@nope.com"}' > bootstrap/postdeploy/usercreds.json
-      - name: Fake Authelia LDAP Password
-        run: |
-          echo -n 'password1234' > bootstrap/postdeploy/authelia-ldap-password
       - name: Initialize Terraform - Poststrap
         run: terraform -chdir=bootstrap/postdeploy init -cloud=false
       - name: Run Terraform Validate - Poststrap
