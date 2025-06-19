@@ -33,9 +33,9 @@ jobs:
       - name: Placeholder SSH Key
         run: ssh-keygen -f secrets/ansible_ssh_key
       - name: Initialize Packer
-        run: packer init packer
+        run: cd packer && packer init .
       - name: Run Packer Validate
-        run: packer validate packer
+        run: packer validate . && cd ..
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
