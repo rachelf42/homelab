@@ -12,16 +12,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Move secret placeholders into place
-        run: cd secrets && mv placeholders/* . && rmdir placeholders && cd ..
+        working-directory: ./secrets
+        run: |
+          mv placeholders/* .
+          rmdir placeholders
 
       - name: Run ShellCheck - Scripts
         uses: Azbagheri/shell-linter@30a9cf3f6cf25c08fc98f10d7dc4167f7b5c0c00 # v0.8.0
         with:
-          path: "scripts"
+          path: "./scripts"
       - name: Run ShellCheck - Git Hooks
         uses: Azbagheri/shell-linter@30a9cf3f6cf25c08fc98f10d7dc4167f7b5c0c00 # v0.8.0
         with:
-          path: ".githooks"
+          path: "./.githooks"
 
       - name: Install YAMLlint
         run: pip install yamllint
@@ -31,29 +34,33 @@ jobs:
       - name: Setup HashiCorp Packer
         uses: hashicorp/setup-packer@1aa358be5cf73883762b302a3a03abd66e75b232 # v3.1.0
       - name: Placeholder SSH Key
-        run: ssh-keygen -f secrets/ansible_ssh_key
-      - name: Initialize Packer
-        run: cd packer && packer init .
-      - name: Run Packer Validate
-        run: packer validate . && cd ..
+        run: ssh-keygen -f ./secrets/ansible_ssh_key
+      - name: Validate Packer
+        working-directory: ./packer
+        run: |
+          packer init .
+          packer validate .
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
 
-      - name: Initialize Terraform - Main
-        run: terraform -chdir=terraform init -cloud=false
-      - name: Run Terraform Validate - Main
-        run: terraform -chdir=terraform validate
+      - name: Validate Terraform - Main
+        working-directory: ./terraform
+        run: |
+          terraform init -cloud=false
+          terraform validate
 
-      - name: Initialize Terraform - Bootstrap
-        run: terraform -chdir=bootstrap init -cloud=false
-      - name: Run Terraform Validate - Bootstrap
-        run: terraform -chdir=bootstrap validate
+      - name: Validate Terraform - Bootstrap
+        working-directory: ./bootstrap
+        run: |
+          terraform init -cloud=false
+          terraform validate
 
-      - name: Initialize Terraform - Poststrap
-        run: terraform -chdir=bootstrap/postdeploy init -cloud=false
-      - name: Run Terraform Validate - Poststrap
-        run: terraform -chdir=bootstrap/postdeploy validate
+      - name: Validate Terraform - Poststrap
+        working-directory: ./bootstrap/postdeploy
+        run: |
+          terraform init -cloud=false
+          terraform validate
 
       - name: Run Ansible-Lint
         uses: ansible/ansible-lint@4114ad63edbc25dcd9afc4f41b29dbcbebdf21ca # v25.5.0
@@ -61,11 +68,11 @@ jobs:
           ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
         with:
           gh_action_ref: v25.4.0
-          working_directory: ansible
+          working_directory: ./ansible
           requirements_file: requirements.yaml
 
       - name: Run Docker-Compose-Lint
-        run: npx dclint docker/*.compose.yaml --max-warnings 0
+        run: npx dclint ./docker/*.compose.yaml --max-warnings 0
   deploy:
     permissions:
       contents: read
