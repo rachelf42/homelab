@@ -6,3 +6,4 @@
 * [Ansible](ansible.md)
 * [Docker](docker.md)
 * [CI/CD](ci-cd.md)
+* [Network Setup](network-setup.md)
