@@ -150,6 +150,12 @@
         marker: "# {mark} ANSIBLE SERVER BLOCK"
         state: present
         block: alias rm='echo "use trash, dummy"; tput bel; false'
+- name: truenas config
+  hosts: [truenas]
+  any_errors_fatal: true
+  tasks:
+    - name: todo
+      ansible.builtin.debug:
 - name: docker setup
   become: true
   hosts: [docker]

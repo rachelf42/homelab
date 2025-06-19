@@ -9,3 +9,5 @@ collections:
     version: 11.0.0
   - name: community.docker
     version: 4.6.1
+  - name: arensb.truenas
+    version: 1.11.5
