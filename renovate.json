@@ -10,6 +10,7 @@
     "schedule:automergeDaily",
     ":reviewer(rachelf42)"
   ],
+  "abandonmentThreshold": "3 years",
   "automergeType": "branch",
   "automergeStrategy": "squash",
   "docker-compose": {
