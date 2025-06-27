@@ -11,3 +11,5 @@ http:
       entrypoints: websecure
       rule: Host(`docs.local.rachelf42.ca`)
       middlewares: docs-redirect
+      tls:
+        certresolver: cloudflare
