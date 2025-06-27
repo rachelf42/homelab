@@ -1,0 +1,13 @@
+http:
+  middlewares:
+    docs-redirect:
+      redirectRegex:
+        regex: (.*)
+        replacement: https://rachelf42.gitbook.io/docs
+        permanent: false
+  routers:
+    docs:
+      service: noop@internal
+      entrypoints: https
+      rule: Host(`docs.local.rachelf42.ca`)
+      middlewares: docs-redirect
