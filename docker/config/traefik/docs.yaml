@@ -8,6 +8,6 @@ http:
   routers:
     docs:
       service: noop@internal
-      entrypoints: https
+      entrypoints: websecure
       rule: Host(`docs.local.rachelf42.ca`)
       middlewares: docs-redirect
