@@ -26,6 +26,14 @@ pipeline {
         script {
           common = load('jenkins/commonFunctions.groovy')
         }
+        withCredentials([
+          string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
+          string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
+        ]) {
+          dir('ansible') {
+            sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
+          }
+        }
       }
     }
     stage('Terraform'){
@@ -72,10 +80,7 @@ pipeline {
               string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
-              sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
-              retry(10) {
-                sh('~/.local/bin/ansible-playbook playbooks/provision.yaml')
-              }
+              sh('env no_proxy=\'*\' ~/.local/bin/ansible-playbook playbooks/provision.yaml')
             }
           }
         }
@@ -89,7 +94,7 @@ pipeline {
               string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
-              sh('~/.local/bin/ansible-playbook playbooks/deploy.yaml')
+              sh('env no_proxy=\'*\' ~/.local/bin/ansible-playbook playbooks/deploy.yaml')
             }
           }
         }
