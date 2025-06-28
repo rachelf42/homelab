@@ -49,8 +49,8 @@
       become: true
       register: checkjenk
       changed_when: false
-      ignore_errors: true
-      ansible.builtin.shell:
+      ignore_errors: true    # module doesnt provide the fact i need
+      ansible.builtin.shell: # noqa: command-instead-of-module
         cmd: apt-get -u upgrade --assume-no | grep jenkins
     - name: set fact
       when: checkjenk.rc == 0
@@ -60,7 +60,7 @@
       when: jenkupdate is defined
       delegate_to: localhost
       community.general.pushover:
-        msg: "Jenkins has updated! Update the controller manually!"
+        msg: Jenkins has updated! Update the controller manually!
         user_key: "{{ pushover_user_key }}"
         app_token: "{{ pushover_api_key }}"
         device: "{{ pushover_devices }}"
@@ -70,7 +70,7 @@
   tasks:
     - name: apt
       become: true
-      when: "('ubuntu' or 'debian' in group_names) and jenkupdate is not defined"
+      when: ('ubuntu' or 'debian' in group_names) and jenkupdate is not defined
       async: 600
       poll: 10
       retries: 10
