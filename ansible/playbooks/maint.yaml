@@ -84,11 +84,13 @@
       async: 600
       poll: 10
       retries: 10
+      changed_when: true
       ansible.builtin.command: pipx upgrade-all
     - name: pipx - nonroot
       async: 600
       poll: 10
       retries: 10
+      changed_when: true
       ansible.builtin.command: pipx upgrade-all
     - name: pipx - jenkins
       become: true
@@ -97,6 +99,7 @@
       async: 600
       poll: 10
       retries: 10
+      changed_when: true
       ansible.builtin.command: pipx upgrade-all
 - name: check if system reboot is required
   hosts: all
