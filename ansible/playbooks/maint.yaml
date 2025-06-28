@@ -79,6 +79,25 @@
         upgrade: safe
         autoremove: true
         autoclean: true
+    - name: pipx - root
+      become: true
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.command: pipx upgrade-all
+    - name: pipx - nonroot
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.command: pipx upgrade-all
+    - name: pipx - jenkins
+      become: true
+      become_user: jenkins
+      when: "'jenkcontroller' in group_names"
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.command: pipx upgrade-all
 - name: check if system reboot is required
   hosts: all
   any_errors_fatal: true
