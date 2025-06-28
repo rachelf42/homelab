@@ -1,4 +1,4 @@
-def common
+ndef common
 pipeline {
   agent{ label 'controller' }
   options {
@@ -106,7 +106,7 @@ pipeline {
   post {
     failure {
       timestamps {
-        unstash('setup')
+        checkout scm
         script {
           common.sendPushover('❌ DAILY $BUILD_DISPLAY_NAME FAILED! ❌', 1)
         }
