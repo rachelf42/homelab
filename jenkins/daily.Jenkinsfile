@@ -106,6 +106,7 @@ pipeline {
   post {
     failure {
       timestamps {
+        unstash('setup')
         script {
           common.sendPushover('❌ DAILY $BUILD_DISPLAY_NAME FAILED! ❌', 1)
         }
