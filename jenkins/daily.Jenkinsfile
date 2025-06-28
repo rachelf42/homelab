@@ -1,4 +1,4 @@
-ndef common
+def common
 pipeline {
   agent{ label 'controller' }
   options {
