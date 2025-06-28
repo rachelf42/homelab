@@ -40,7 +40,9 @@ pipeline {
           string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
           string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
         ]) {
-          sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
+          dir('ansible'){
+            sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
+          }
         }
         sh('rm ansible/playbooks/files/id_ed25519 && cp ~/.ssh/id_ed25519 ansible/playbooks/files/id_ed25519')
         withCredentials([
