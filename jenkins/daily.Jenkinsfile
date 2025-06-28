@@ -1,6 +1,6 @@
 def common
 pipeline {
-  agent none
+  agent{ label 'controller' }
   options {
     skipDefaultCheckout(true)
     buildBlocker(
