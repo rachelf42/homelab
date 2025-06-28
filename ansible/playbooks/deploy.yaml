@@ -35,8 +35,8 @@
           when: inventory_hostname == "control"
           ansible.builtin.file:
             path: /mount/nas/appdata/redis
-            owner: "{{ user_name}}"
-            group: "{{ user_name}}"
+            owner: "{{ user_name }}"
+            group: "{{ user_name }}"
             mode: "0777"
             state: directory
         - name: postgres dir

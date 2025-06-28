@@ -10,6 +10,7 @@
         sleep: 10
 - name: check disk space
   hosts: all
+  any_errors_fatal: true
   tasks:
     - name: check disk space
       become: true
@@ -32,12 +33,44 @@
         app_token: "{{ pushover_api_key }}"
         device: "{{ pushover_devices }}"
         pri: 1
+- name: check if jenkins has an update
+  hosts: jenkcontroller
+  any_errors_fatal: true
+  tasks:
+    - name: apt update
+      changed_when: false
+      become: true
+      async: 600
+      poll: 10
+      retries: 10
+      ansible.builtin.apt:
+        update_cache: true
+    - name: fail here means there is no update
+      become: true
+      register: checkjenk
+      changed_when: false
+      ignore_errors: true    # module doesnt provide the fact i need
+      ansible.builtin.shell: # noqa: command-instead-of-module
+        cmd: apt-get -u upgrade --assume-no | grep jenkins
+    - name: set fact
+      when: checkjenk.rc == 0
+      ansible.builtin.set_fact:
+        jenkupdate: true
+    - name: send notif
+      when: jenkupdate is defined
+      delegate_to: localhost
+      community.general.pushover:
+        msg: Jenkins has updated! Update the controller manually!
+        user_key: "{{ pushover_user_key }}"
+        app_token: "{{ pushover_api_key }}"
+        device: "{{ pushover_devices }}"
 - name: package manager upgrades
   hosts: all
+  any_errors_fatal: true
   tasks:
     - name: apt
       become: true
-      when: "'ubuntu' or 'debian' in group_names"
+      when: ('ubuntu' or 'debian' in group_names) and jenkupdate is not defined
       async: 600
       poll: 10
       retries: 10
@@ -46,8 +79,31 @@
         upgrade: safe
         autoremove: true
         autoclean: true
+    - name: pipx - root
+      become: true
+      async: 600
+      poll: 10
+      retries: 10
+      changed_when: true
+      ansible.builtin.command: pipx upgrade-all
+    - name: pipx - nonroot
+      async: 600
+      poll: 10
+      retries: 10
+      changed_when: true
+      ansible.builtin.command: pipx upgrade-all
+    - name: pipx - jenkins
+      become: true
+      become_user: jenkins
+      when: "'jenkcontroller' in group_names"
+      async: 600
+      poll: 10
+      retries: 10
+      changed_when: true
+      ansible.builtin.command: pipx upgrade-all
 - name: check if system reboot is required
   hosts: all
+  any_errors_fatal: true
   tasks:
     - name: check if system reboot is required
       become: true
