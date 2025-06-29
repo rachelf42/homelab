@@ -98,7 +98,7 @@ source "proxmox-iso" "ubuntu-server-noble" {
   communicator         = "ssh"
   ssh_username         = "ansible"
   ssh_private_key_file = "./ansible_ssh_key"
-  ssh_timeout          = "60m"
+  ssh_timeout          = "2h"
   ssh_pty              = true
 }
 
