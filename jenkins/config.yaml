@@ -2,7 +2,7 @@ jenkins:
   systemMessage: |
     Jenkins configured automatically by Jenkins Configuration as Code plugin.
     Please do not change any settings manually.
-  numExecutors: 1
+  numExecutors: 2
   scmCheckoutRetryCount: 2
   labelString: "controller"
   mode: EXCLUSIVE

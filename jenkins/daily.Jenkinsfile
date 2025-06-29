@@ -84,7 +84,7 @@ pipeline {
             ]) {
               sh('~/.local/bin/ansible-galaxy collection install -r requirements.yaml')
               retry(5) {
-                sh('~/.local/bin/ansible-playbook playbooks/maint.yaml')
+                sh('env no_proxy=\'*\' ~/.local/bin/ansible-playbook playbooks/maint.yaml')
               }
             }
           }

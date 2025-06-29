@@ -80,7 +80,9 @@ pipeline {
               string(credentialsId: 'ansivault', variable: 'ANSIBLE_VAULT_PASS'),
               string(credentialsId: 'terratoken', variable: 'TF_TOKEN_app_terraform_io')
             ]) {
-              sh('env no_proxy=\'*\' ~/.local/bin/ansible-playbook playbooks/provision.yaml')
+              retry(5){
+                sh('env no_proxy=\'*\' ~/.local/bin/ansible-playbook playbooks/provision.yaml')
+              }
             }
           }
         }
