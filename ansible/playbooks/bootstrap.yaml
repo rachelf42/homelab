@@ -558,13 +558,3 @@
   handlers:
     - name: reboot
       ansible.builtin.reboot:
-- name: jenkins agent setup
-  become: true
-  hosts: [jenkagent]
-  any_errors_fatal: true
-  tasks:
-    - name: authorize controller key
-      ansible.posix.authorized_key:
-        user: jenkins
-        state: present
-        key: "{{ lookup('ansible.builtin.file', 'jenkins_ssh_key.pub') }}"
