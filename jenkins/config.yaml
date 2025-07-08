@@ -2,7 +2,7 @@ jenkins:
   systemMessage: |
     Jenkins configured automatically by Jenkins Configuration as Code plugin.
     Please do not change any settings manually.
-  numExecutors: 2
+  numExecutors: 5
   scmCheckoutRetryCount: 2
   mode: NORMAL
   globalNodeProperties:
