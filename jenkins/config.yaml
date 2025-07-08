@@ -5,6 +5,7 @@ jenkins:
   numExecutors: 5
   scmCheckoutRetryCount: 2
   mode: NORMAL
+  labelString: controller
   globalNodeProperties:
     - envVars:
         env:
