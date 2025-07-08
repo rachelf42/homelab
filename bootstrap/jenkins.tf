@@ -41,7 +41,7 @@ resource "proxmox_virtual_environment_vm" "jenkins" {
   }
   memory {
     dedicated = 2048
-    floating  = 2048
+    floating  = 4096
   }
   network_device {
     bridge       = "vmbr0"
