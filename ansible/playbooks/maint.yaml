@@ -80,6 +80,7 @@
         autoremove: true
         autoclean: true
     - name: pipx - root
+      when: "'devmachine' in group_names or 'jenkins' in group_names"
       become: true
       async: 600
       poll: 10
@@ -87,6 +88,7 @@
       changed_when: true
       ansible.builtin.command: pipx upgrade-all
     - name: pipx - nonroot
+      when: "'devmachine' in group_names or 'jenkins' in group_names"
       async: 600
       poll: 10
       retries: 10
