@@ -4,7 +4,7 @@ icon: lock-keyhole
 
 # Secrets
 
-{% @github-files/github-code-block url="https://github.com/rachelf42/homelab/tree/main/secrets" %}
+[https://github.com/rachelf42/homelab/tree/main/secrets](https://github.com/rachelf42/homelab/tree/main/secrets)
 
 Files are symlinked from here to where they're used, so on Github and when freshly downloaded, the repo will be filled with broken symlinks.
 
