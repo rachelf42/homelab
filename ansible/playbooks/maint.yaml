@@ -70,7 +70,7 @@
   tasks:
     - name: apt
       become: true
-      when: ('ubuntu' or 'debian' in group_names) and jenkupdate is not defined
+      when: false # ('ubuntu' or 'debian' in group_names) and jenkupdate is not defined
       async: 600
       poll: 10
       retries: 10
