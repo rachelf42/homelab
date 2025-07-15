@@ -58,7 +58,7 @@ services:
       traefik.http.routers.kuma.middlewares: authelia@file
   ddclient:
     <<: *defaults
-    image: lscr.io/linuxserver/ddclient:4.0.0@sha256:1411a3fde82d66fca3e344f8b9de398984296ed0d49c8ae0c4408de6407d6fb0
+    image: lscr.io/linuxserver/ddclient:4.0.0@sha256:8b3c8f37b24fc235efd27802227bcc2092830908283767c650ee720de37fdfc2
     volumes: [./config/ddclient.conf:/config/ddclient.conf]
     secrets: [cf-token]
     environment:
