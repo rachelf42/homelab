@@ -63,7 +63,7 @@ jobs:
           terraform validate
 
       - name: Run Ansible-Lint
-        uses: ansible/ansible-lint@06f616d6e86e9ce4c74393318d1cbb2d016af413 # v25.6.1
+        uses: ansible/ansible-lint@9765b8704b2c3f4ab782815b528e0393662e1c04 # v25.7.0
         env:
           ANSIBLE_VAULT_PASS: SuperSecureSecretPassword
         with:
