@@ -24,7 +24,7 @@ services:
     extends:
       file: ./common.compose.yaml
       service: base-nonet
-    image: webhookrelay/webhookrelayd:1.34.2@sha256:c74a64c4ed5e54814ec5fe17c976c393975c81fceee89cfcf944da155370996c
+    image: webhookrelay/webhookrelayd:1.34.4@sha256:5e947c3aa1d795437d9a108649bce66cba553eb444584e33bff5f28f2de28df1
     environment:
       BUCKETS: github-jenkins
     env_file: ./secrets/webhookrelay_agent_token.env
