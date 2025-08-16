@@ -223,7 +223,7 @@ services:
       traefik.http.routers.dashboard.service: api@internal
   homarr:
     <<: *defaults
-    image: ghcr.io/homarr-labs/homarr:v1.27.0@sha256:2b2460e70ac25124a1a78dcb54f9b3f68492aae136fc03453d9fac04291a445a
+    image: ghcr.io/homarr-labs/homarr:v1.33.0@sha256:2c4f70e0ca76ba4f85c753e17536a5f1cf002b1f5b762224f8577afb95f0c88b
     volumes: [$APPDIR/homarr:/appdata]
     env_file: ./secrets/homarr-key
     healthcheck: !reset {}
