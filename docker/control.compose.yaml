@@ -191,7 +191,7 @@ services:
     # probably move to nas
     # labels: waiting, hideFromCodeEditor
     <<: *defaults-nonet
-    image: traefik:v3.4.4@sha256:9b0e9d788816d722703eae57ebf8b4d52ad98e02b76f0362d5a040ef46902ef7
+    image: traefik:v3.5.1@sha256:664bb8415fddadb71c2682b329c427d12c7d53593171665f2b7b6ff924509bc1
     volumes:
       # for listening to container creation/deletion events
       - /var/run/docker.sock:/var/run/docker.sock:ro
