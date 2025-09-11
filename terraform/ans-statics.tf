@@ -1,7 +1,7 @@
 ### NETWORK INFRASTRUCTURE
 resource "cloudflare_dns_record" "pve" {
-  content = "10.69.69.1"
-  name    = "pve.local.${var.cf_domain}"
+  content = "10.69.69.69"
+  name    = "pve.admin.local.${var.cf_domain}"
   proxied = false
   ttl     = 1
   type    = "A"
