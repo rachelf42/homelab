@@ -83,7 +83,7 @@ services:
 #################### AUTHENTICATION
   postgres:
     <<: *defaults-nonet
-    image: postgres:17.5@sha256:aadf2c0696f5ef357aa7a68da995137f0cf17bad0bf6e1f17de06ae5c769b302
+    image: postgres:17.6@sha256:feff5b24fedd610975a1f5e743c51a4b360437f4dc3a11acf740dcd708f413f6
     volumes:
       - $APPDIR/postgres:/var/lib/postgresql/data
       - ./config/psql-createdb.sh:/docker-entrypoint-initdb.d/psq-createdb.sh:ro
