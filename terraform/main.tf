@@ -18,7 +18,7 @@ terraform {
       version = "0.0.9"
     }
     tfe = {
-      version = "0.66.0"
+      version = "0.70.0"
     }
     webhookrelay = {
       source  = "koalificationio/webhookrelay"
